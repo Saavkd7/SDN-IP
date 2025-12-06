@@ -2,41 +2,22 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import itertools
-def create_topology():
-    nodes_ids=list(range(1,11))
-    E1=(nodes_ids[0],nodes_ids[1])
-    E2=(nodes_ids[9],nodes_ids[0])
-    E3=(nodes_ids[1],nodes_ids[9])
-    E4=(nodes_ids[2],nodes_ids[1])
-    E5=(nodes_ids[9],nodes_ids[8])
-    E6=(nodes_ids[8],nodes_ids[3])
-    E7=(nodes_ids[2],nodes_ids[3])
-    E8=(nodes_ids[8],nodes_ids[7])
-    E9=(nodes_ids[7],nodes_ids[4])
-    E10=(nodes_ids[3],nodes_ids[4])
-    E11=(nodes_ids[4],nodes_ids[5])
-    E12=(nodes_ids[7],nodes_ids[6])
-    E13=(nodes_ids[6],nodes_ids[5])
-    G=nx.Graph()
-    G.add_nodes_from(nodes_ids)
-    G.add_edges_from([E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11,E12,E13])
-    return G
+from abilene_topo import Abilene
 
-def plot_network():
-    G=create_topology()
-    pos = {
-    1: (0, 1), 2: (0, 0.5), 3: (0.5, 0.5), 4: (1, 0.5), 
-    5: (1.5, 0.5), 6: (2, 0.5), 7: (2, 1), 8: (1.5, 1), 
-    9: (1, 1), 10: (0.5, 1)
-    }
-    nx.draw(G,pos=pos,with_labels=True,width=2,node_size=600)
-    plt.xlim(-0.2, 2.2) 
-    plt.ylim(-0.2, 1.2) 
-    plt.show()
-    print(G)
+# def plot_network(G):
+#     pos = {
+#     1: (0, 1), 2: (0, 0.5), 3: (0.5, 0.5), 4: (1, 0.5), 
+#     5: (1.5, 0.5), 6: (2, 0.5), 7: (2, 1), 8: (1.5, 1), 
+#     9: (1, 1), 10: (0.5, 1) 11:
+#     }
+#     nx.draw(G,pos=pos,with_labels=True,width=2,node_size=600)
+#     plt.xlim(-0.2, 2.2) 
+#     plt.ylim(-0.2, 1.2) 
+#     plt.show()
+#     print(G)
 
-    print("Nodes:", G.nodes())
-    print("Edges:", G.edges())
+#     print("Nodes:", G.nodes())
+#     print("Edges:", G.edges())
 
 def affected_destinations(G,i,j):
     affected=set()
@@ -169,27 +150,80 @@ def find_minimum_set(candidate_table, all_nodes):
 
     return None
 
+def rpl_fail(G, u, v, c, affected):
+    # 1. Create a temporary graph without the failed link
+    G_temp = G.copy()
+    if G_temp.has_edge(u, v):
+        G_temp.remove_edge(u, v)
+    
+    # 2. Calculate tunnel distance (u -> c) using the temp graph
+    try:
+        if u != c:
+            # We just need the length, not all paths!
+            ho = nx.shortest_path_length(G_temp, source=u, target=c)
+        else:
+            ho = 0
+            
+        # 3. Calculate average repair distance (c -> affected)
+        if not affected:
+            return 0
+            
+        total = 0
+        for d in affected:
+            # Calculate path length on the map with the broken link
+            dist = nx.shortest_path_length(G_temp, source=c, target=d)
+            total += dist
+            
+        avg = total / len(affected)
+        return ho + avg
+        
+    except nx.NetworkXNoPath:
+        # If no path exists, this candidate is actually invalid!
+        return float('inf')
+def best_candidate(G,h,candidate_table,y):
+    min_arpl=float('inf')
+    best_set=None
+    for t in y:
+        current_set=0
+        for (u,v), affected in h.items():
+            valid_heroes = [node for node in t if node in candidate_table[(u,v)]]       
+            best_failure=float('inf')
+            for p in valid_heroes:
+                ar=rpl_avg(G,u,v,p,affected)
+                if ar< best_failure:
+                    best_failure=ar
+            current_set+= best_failure
+        avg=current_set/len(h)
+        print(f"Set{t}--> ARPL: {avg}")
+        if avg<min_arpl:
+            min_arpl=avg
+            best_set = t
+    return best_set
 
-G=create_topology()
-h=failure_dict(G)
-candidate_table=candidates(G,G.nodes(),h)
-y=find_minimum_set(candidate_table,G.nodes())
-min_arpl=float('inf')
-best_set=None
-for t in y:
-    current_set=0
-    for (u,v), affected in h.items():
-        valid_heroes = [node for node in t if node in candidate_table[(u,v)]]       
-        best_failure=float('inf')
-        for p in valid_heroes:
-            ar=rpl_avg(G,u,v,p,affected)
-            if ar< best_failure:
-                best_failure=ar
-        current_set+= best_failure
-    avg=current_set/len(h)
-    print(f"Set{t}--> ARPL: {avg}")
-    if avg<min_arpl:
-        min_arpl=avg
-        best_set = t
-print(f"The best candidate set are {best_set}")
+def recovery_path(u,v,affected,o,candidate_table):
+    best_failure=float('inf')
+    for p in o:
+            if p in candidate_table[(u,v)]:
+                ar=rpl_fail(G,u,v,p,affected)
+                if ar<best_failure:
+                    best_failure=ar
+                    f=p
+                else:
+                    continue
+    print(f"Links: {(u,v)} the best is candidate is {f} --> ARPL {best_failure}")
+    
+    return best_failure 
 
+def get_best_set():
+    topology=Abilene()
+    G=topology.get_graph()
+    h=failure_dict(G)
+    candidate_table=candidates(G,G.nodes(),h)
+    y=find_minimum_set(candidate_table,G.nodes())
+    o=best_candidate(G,h,candidate_table,y)
+    return o
+    
+    
+
+if __name__== '__main__':
+    print(get_best_set())

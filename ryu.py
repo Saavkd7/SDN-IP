@@ -12,17 +12,20 @@ from ryu.ofproto import ofproto_v1_3_parser as parser # <--- MISSING IMPORT ADDE
 from ryu.lib.packet import packet, ethernet, arp, ipv4
 # 5. Topology Discovery (The "Scout")
 from ryu.topology import event     # To listen for link/switch events
-
+from MCS import get_best_set
 
 class MCS(app_manager.RyuApp):
     def __init__(self, *args, **kwargs):
         super(MCS, self).__init__(*args, **kwargs)
+
         self.net = nx.DiGraph()
+        self.heroes=get_best_set()
         self.mac_port = {}
         self.names={1:'ATLA', 2:'CHIN', 3: 'DNVR', 4: 'HSTN', 5:'IPLS',
                     6: 'KSCY', 7:'LOSA', 8:'NYCM', 9:'SNVA', 10: 'STTL',
                     11: 'WASH'}
     # Listen for new links (LLDP) to build the graph
+    
     @set_ev_cls(event.EventLinkAdd, MAIN_DISPATCHER)
     def get_topology_data(self, ev):
         link = ev.link
@@ -33,8 +36,11 @@ class MCS(app_manager.RyuApp):
         self.net.add_edge(src_dpid, dst_dpid, port=src_port, weight=1)
         self.sfnet=nx.minimum_spanning_tree(self.net.to_undirected())    
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
+    
     def switch_features_handler(self, ev):
         datapath = ev.msg.datapath
+        if datapath.id in self.heroes:
+            print(f"Hero switch {datapath.id} connected")
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
         # Install the Table-Miss Flow Entry
@@ -94,12 +100,14 @@ class MCS(app_manager.RyuApp):
                     out_port = self.net[dpid][neighbor]['port']
                     if out_port != in_port:
                         actions.append(parser.OFPActionOutput(out_port))
-            else:
-                print(f"Switch {xname} is NOT in the Spanning Tree yet!")
         
+
             if in_port!= 1:
                 actions.append(parser.OFPActionOutput(1))
-          
+        
+            out= parser.OFPPacketOut(datapath=datapath,buffer_id=msg.buffer_id, in_port=in_port, actions=actions, data=msg.data)
+            datapath.send_msg(out)  
+            return 
         # Path calculation logic
         elif dst in self.mac_port:
             dst_switch = self.mac_port[dst][0]
