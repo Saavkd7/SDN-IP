@@ -3,21 +3,20 @@ import matplotlib.pyplot as plt
 from collections import defaultdict
 import itertools
 from abilene_topo import Abilene
-
-# def plot_network(G):
-#     pos = {
-#     1: (0, 1), 2: (0, 0.5), 3: (0.5, 0.5), 4: (1, 0.5), 
-#     5: (1.5, 0.5), 6: (2, 0.5), 7: (2, 1), 8: (1.5, 1), 
-#     9: (1, 1), 10: (0.5, 1) 11:
-#     }
-#     nx.draw(G,pos=pos,with_labels=True,width=2,node_size=600)
-#     plt.xlim(-0.2, 2.2) 
-#     plt.ylim(-0.2, 1.2) 
-#     plt.show()
-#     print(G)
-
-#     print("Nodes:", G.nodes())
-#     print("Edges:", G.edges())
+def plot_network(G,layout_type='circular'):
+    names = {1: 'ATLA-1', 2: 'CHIN-2', 3: 'DNVR-3', 4: 'HSTN-4', 5: 'IPLS-5',
+             6: 'KSCY-6', 7: 'LOSA-7', 8: 'NYCM-8', 9: 'SNVA-9', 10: 'STTL-10',
+             11: 'WASH-11'}
+    if layout_type == 'circular':
+        pos = nx.circular_layout(G)
+    else:
+        # Fallback to spring layout if it's not circular
+        pos = nx.random_layout(G)
+    nx.draw(G,pos=pos,labels=names,with_labels=True,width=2,node_size=1200)
+    #plt.xlim(-0.2, 2.2) 
+    #plt.ylim(-0.2, 1.2) 
+    plt.show()
+    print(G)
 
 def affected_destinations(G,i,j):
     affected=set()
@@ -200,20 +199,42 @@ def best_candidate(G,h,candidate_table,y):
             best_set = t
     return best_set
 
-def recovery_path(u,v,affected,o,candidate_table):
-    best_failure=float('inf')
-    for p in o:
+##ONE SINGLE LINK MEANT TO BE ABLE IN THAT IS REQUIRED A REACTIVE APPROACH
+# def recovery_path(u,v,affected,o,candidate_table):
+#     best_failure=float('inf')
+#     for p in o:
+#             if p in candidate_table[(u,v)]:
+#                 ar=rpl_fail(G,u,v,p,affected)
+#                 if ar<best_failure:
+#                     best_failure=ar
+#                     f=p
+#                 else:
+#                     continue
+#     print(f"Links: {(u,v)} the best is candidate is {f} --> ARPL {best_failure}")
+    
+#     return best_failure 
+def recovery_path():
+    topology=Abilene()
+    G=topology.get_graph()
+    h=failure_dict(G)
+    candidate_table=candidates(G,G.nodes(),h)
+    y=find_minimum_set(candidate_table,G.nodes())
+    best_set=best_candidate(G,h,candidate_table,y)
+    failover={}
+    for (u,v), affected in h.items():
+        best_failure=float('inf')
+        for p in best_set:
             if p in candidate_table[(u,v)]:
                 ar=rpl_fail(G,u,v,p,affected)
+                #print(f"Enlace{(u,v)}--> arp: {ar} --> {p}")
                 if ar<best_failure:
                     best_failure=ar
                     f=p
                 else:
                     continue
-    print(f"Links: {(u,v)} the best is candidate is {f} --> ARPL {best_failure}")
-    
-    return best_failure 
-
+        #print(f"Links: {(u,v)} the best is candidate is {f} --> ARPL {best_failure}")
+        failover[(u,v)]=f
+    return failover
 def get_best_set():
     topology=Abilene()
     G=topology.get_graph()
@@ -226,4 +247,8 @@ def get_best_set():
     
 
 if __name__== '__main__':
+    h= Abilene()
+    G=h.get_graph()
     print(get_best_set())
+    print(recovery_path())
+    plot_network(G)
