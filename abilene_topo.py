@@ -6,22 +6,34 @@ class Abilene:
         self.city_names = ['ATLA', 'CHIN', 'DNVR', 'HSTN', 'IPLS', 
                       'KSCY', 'LOSA', 'NYCM', 'SNVA', 'STTL', 'WASH']
         self.citiesID={name: i for i,name in enumerate(self.city_names,start=1)}
-        self.links=[
-            ('NYCM', 'WASH', 10000, '1.64ms'),
-            ('NYCM', 'CHIN', 10000, '5.73ms'),
-            ('WASH', 'ATLA', 10000, '4.37ms'),
-            ('ATLA', 'HSTN', 10000, '5.67ms'),
-            ('HSTN', 'LOSA', 10000, '11.03ms'),
-            ('LOSA', 'SNVA', 10000, '2.50ms'),
-            ('SNVA', 'STTL', 10000, '5.69ms'),
-            ('STTL', 'DNVR', 10000, '8.22ms'),
-            ('DNVR', 'KSCY', 10000, '3.71ms'),
-            ('KSCY', 'IPLS', 10000, '4.52ms'),
-            ('IPLS', 'CHIN', 10000, '1.30ms'),
-            ('ATLA', 'IPLS', 10000, '2.95ms'),
-            ('HSTN', 'KSCY', 10000, '5.13ms'),
-            ('DNVR', 'SNVA', 10000, '7.57ms')
-        ]       
+        oc192=995
+        oc48=249
+        self.links= [
+            # Link format: (Node A, Node B, Bandwidth (Mbps), Delay string)
+            
+            # --- THE CORE RING (OC-192) ---
+            ('NYCM', 'WASH', oc192, '1.64ms'), # Short distance, high speed
+            ('NYCM', 'CHIN', oc192, '5.73ms'),
+            ('WASH', 'ATLA', oc192, '4.37ms'),
+            ('ATLA', 'HSTN', oc192, '5.67ms'),
+            ('HSTN', 'LOSA', oc192, '11.03ms'), # Long haul TX to CA
+            ('LOSA', 'SNVA', oc192, '2.50ms'),
+            ('SNVA', 'STTL', oc192, '5.69ms'),
+            ('STTL', 'DNVR', oc192, '8.22ms'),
+            ('DNVR', 'KSCY', oc192, '3.71ms'),
+            ('KSCY', 'IPLS', oc192, '4.52ms'),
+            ('IPLS', 'CHIN', oc192, '1.30ms'),
+            
+            # --- CROSS-CONNECTIONS & SUB-CORE (Mix of OC-192 and OC-48) ---
+            
+            # The "bottleneck" link in 2003/2004
+            ('ATLA', 'IPLS', oc48,  '2.95ms'), 
+            
+            # Express links (usually upgraded early to offload the ring)
+            ('HSTN', 'KSCY', oc192, '5.13ms'), 
+            ('DNVR', 'SNVA', oc192, '7.57ms')
+        ]
+
     def get_graph(self):
         G=nx.Graph()
         G.add_nodes_from(self.citiesID.values())

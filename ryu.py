@@ -17,6 +17,8 @@ from MCS import plot_network
 from MCS import recovery_path  
 from abilene_topo import Abilene
 
+
+
 class MCS(app_manager.RyuApp):
     def __init__(self, *args, **kwargs):
         super(MCS, self).__init__(*args, **kwargs)
@@ -24,13 +26,14 @@ class MCS(app_manager.RyuApp):
         self.sfnet = nx.Graph()
         self.top=Abilene()
         self.heroes=get_best_set()
-        self.gra=plot_network(self.top.get_graph())
         self.failover=recovery_path()
         self.mac_port = {}
         self.datapath={}
         self.names={1:'ATLA', 2:'CHIN', 3: 'DNVR', 4: 'HSTN', 5:'IPLS',
                     6: 'KSCY', 7:'LOSA', 8:'NYCM', 9:'SNVA', 10: 'STTL',
                     11: 'WASH'}
+        self.gra=plot_network(self.top.get_graph())
+        
     @set_ev_cls(event.EventLinkAdd, MAIN_DISPATCHER)
     def get_topology_data(self, ev):
         link = ev.link
@@ -40,6 +43,7 @@ class MCS(app_manager.RyuApp):
         print(f"DEBUG: Link Detected {src} -> {dst}")     
         # 1. Update the Graph
         self.net.add_edge(src, dst, port=src_port, weight=1)
+        if self.net is None: pass
         self.sfnet = nx.minimum_spanning_tree(self.net.to_undirected())
         # 2. Check: Is this specific link (src->dst) part of a failure scenario?
         # We look up our pre-calculated dictionary
@@ -146,12 +150,12 @@ class MCS(app_manager.RyuApp):
         # Ignore LLDP packets (to prevent loops/errors)
         if eth.ethertype == 0x88cc: 
             return
-        
         if eth.ethertype == 0x86dd: ## IGNORING IPV6 
             return
         src = eth.src
         dst = eth.dst
-        self.logger.info(f"Packet in switch {dpid} source {src} destination {dst}, in port {in_port}")
+        #for a while
+        #self.logger.info(f"Packet in switch {dpid} source {src} destination {dst}, in port {in_port}")
         #only UPDATE IF E HAVENT SEEN THIS MAC BEFORE
         if src not in self.mac_port:
             self.mac_port[src]=(dpid, in_port)
@@ -219,9 +223,10 @@ class MCS(app_manager.RyuApp):
                     #datapath.send_msg(out)
                     print(f"Rule installed : Dest: {dst} port{out_port}")
                 except Exception as e :
-                    # If graph exists but no path is found, flood
-                    out_port = ofproto_v1_3.OFPP_FLOOD
-                    print(f"crash : Path calculation ERROr {e}")
+                    return
+                    # If graph exists but no path is found, flood (BROKEN ROAD)
+                    #out_port = ofproto_v1_3.OFPP_FLOOD
+                    #print(f"crash : Path calculation ERROr {e}")
             else:
                 # If switches aren't in the graph yet, flood
                 out_port = ofproto_v1_3.OFPP_FLOOD
