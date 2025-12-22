@@ -72,7 +72,7 @@ def run_network():
     print("\n--- READY TO INJECT TRAFFIC ---")
     answer = input("Do you want to run the Traffic Matrices from a folder? (y/n): ")
     if answer.lower() == 'y':
-        folder_path = ('hola')
+        folder_path = ('TestDataSet')
         if os.path.isdir(folder_path):
             files = [f for f in os.listdir(folder_path) if f.endswith('.dat')]
             files.sort()
