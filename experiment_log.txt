@@ -131,3 +131,39 @@ The heroes will be Nodes: ['CHIN', 'DNVR', 'LOSA', 'WASH']
  MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
    (Data is being encapsulated with MPLS Label 2 automatically by Switch HSTN)
   MCS PROTECTION READY: Link HSTN->ATLA protected by HERO CHIN
+  LINK FAILURE: ATLA -> IPLS detected.
+ MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+   (Data is being encapsulated with MPLS Label 11 automatically by Switch ATLA)
+  LINK FAILURE: SNVA -> DNVR detected.
+ MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+   (Data is being encapsulated with MPLS Label 7 automatically by Switch SNVA)
+  MCS PROTECTION READY: Link SNVA->DNVR protected by HERO LOSA
+  MCS PROTECTION READY: Link ATLA->IPLS protected by HERO WASH
+  LINK FAILURE: ATLA -> IPLS detected.
+ MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+   (Data is being encapsulated with MPLS Label 11 automatically by Switch ATLA)
+  MCS PROTECTION READY: Link ATLA->IPLS protected by HERO WASH
+  LINK FAILURE: SNVA -> DNVR detected.
+ MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+   (Data is being encapsulated with MPLS Label 7 automatically by Switch SNVA)
+  MCS PROTECTION READY: Link SNVA->DNVR protected by HERO LOSA
+  LINK FAILURE: LOSA -> HSTN detected.
+ MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+   (Data is being encapsulated with MPLS Label 3 automatically by Switch LOSA)
+  MCS PROTECTION READY: Link LOSA->HSTN protected by HERO DNVR
+  LINK FAILURE: LOSA -> SNVA detected.
+ MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+   (Data is being encapsulated with MPLS Label 2 automatically by Switch LOSA)
+  MCS PROTECTION READY: Link LOSA->SNVA protected by HERO CHIN
+  LINK FAILURE: LOSA -> HSTN detected.
+ MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+   (Data is being encapsulated with MPLS Label 3 automatically by Switch LOSA)
+  LINK FAILURE: HSTN -> LOSA detected.
+ MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+   (Data is being encapsulated with MPLS Label 3 automatically by Switch HSTN)
+  LINK FAILURE: LOSA -> SNVA detected.
+ MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+   (Data is being encapsulated with MPLS Label 2 automatically by Switch LOSA)
+  LINK FAILURE: SNVA -> LOSA detected.
+ MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+   (Data is being encapsulated with MPLS Label 3 automatically by Switch SNVA)
