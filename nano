@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Check if a switch name was provided
+if [ -z "$1" ]; then
+    echo "Usage: ./fail_link.sh <SwitchName>"
+    echo "Example: ./fail_link.sh ATLA"
+    exit 1
+fi
+
+SWITCH=$1
+
+echo "----------------------------------------"
+echo " Interfaces found for switch: $SWITCH"
+echo "----------------------------------------"
+
+# 1. Show available interfaces for this switch
+# We grep for the Switch Name to find its virtual ports
+ip link show | grep "$SWITCH-eth"
+
+echo "----------------------------------------"
+echo "Which interface do you want to KILL? (Copy the name from above, e.g., ATLA-eth2)"
+read -p "Interface Name: " INTF_NAME
+
+# 2. Safety Check: Ensure the user typed something
+if [ -z "$INTF_NAME" ]; then
+    echo "Error: No interface name provided."
+    exit 1
+fi
+
+# 3. Execute the 'Down' command
+echo "💥 BOOM! Bringing down $INTF_NAME..."
+sudo ip link set $INTF_NAME down
+
+# 4. Verification
+echo "Status of $INTF_NAME:"
+ip link show $INTF_NAME
+

@@ -1,159 +1,211 @@
 # 1. Standard Python Libraries
-import networkx as nx              # The "Brain" (Graph & Dijkstra)
+import networkx as nx
 # 2. Ryu Core Components
-from ryu.base import app_manager   # The "Shell" (All Ryu apps inherit from this)
-from ryu.controller import ofp_event # Defines events like "PacketIn"
-from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER # States of the switch
-from ryu.controller.handler import set_ev_cls # The "Decorator" to trigger functions
+from ryu.base import app_manager
+from ryu.controller import ofp_event
+from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
+from ryu.controller.handler import set_ev_cls
 # 3. OpenFlow Protocol
-from ryu.ofproto import ofproto_v1_3 # The "Language" (We use OpenFlow 1.3)
-from ryu.ofproto import ofproto_v1_3_parser as parser # <--- MISSING IMPORT ADDED HERE
-# 4. Packet Decoding (To understand what's inside the binary data)
+from ryu.ofproto import ofproto_v1_3
+from ryu.ofproto import ofproto_v1_3_parser as parser
+# 4. Packet Decoding
 from ryu.lib.packet import packet, ethernet, arp, ipv4
-# 5. Topology Discovery (The "Scout")
-from ryu.topology import event     # To listen for link/switch events
-from MCS import get_best_set
+# 5. Topology Discovery
+from ryu.topology import event
+from MCS import get_best_set, plot_network, recovery_path
+from abilene_topo import Abilene
 
 class MCS(app_manager.RyuApp):
     def __init__(self, *args, **kwargs):
         super(MCS, self).__init__(*args, **kwargs)
-
         self.net = nx.DiGraph()
-        self.heroes=get_best_set()
+        self.sfnet = nx.Graph()
+        self.top = Abilene()
+        self.heroes = get_best_set()
+              
+        self.failover = recovery_path()
         self.mac_port = {}
-        self.names={1:'ATLA', 2:'CHIN', 3: 'DNVR', 4: 'HSTN', 5:'IPLS',
-                    6: 'KSCY', 7:'LOSA', 8:'NYCM', 9:'SNVA', 10: 'STTL',
-                    11: 'WASH'}
-    # Listen for new links (LLDP) to build the graph
-    
+        self.datapath = {}
+        self.names = {1: 'ATLA', 2: 'CHIN', 3: 'DNVR', 4: 'HSTN', 5: 'IPLS',
+                      6: 'KSCY', 7: 'LOSA', 8: 'NYCM', 9: 'SNVA', 10: 'STTL',
+                      11: 'WASH'}
+        hero_names = [self.get_name(h) for h in self.heroes]
+        print(f"The heroes will be Nodes: {hero_names}")
+
+    def get_name(self, dpid):
+        return self.names.get(dpid, f"Switch-{dpid}")
+
     @set_ev_cls(event.EventLinkAdd, MAIN_DISPATCHER)
     def get_topology_data(self, ev):
         link = ev.link
-        src_dpid = link.src.dpid
-        dst_dpid = link.dst.dpid
+        src = link.src.dpid
+        dst = link.dst.dpid
         src_port = link.src.port_no
-        # Add the link to our graph
-        self.net.add_edge(src_dpid, dst_dpid, port=src_port, weight=1)
-        self.sfnet=nx.minimum_spanning_tree(self.net.to_undirected())    
+        
+        self.net.add_edge(src, dst, port=src_port, weight=1)
+        self.sfnet = nx.minimum_spanning_tree(self.net.to_undirected())
+        
+        if (src, dst) in self.failover:
+            hero_id = self.failover[(src, dst)]
+            datapath = link.src
+            if src in self.datapath:
+                datapath = self.datapath[src]
+                ofproto = datapath.ofproto
+                parser = datapath.ofproto_parser
+            
+            try:
+                path_to_hero = nx.shortest_path(self.net, src, hero_id)
+                if len(path_to_hero) > 1:
+                    next_hop = path_to_hero[1]
+                    hero_port = self.net[src][next_hop]['port']
+                    src_name = self.get_name(src)
+                    dst_name = self.get_name(dst)
+                    hero_name = self.get_name(hero_id)
+
+                    print(f"  MCS PROTECTION READY: Link {src_name}->{dst_name} protected by HERO {hero_name}", flush=True)
+                    
+                    # BUCKET 1: Primary (Queue 0)
+                    actions_pri = [parser.OFPActionSetQueue(0), parser.OFPActionOutput(src_port)]
+                    bucket_pri = parser.OFPBucket(watch_port=src_port, watch_group=ofproto.OFPG_ANY, actions=actions_pri)
+                    
+                    # BUCKET 2: Backup (Queue 0 + MPLS)
+                    actions_backup = [
+                        parser.OFPActionSetQueue(0),
+                        parser.OFPActionPushMpls(ethertype=0x8847),
+                        parser.OFPActionSetField(mpls_label=hero_id),
+                        parser.OFPActionOutput(hero_port)
+                    ]
+                    bucket_backup = parser.OFPBucket(watch_port=ofproto.OFPP_ANY, watch_group=ofproto.OFPG_ANY, actions=actions_backup)
+
+                    req = parser.OFPGroupMod(datapath, command=ofproto.OFPGC_ADD, type_=ofproto.OFPGT_FF,
+                                             group_id=src_port, buckets=[bucket_pri, bucket_backup])
+                    datapath.send_msg(req)
+            except Exception as e:
+                pass 
+
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
-    
     def switch_features_handler(self, ev):
+        topo_app = app_manager.lookup_service_brick('switches')
+        if topo_app:
+            #  THE FIX: DISABLE TIMEOUT COMPLETELY
+            # The controller will NEVER delete a link due to lag.
+            # It will ONLY delete it if the Port Status goes DOWN.
+            topo_app.link_timeout = 3
+            topo_app.link_discovery_interval = 1
+            
         datapath = ev.msg.datapath
-        if datapath.id in self.heroes:
-            print(f"Hero switch {datapath.id} connected")
+        dpid = datapath.id
+        self.datapath[dpid] = datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
-        # Install the Table-Miss Flow Entry
-        # "Match Everything" (priority=0) -> "Send to Controller"
+        
+        if dpid in self.heroes:
+            match_hero = parser.OFPMatch(eth_type=0x8847, mpls_label=dpid)
+            actions_hero = [parser.OFPActionPopMpls(ethertype=0x0800), parser.OFPActionOutput(ofproto.OFPP_TABLE)]
+            inst_hero = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions_hero)]
+            mod_hero = parser.OFPFlowMod(datapath=datapath, priority=100, match=match_hero, instructions=inst_hero)
+            datapath.send_msg(mod_hero)
+            print(f" HERO NODE ONLINE: {self.get_name(dpid)} is ready to accept tunnels.", flush=True)
+
         match = parser.OFPMatch()
-        actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,
-                                          ofproto.OFPCML_NO_BUFFER)]
-        
-        # Build the Flow Mod message
-        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS,
-                                             actions)]
-        mod = parser.OFPFlowMod(datapath=datapath, priority=0,
-                                match=match, instructions=inst)
-        
-        # Send it to the switch
+        actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)]
+        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+        mod = parser.OFPFlowMod(datapath=datapath, priority=0, match=match, instructions=inst)
         datapath.send_msg(mod)
-        print(f" Table-Miss Flow Installed on Switch {datapath.id}")
-    # Listen for packets (PacketIn)
+        
+        # INCOMING LLDP -> Queue 1
+        match_lldp = parser.OFPMatch(eth_type=0x88cc)
+        actions_lldp = [parser.OFPActionSetQueue(1), parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)]
+        inst_lldp = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions_lldp)]
+        mod_lldp = parser.OFPFlowMod(datapath=datapath, priority=65535, match=match_lldp, instructions=inst_lldp)
+        datapath.send_msg(mod_lldp)
+
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg
         datapath = msg.datapath
         dpid = datapath.id
         in_port = msg.match['in_port']
-
-        # Decode the raw data
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocol(ethernet.ethernet)
         
-        # Ignore LLDP packets (to prevent loops/errors)
-        if eth.ethertype == 0x88cc: 
+        if eth.ethertype == 0x88cc or eth.ethertype == 0x86dd:
             return
-        
-        if eth.ethertype == 0x86dd: ## IGNORING IPV6 
-            return
-
+            
         src = eth.src
         dst = eth.dst
-
-        self.logger.info(f"Packet in switch {dpid} source {src} destination {dst}, in port {in_port}")
-
-        # Learn the location of the source
-        # self.mac_port[src] = (dpid, in_port)
-        #only UPDATE IF E HAVENT SEEN THIS MAC BEFORE
+        
         if src not in self.mac_port:
-            self.mac_port[src]=(dpid, in_port)
-            print(f"Learned Location {src} is at switch {dpid} port {in_port}")
+            self.mac_port[src] = (dpid, in_port)
             
         if dst == 'ff:ff:ff:ff:ff:ff':
             actions = []
-            # Debug: See if the tree actually exists!
+            all_switch_ports = []
+            if dpid in self.net:
+                for neighbor in self.net[dpid]:
+                    all_switch_ports.append(self.net[dpid][neighbor]['port'])
             if dpid in self.sfnet:
-                xname=self.names.get(dpid, f"Switch_{dpid}")
-                neighbors = list(self.sfnet[dpid])
-                print(f"Flooding from Switch {xname}. Tree Neighbors: {neighbors}")
-                for neighbor in neighbors:
-                    out_port = self.net[dpid][neighbor]['port']
-                    if out_port != in_port:
-                        actions.append(parser.OFPActionOutput(out_port))
-        
-
-            if in_port!= 1:
+                for neighbor in self.sfnet[dpid]:
+                    if neighbor in self.net[dpid]:
+                        out_port = self.net[dpid][neighbor]['port']
+                        if out_port != in_port:
+                            actions.append(parser.OFPActionOutput(out_port))
+            if 1 not in all_switch_ports and in_port != 1:
                 actions.append(parser.OFPActionOutput(1))
-        
-            out= parser.OFPPacketOut(datapath=datapath,buffer_id=msg.buffer_id, in_port=in_port, actions=actions, data=msg.data)
-            datapath.send_msg(out)  
-            return 
-        # Path calculation logic
+            
+            out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id, in_port=in_port, actions=actions, data=msg.data)
+            datapath.send_msg(out)
+            return
+            
         elif dst in self.mac_port:
             dst_switch = self.mac_port[dst][0]
             src_switch = self.mac_port[src][0]
             
-            # Check if source and dest switches are in the graph
             if self.net.has_node(src_switch) and self.net.has_node(dst_switch):
                 try:
                     paths = list(nx.all_shortest_paths(self.net, source=src_switch, target=dst_switch))
                     best_path = paths[0]
-                    
-                    # If we are at the destination switch
                     if dpid == best_path[-1]:
                         out_port = self.mac_port[dst][1]
+                        actions = [parser.OFPActionOutput(out_port)]
                     else:
-                        # Find the next hop
                         current_index = best_path.index(dpid)
                         next_switch = best_path[current_index + 1]
                         out_port = self.net[dpid][next_switch]['port']
-                    print(f"PATH FOUND: {src} to {dst} via Port {out_port}")
-                    #added after WHEN PING FLOOD BECAUSE OF FLOWMOD doesmnt exist
-                    match=parser.OFPMatch(eth_dst=dst)
-                    actions=parser.OFPActionOutput(out_port)
-                    inst=[parser.OFPInstructionActions(ofproto_v1_3.OFPIT_APPLY_ACTIONS, [actions])]
-                    mod=parser.OFPFlowMod(datapath=datapath,priority=1,
-                                          match=match,instructions=inst)
+                        if (dpid, next_switch) in self.failover:
+                            actions = [parser.OFPActionSetQueue(0), parser.OFPActionGroup(group_id=out_port)]
+                        else:
+                            actions = [parser.OFPActionSetQueue(0), parser.OFPActionOutput(out_port)]
+                            
+                    match = parser.OFPMatch(eth_dst=dst)
+                    inst = [parser.OFPInstructionActions(ofproto_v1_3.OFPIT_APPLY_ACTIONS, actions)]
+                    mod = parser.OFPFlowMod(datapath=datapath, priority=1, match=match, instructions=inst)
                     datapath.send_msg(mod)
-                    print(f"Rule installed : Dest: {dst} port{out_port}")
-                except Exception as e :
-                    # If graph exists but no path is found, flood
-                    out_port = ofproto_v1_3.OFPP_FLOOD
-                    print(f"crash : {e}")
+                except Exception:
+                    return
             else:
-                # If switches aren't in the graph yet, flood
                 out_port = ofproto_v1_3.OFPP_FLOOD
-                print(f"SWITCH NOT IN GRAPH YET. Proceed to FLOOD...")
         else:
-            # Destination unknown, flood
             out_port = ofproto_v1_3.OFPP_FLOOD
-            print(f"UNKNOWN DESTINATION: {dst} ... FLOODING")
 
-        # Send the packet out
-        actions = [parser.OFPActionOutput(out_port)]
-        out = parser.OFPPacketOut(datapath=datapath,
-                                  buffer_id=msg.buffer_id,  
-                                  in_port=in_port, 
-                                  actions=actions, 
-                                  data=msg.data)
+        out_actions = [parser.OFPActionSetQueue(0), parser.OFPActionOutput(out_port)]
+        out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id, in_port=in_port, actions=out_actions, data=msg.data)
         datapath.send_msg(out)
+
+    @set_ev_cls(event.EventLinkDelete, MAIN_DISPATCHER)
+    def link_delete_handler(self, ev):
+        link = ev.link
+        src = link.src.dpid
+        dst = link.dst.dpid
+        try:
+            self.net.remove_edge(src, dst)
+            self.sfnet = nx.minimum_spanning_tree(self.net.to_undirected())
+            
+            print(f"  LINK FAILURE: {self.get_name(src)} -> {self.get_name(dst)} detected.", flush=True)
+            
+            if (src, dst) in self.failover:
+                hero_id = self.failover[(src, dst)]
+                print(f" MCS RECOVERY: Redirecting traffic to HERO {self.get_name(hero_id)} via Tunnel.", flush=True)
+                print(f"   (Data is being encapsulated with MPLS Label {hero_id} automatically by Switch {self.get_name(src)})", flush=True)
+        except nx.NetworkXError:
+            pass
