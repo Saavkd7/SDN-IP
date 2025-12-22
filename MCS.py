@@ -116,7 +116,7 @@ def find_minimum_set(candidate_table, all_nodes):
     
     # Try sizes k = 1, 2, 3...
     for k in range(1, len(all_nodes) + 1):
-        print(f"Checking candidate sets of size {k}...")
+        #print(f"Checking candidate sets of size {k}...")
         
         # Generate all combinations of size k
         # e.g., (1,2), (1,3)...
@@ -193,7 +193,7 @@ def best_candidate(G,h,candidate_table,y):
                     best_failure=ar
             current_set+= best_failure
         avg=current_set/len(h)
-        print(f"Set{t}--> ARPL: {avg}")
+        ##print(f"Set{t}--> ARPL: {avg}")
         if avg<min_arpl:
             min_arpl=avg
             best_set = t
@@ -249,6 +249,6 @@ def get_best_set():
 if __name__== '__main__':
     h= Abilene()
     G=h.get_graph()
-    print(get_best_set())
-    print(recovery_path())
-    plot_network(G)
+    get_best_set()
+    #print(recovery_path())
+    #plot_network(G)

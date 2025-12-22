@@ -1,0 +1,53 @@
+loading app ryu.py
+loading app ryu.topology.switches
+loading app ryu.controller.ofp_handler
+instantiating app ryu.py of MCS
+instantiating app ryu.topology.switches of Switches
+instantiating app ryu.controller.ofp_handler of OFPHandler
+Found 2 optimal sets of size 4!
+Found 2 optimal sets of size 4!
+The heroes will be Nodes: ['CHIN', 'DNVR', 'LOSA', 'WASH']
+ HERO NODE ONLINE: LOSA is ready to accept tunnels.
+ HERO NODE ONLINE: WASH is ready to accept tunnels.
+ HERO NODE ONLINE: DNVR is ready to accept tunnels.
+  MCS PROTECTION READY: Link SNVA->DNVR protected by HERO LOSA
+  MCS PROTECTION READY: Link DNVR->STTL protected by HERO LOSA
+  MCS PROTECTION READY: Link STTL->SNVA protected by HERO DNVR
+  MCS PROTECTION READY: Link STTL->DNVR protected by HERO LOSA
+  MCS PROTECTION READY: Link SNVA->STTL protected by HERO DNVR
+  MCS PROTECTION READY: Link DNVR->KSCY protected by HERO LOSA
+  MCS PROTECTION READY: Link KSCY->DNVR protected by HERO LOSA
+  MCS PROTECTION READY: Link KSCY->HSTN protected by HERO DNVR
+  MCS PROTECTION READY: Link HSTN->KSCY protected by HERO LOSA
+  MCS PROTECTION READY: Link HSTN->LOSA protected by HERO DNVR
+  MCS PROTECTION READY: Link IPLS->KSCY protected by HERO LOSA
+  MCS PROTECTION READY: Link LOSA->HSTN protected by HERO DNVR
+ HERO NODE ONLINE: CHIN is ready to accept tunnels.
+  MCS PROTECTION READY: Link NYCM->CHIN protected by HERO WASH
+  MCS PROTECTION READY: Link CHIN->IPLS protected by HERO WASH
+  MCS PROTECTION READY: Link CHIN->NYCM protected by HERO DNVR
+  MCS PROTECTION READY: Link IPLS->CHIN protected by HERO WASH
+  LINK FAILURE: NYCM -> WASH detected.
+ MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+   (Data is being encapsulated with MPLS Label 2 automatically by Switch NYCM)
+  MCS PROTECTION READY: Link NYCM->WASH protected by HERO CHIN
+  LINK FAILURE: KSCY -> IPLS detected.
+ MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+   (Data is being encapsulated with MPLS Label 11 automatically by Switch KSCY)
+  LINK FAILURE: ATLA -> WASH detected.
+ MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+   (Data is being encapsulated with MPLS Label 2 automatically by Switch ATLA)
+  MCS PROTECTION READY: Link ATLA->WASH protected by HERO CHIN
+  MCS PROTECTION READY: Link KSCY->IPLS protected by HERO WASH
+  LINK FAILURE: NYCM -> WASH detected.
+ MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+   (Data is being encapsulated with MPLS Label 2 automatically by Switch NYCM)
+  MCS PROTECTION READY: Link NYCM->WASH protected by HERO CHIN
+  LINK FAILURE: ATLA -> WASH detected.
+ MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+   (Data is being encapsulated with MPLS Label 2 automatically by Switch ATLA)
+  MCS PROTECTION READY: Link ATLA->WASH protected by HERO CHIN
+  LINK FAILURE: KSCY -> IPLS detected.
+ MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+   (Data is being encapsulated with MPLS Label 11 automatically by Switch KSCY)
+  MCS PROTECTION READY: Link KSCY->IPLS protected by HERO WASH

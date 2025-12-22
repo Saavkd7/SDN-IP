@@ -6,8 +6,9 @@ class Abilene:
         self.city_names = ['ATLA', 'CHIN', 'DNVR', 'HSTN', 'IPLS', 
                       'KSCY', 'LOSA', 'NYCM', 'SNVA', 'STTL', 'WASH']
         self.citiesID={name: i for i,name in enumerate(self.city_names,start=1)}
-        oc192=995
-        oc48=249
+        #oc192 real 10Gbps 
+        oc192=10000*0.005 #Mbps scale down by 200 
+        oc48=2488.32*0.005 #Mbps scale down by 200
         self.links= [
             # Link format: (Node A, Node B, Bandwidth (Mbps), Delay string)
             
