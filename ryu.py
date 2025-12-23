@@ -1,15 +1,20 @@
 # 1. Standard Python Libraries
 import networkx as nx
+from datetime import datetime  # <--- ADDED FOR TIMESTAMPS
+
 # 2. Ryu Core Components
 from ryu.base import app_manager
 from ryu.controller import ofp_event
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
+
 # 3. OpenFlow Protocol
 from ryu.ofproto import ofproto_v1_3
 from ryu.ofproto import ofproto_v1_3_parser as parser
+
 # 4. Packet Decoding
 from ryu.lib.packet import packet, ethernet, arp, ipv4
+
 # 5. Topology Discovery
 from ryu.topology import event
 from MCS import get_best_set, plot_network, recovery_path
@@ -30,10 +35,18 @@ class MCS(app_manager.RyuApp):
                       6: 'KSCY', 7: 'LOSA', 8: 'NYCM', 9: 'SNVA', 10: 'STTL',
                       11: 'WASH'}
         hero_names = [self.get_name(h) for h in self.heroes]
-        print(f"The heroes will be Nodes: {hero_names}")
+        
+        # Log initialization
+        self.log_with_timestamp(f"The heroes will be Nodes: {hero_names}")
 
     def get_name(self, dpid):
         return self.names.get(dpid, f"Switch-{dpid}")
+
+    # --- NEW HELPER METHOD FOR LOGGING ---
+    def log_with_timestamp(self, message):
+        # Format time as HH:MM:SS.ms
+        timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        print(f"[{timestamp}] {message}", flush=True)
 
     @set_ev_cls(event.EventLinkAdd, MAIN_DISPATCHER)
     def get_topology_data(self, ev):
@@ -62,7 +75,8 @@ class MCS(app_manager.RyuApp):
                     dst_name = self.get_name(dst)
                     hero_name = self.get_name(hero_id)
 
-                    print(f"  MCS PROTECTION READY: Link {src_name}->{dst_name} protected by HERO {hero_name}", flush=True)
+                    # LOGGING
+                    self.log_with_timestamp(f"MCS PROTECTION READY: Link {src_name}->{dst_name} protected by HERO {hero_name}")
                     
                     # BUCKET 1: Primary (Queue 0)
                     actions_pri = [parser.OFPActionSetQueue(0), parser.OFPActionOutput(src_port)]
@@ -88,8 +102,6 @@ class MCS(app_manager.RyuApp):
         topo_app = app_manager.lookup_service_brick('switches')
         if topo_app:
             #  THE FIX: DISABLE TIMEOUT COMPLETELY
-            # The controller will NEVER delete a link due to lag.
-            # It will ONLY delete it if the Port Status goes DOWN.
             topo_app.link_timeout = 3
             topo_app.link_discovery_interval = 1
             
@@ -105,7 +117,9 @@ class MCS(app_manager.RyuApp):
             inst_hero = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions_hero)]
             mod_hero = parser.OFPFlowMod(datapath=datapath, priority=100, match=match_hero, instructions=inst_hero)
             datapath.send_msg(mod_hero)
-            print(f" HERO NODE ONLINE: {self.get_name(dpid)} is ready to accept tunnels.", flush=True)
+            
+            # LOGGING
+            self.log_with_timestamp(f"HERO NODE ONLINE: {self.get_name(dpid)} is ready to accept tunnels.")
 
         match = parser.OFPMatch()
         actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)]
@@ -201,11 +215,12 @@ class MCS(app_manager.RyuApp):
             self.net.remove_edge(src, dst)
             self.sfnet = nx.minimum_spanning_tree(self.net.to_undirected())
             
-            print(f"  LINK FAILURE: {self.get_name(src)} -> {self.get_name(dst)} detected.", flush=True)
+            # LOGGING
+            self.log_with_timestamp(f"LINK FAILURE: {self.get_name(src)} -> {self.get_name(dst)} detected.")
             
             if (src, dst) in self.failover:
                 hero_id = self.failover[(src, dst)]
-                print(f" MCS RECOVERY: Redirecting traffic to HERO {self.get_name(hero_id)} via Tunnel.", flush=True)
-                print(f"   (Data is being encapsulated with MPLS Label {hero_id} automatically by Switch {self.get_name(src)})", flush=True)
+                self.log_with_timestamp(f"MCS RECOVERY: Redirecting traffic to HERO {self.get_name(hero_id)} via Tunnel.")
+                self.log_with_timestamp(f"  (Data is being encapsulated with MPLS Label {hero_id} automatically by Switch {self.get_name(src)})")
         except nx.NetworkXError:
             pass

@@ -1,0 +1,112 @@
+loading app ryu.py
+loading app ryu.controller.ofp_handler
+loading app ryu.topology.switches
+loading app ryu.controller.ofp_handler
+instantiating app ryu.py of MCS
+Found 2 optimal sets of size 4!
+Found 2 optimal sets of size 4!
+[15:51:10.311] The heroes will be Nodes: ['CHIN', 'DNVR', 'LOSA', 'WASH']
+instantiating app ryu.controller.ofp_handler of OFPHandler
+instantiating app ryu.topology.switches of Switches
+[15:51:23.005] HERO NODE ONLINE: CHIN is ready to accept tunnels.
+[15:51:23.006] HERO NODE ONLINE: LOSA is ready to accept tunnels.
+[15:51:23.007] HERO NODE ONLINE: WASH is ready to accept tunnels.
+[15:51:23.008] HERO NODE ONLINE: DNVR is ready to accept tunnels.
+[15:51:23.031] MCS PROTECTION READY: Link IPLS->ATLA protected by HERO CHIN
+[15:51:23.033] MCS PROTECTION READY: Link SNVA->DNVR protected by HERO LOSA
+[15:51:23.033] MCS PROTECTION READY: Link KSCY->DNVR protected by HERO LOSA
+[15:51:23.034] MCS PROTECTION READY: Link NYCM->WASH protected by HERO CHIN
+[15:51:23.034] MCS PROTECTION READY: Link ATLA->WASH protected by HERO CHIN
+[15:51:23.035] MCS PROTECTION READY: Link IPLS->KSCY protected by HERO LOSA
+[15:51:23.035] MCS PROTECTION READY: Link DNVR->KSCY protected by HERO LOSA
+[15:51:23.036] MCS PROTECTION READY: Link HSTN->KSCY protected by HERO LOSA
+[15:51:23.036] MCS PROTECTION READY: Link LOSA->SNVA protected by HERO CHIN
+[15:51:23.036] MCS PROTECTION READY: Link STTL->SNVA protected by HERO DNVR
+[15:51:23.037] MCS PROTECTION READY: Link DNVR->SNVA protected by HERO CHIN
+[15:51:23.040] MCS PROTECTION READY: Link ATLA->HSTN protected by HERO DNVR
+[15:51:23.040] MCS PROTECTION READY: Link ATLA->IPLS protected by HERO WASH
+[15:51:23.041] MCS PROTECTION READY: Link CHIN->IPLS protected by HERO WASH
+[15:56:14.654] LINK FAILURE: ATLA -> HSTN detected.
+[15:56:14.654] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:14.654]   (Data is being encapsulated with MPLS Label 3 automatically by Switch ATLA)
+[15:56:14.655] LINK FAILURE: HSTN -> ATLA detected.
+[15:56:14.655] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:14.655]   (Data is being encapsulated with MPLS Label 2 automatically by Switch HSTN)
+[15:56:14.709] LINK FAILURE: ATLA -> IPLS detected.
+[15:56:14.709] MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+[15:56:14.709]   (Data is being encapsulated with MPLS Label 11 automatically by Switch ATLA)
+[15:56:14.710] LINK FAILURE: IPLS -> ATLA detected.
+[15:56:14.710] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:14.710]   (Data is being encapsulated with MPLS Label 2 automatically by Switch IPLS)
+[15:56:14.776] LINK FAILURE: KSCY -> DNVR detected.
+[15:56:14.776] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:14.776]   (Data is being encapsulated with MPLS Label 7 automatically by Switch KSCY)
+[15:56:14.777] LINK FAILURE: DNVR -> KSCY detected.
+[15:56:14.777] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:14.777]   (Data is being encapsulated with MPLS Label 7 automatically by Switch DNVR)
+[15:56:14.843] LINK FAILURE: DNVR -> SNVA detected.
+[15:56:14.843] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:14.843]   (Data is being encapsulated with MPLS Label 2 automatically by Switch DNVR)
+[15:56:14.843] LINK FAILURE: SNVA -> DNVR detected.
+[15:56:14.843] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:14.843]   (Data is being encapsulated with MPLS Label 7 automatically by Switch SNVA)
+[15:56:14.879] LINK FAILURE: KSCY -> HSTN detected.
+[15:56:14.879] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:14.879]   (Data is being encapsulated with MPLS Label 3 automatically by Switch KSCY)
+[15:56:14.879] LINK FAILURE: HSTN -> KSCY detected.
+[15:56:14.879] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:14.879]   (Data is being encapsulated with MPLS Label 7 automatically by Switch HSTN)
+[15:56:14.941] LINK FAILURE: LOSA -> HSTN detected.
+[15:56:14.941] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:14.941]   (Data is being encapsulated with MPLS Label 3 automatically by Switch LOSA)
+[15:56:14.941] LINK FAILURE: HSTN -> LOSA detected.
+[15:56:14.942] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:14.942]   (Data is being encapsulated with MPLS Label 3 automatically by Switch HSTN)
+[15:56:14.987] LINK FAILURE: CHIN -> IPLS detected.
+[15:56:14.987] MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+[15:56:14.987]   (Data is being encapsulated with MPLS Label 11 automatically by Switch CHIN)
+[15:56:14.988] LINK FAILURE: IPLS -> CHIN detected.
+[15:56:14.988] MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+[15:56:14.988]   (Data is being encapsulated with MPLS Label 11 automatically by Switch IPLS)
+[15:56:15.065] LINK FAILURE: KSCY -> IPLS detected.
+[15:56:15.065] MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+[15:56:15.065]   (Data is being encapsulated with MPLS Label 11 automatically by Switch KSCY)
+[15:56:15.066] LINK FAILURE: IPLS -> KSCY detected.
+[15:56:15.066] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:15.066]   (Data is being encapsulated with MPLS Label 7 automatically by Switch IPLS)
+[15:56:15.123] LINK FAILURE: LOSA -> SNVA detected.
+[15:56:15.123] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:15.123]   (Data is being encapsulated with MPLS Label 2 automatically by Switch LOSA)
+[15:56:15.124] LINK FAILURE: SNVA -> LOSA detected.
+[15:56:15.124] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:15.124]   (Data is being encapsulated with MPLS Label 3 automatically by Switch SNVA)
+[15:56:15.221] LINK FAILURE: NYCM -> CHIN detected.
+[15:56:15.222] MCS RECOVERY: Redirecting traffic to HERO WASH via Tunnel.
+[15:56:15.222]   (Data is being encapsulated with MPLS Label 11 automatically by Switch NYCM)
+[15:56:15.222] LINK FAILURE: CHIN -> NYCM detected.
+[15:56:15.222] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:15.222]   (Data is being encapsulated with MPLS Label 3 automatically by Switch CHIN)
+[15:56:15.311] LINK FAILURE: NYCM -> WASH detected.
+[15:56:15.311] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:15.311]   (Data is being encapsulated with MPLS Label 2 automatically by Switch NYCM)
+[15:56:15.311] LINK FAILURE: WASH -> NYCM detected.
+[15:56:15.311] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:15.311]   (Data is being encapsulated with MPLS Label 3 automatically by Switch WASH)
+[15:56:15.312] LINK FAILURE: SNVA -> STTL detected.
+[15:56:15.312] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:15.312]   (Data is being encapsulated with MPLS Label 3 automatically by Switch SNVA)
+[15:56:15.312] LINK FAILURE: STTL -> SNVA detected.
+[15:56:15.312] MCS RECOVERY: Redirecting traffic to HERO DNVR via Tunnel.
+[15:56:15.312]   (Data is being encapsulated with MPLS Label 3 automatically by Switch STTL)
+[15:56:15.503] LINK FAILURE: ATLA -> WASH detected.
+[15:56:15.503] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:15.503]   (Data is being encapsulated with MPLS Label 2 automatically by Switch ATLA)
+[15:56:15.503] LINK FAILURE: WASH -> ATLA detected.
+[15:56:15.503] MCS RECOVERY: Redirecting traffic to HERO CHIN via Tunnel.
+[15:56:15.503]   (Data is being encapsulated with MPLS Label 2 automatically by Switch WASH)
+[15:56:15.503] LINK FAILURE: DNVR -> STTL detected.
+[15:56:15.503] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:15.503]   (Data is being encapsulated with MPLS Label 7 automatically by Switch DNVR)
+[15:56:15.503] LINK FAILURE: STTL -> DNVR detected.
+[15:56:15.503] MCS RECOVERY: Redirecting traffic to HERO LOSA via Tunnel.
+[15:56:15.503]   (Data is being encapsulated with MPLS Label 7 automatically by Switch STTL)

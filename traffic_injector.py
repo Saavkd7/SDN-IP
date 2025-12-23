@@ -20,7 +20,7 @@ def parse_traffic_matrix(path,scaling_factor):
                     if row_idx==col_idx or raw_val==0:
                         continue
                     bw=(raw_val*1000)*scaling_factor
-                    if bw >0.0005:
+                    if bw >0.00005:
                         src=CITY_ORDER[row_idx]
                         dst=CITY_ORDER[col_idx]
                         flows.append((src,dst,bw))

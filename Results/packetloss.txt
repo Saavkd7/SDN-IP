@@ -1,0 +1,175 @@
+mininet> dpctl dump-ports -O OpenFlow13
+*** ATLA ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 5 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=457.996s
+  port  "ATLA-eth1": rx pkts=3872, bytes=4554960, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3925, bytes=3857255, drop=0, errs=0, coll=0
+           duration=458s
+  port  "ATLA-eth4": rx pkts=1844, bytes=1941336, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3998, bytes=4924984, drop=0, errs=0, coll=0
+           duration=458.001s
+  port  "ATLA-eth2": rx pkts=7193, bytes=8625287, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5771, bytes=6125351, drop=0, errs=0, coll=0
+           duration=458.001s
+  port  "ATLA-eth3": rx pkts=4653, bytes=4688177, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3987, bytes=4407806, drop=0, errs=0, coll=0
+           duration=458s
+*** CHIN ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 4 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.009s
+  port  "CHIN-eth1": rx pkts=3111, bytes=2632690, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=7926, bytes=10077979, drop=0, errs=0, coll=0
+           duration=458.014s
+  port  "CHIN-eth2": rx pkts=5642, bytes=6598201, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3557, bytes=3585661, drop=0, errs=0, coll=0
+           duration=458.015s
+  port  "CHIN-eth3": rx pkts=8567, bytes=10669619, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=6108, bytes=6238559, drop=0, errs=0, coll=0
+           duration=458.015s
+*** DNVR ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 5 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=457.997s
+  port  "DNVR-eth1": rx pkts=4017, bytes=4904712, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3756, bytes=3386905, drop=0, errs=0, coll=0
+           duration=458.001s
+  port  "DNVR-eth4": rx pkts=1071, bytes=515243, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1219, bytes=1210936, drop=0, errs=0, coll=0
+           duration=458.002s
+  port  "DNVR-eth2": rx pkts=2868, bytes=2953615, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2753, bytes=3123555, drop=0, errs=0, coll=0
+           duration=458.002s
+  port  "DNVR-eth3": rx pkts=5123, bytes=5743695, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5595, bytes=6397681, drop=0, errs=0, coll=0
+           duration=458.002s
+*** HSTN ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 5 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.021s
+  port  "HSTN-eth1": rx pkts=2202, bytes=2439404, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2526, bytes=2471323, drop=0, errs=0, coll=0
+           duration=458.026s
+  port  "HSTN-eth4": rx pkts=3691, bytes=3836473, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5300, bytes=6098269, drop=0, errs=0, coll=0
+           duration=458.027s
+  port  "HSTN-eth2": rx pkts=3987, bytes=4407806, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=4653, bytes=4688177, drop=0, errs=0, coll=0
+           duration=458.026s
+  port  "HSTN-eth3": rx pkts=6772, bytes=7796703, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5016, bytes=5207565, drop=0, errs=0, coll=0
+           duration=458.026s
+*** IPLS ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 5 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.036s
+  port  "IPLS-eth1": rx pkts=5681, bytes=6754228, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5371, bytes=5446045, drop=0, errs=0, coll=0
+           duration=458.041s
+  port  "IPLS-eth4": rx pkts=3998, bytes=4924984, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1844, bytes=1941336, drop=0, errs=0, coll=0
+           duration=458.042s
+  port  "IPLS-eth2": rx pkts=10000, bytes=11850949, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=8774, bytes=9946101, drop=0, errs=0, coll=0
+           duration=458.041s
+  port  "IPLS-eth3": rx pkts=6108, bytes=6238559, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=8567, bytes=10669619, drop=0, errs=0, coll=0
+           duration=458.042s
+*** KSCY ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 5 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.088s
+  port  "KSCY-eth4": rx pkts=5300, bytes=6098269, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3691, bytes=3836473, drop=0, errs=0, coll=0
+           duration=458.094s
+  port  "KSCY-eth1": rx pkts=2825, bytes=2974130, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3190, bytes=3021053, drop=0, errs=0, coll=0
+           duration=458.094s
+  port  "KSCY-eth2": rx pkts=5595, bytes=6397681, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5124, bytes=5743755, drop=0, errs=0, coll=0
+           duration=458.095s
+  port  "KSCY-eth3": rx pkts=8774, bytes=9946101, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=10000, bytes=11850949, drop=0, errs=0, coll=0
+           duration=458.095s
+*** LOSA ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 4 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.115s
+  port  "LOSA-eth1": rx pkts=6712, bytes=8148150, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5972, bytes=6212363, drop=0, errs=0, coll=0
+           duration=458.120s
+  port  "LOSA-eth2": rx pkts=5016, bytes=5207565, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=6772, bytes=7796703, drop=0, errs=0, coll=0
+           duration=458.119s
+  port  "LOSA-eth3": rx pkts=2641, bytes=2459601, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2180, bytes=1796521, drop=0, errs=0, coll=0
+           duration=458.120s
+*** NYCM ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 4 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.169s
+  port  "NYCM-eth1": rx pkts=6786, bytes=8660172, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5924, bytes=6227749, drop=0, errs=0, coll=0
+           duration=458.173s
+  port  "NYCM-eth2": rx pkts=4280, bytes=4785827, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3630, bytes=4236399, drop=0, errs=0, coll=0
+           duration=458.173s
+  port  "NYCM-eth3": rx pkts=3557, bytes=3585661, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5642, bytes=6598201, drop=0, errs=0, coll=0
+           duration=458.173s
+*** SNVA ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 5 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.146s
+  port  "SNVA-eth4": rx pkts=1219, bytes=1210936, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1071, bytes=515243, drop=0, errs=0, coll=0
+           duration=458.151s
+  port  "SNVA-eth1": rx pkts=740, bytes=752582, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1499, bytes=1130249, drop=0, errs=0, coll=0
+           duration=458.153s
+  port  "SNVA-eth2": rx pkts=2180, bytes=1796521, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2641, bytes=2459601, drop=0, errs=0, coll=0
+           duration=458.151s
+  port  "SNVA-eth3": rx pkts=2059, bytes=1821611, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1860, bytes=1517219, drop=0, errs=0, coll=0
+           duration=458.153s
+*** STTL ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 4 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.207s
+  port  "STTL-eth1": rx pkts=4329, bytes=4689722, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=4281, bytes=4572855, drop=0, errs=0, coll=0
+           duration=458.212s
+  port  "STTL-eth2": rx pkts=1860, bytes=1517219, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2059, bytes=1821611, drop=0, errs=0, coll=0
+           duration=458.211s
+  port  "STTL-eth3": rx pkts=2753, bytes=3123555, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2869, bytes=2953675, drop=0, errs=0, coll=0
+           duration=458.212s
+*** WASH ------------------------------------------------------------------------
+OFPST_PORT reply (OF1.3) (xid=0x2): 4 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+           duration=458.233s
+  port  "WASH-eth1": rx pkts=6883, bytes=8962246, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5385, bytes=5942189, drop=0, errs=0, coll=0
+           duration=458.238s
+  port  "WASH-eth2": rx pkts=3630, bytes=4236399, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=4280, bytes=4785827, drop=0, errs=0, coll=0
+           duration=458.237s
+  port  "WASH-eth3": rx pkts=5771, bytes=6125351, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=7193, bytes=8625287, drop=0, errs=0, coll=0
+           duration=458.237s
+mininet> 
+
