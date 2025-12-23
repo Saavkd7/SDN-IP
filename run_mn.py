@@ -79,7 +79,7 @@ def run_network():
             for index, filename in enumerate(files):
                 full_path = os.path.join(folder_path, filename)
                 print(f"[{index+1}/{len(files)}] Processing: {filename}")
-                flows = traffic_injector.parse_traffic_matrix(full_path, scaling_factor=0.05)
+                flows = traffic_injector.parse_traffic_matrix(full_path, scaling_factor=0.005)
                 traffic_injector.inject_traffic(net, flows, duration=30)
     
     print("Network is ready. Type exit to stop.")
