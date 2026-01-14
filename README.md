@@ -6,7 +6,7 @@
 [![Mininet](https://img.shields.io/badge/Mininet-2.3.0-green)](http://mininet.org/)
 [![NetworkX](https://img.shields.io/badge/NetworkX-Graph%20Theory-red)](https://networkx.org/)
 
-## 📄 Abstract
+##  Abstract
 
 This repository contains a Python and Mininet implementation of the **Minimum Candidate Selection (MCS)** algorithm, as proposed in the paper:
 
@@ -26,7 +26,7 @@ The MCS algorithm implemented here:
 
 ---
 
-## 🏗 System Model: The Abilene Topology
+##  System Model: The Abilene Topology
 
 This implementation utilizes the **Abilene Network** topology (Internet2) as the primary testbed, consistent with the simulation results presented in Section V of the paper.
 
@@ -39,7 +39,7 @@ This implementation utilizes the **Abilene Network** topology (Internet2) as the
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 This repository is divided into the **Analytical Plane** (Algorithm Logic), the **Control Plane** (Ryu Controller), and the **Data Plane** (Mininet Emulation).
 
@@ -65,7 +65,7 @@ This script implements the SDN logic using the **Ryu Framework**. It bridges the
 
 ---
 
-## 🛠 Prerequisites
+## Prerequisites
 
 To run the full emulation, you need a Linux environment (Ubuntu recommended) with the following installed:
 
