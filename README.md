@@ -34,7 +34,7 @@ This implementation utilizes the **Abilene Network** topology (Internet2) as the
 
 
 * **Graph:** $G = (V, E)$
-* **Nodes:** 11 Major US Cities (ATLA, CHIN, DNVR, HSTN, IPLS, KSCY, LOSA, NYCM, SNVA, STTL, WASH).
+* **Nodes:** 11 Major US Cities (ATLA-1, CHIN-2, DNVR-3, HSTN-4, IPLS-5, KSCY-6, LOSA-7, NYCM-8, SNVA-9, STTL-10, WASH-11).
 * **Links:** OC-192 and OC-48 connections with realistic propagation delays.
 
 ---
