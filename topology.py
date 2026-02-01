@@ -57,9 +57,7 @@ class Geant:
 # ==============================================================================
 # 2. ABILENE
 # ==============================================================================
-
-import networkx as nx   
-class Abilene:
+ class Abilene:
     def __init__(self):
         self.build()
     def build(self):
@@ -200,4 +198,40 @@ class Grid30_MultiLevel:
             
         return G
 
+
+class Mesh30_Resilient:
+    def __init__(self):
+        random.seed(42)
+
+    def get_graph(self):
+        # 1. Base Grid 5x6 (30 Nodos)
+        G_temp = nx.grid_2d_graph(5, 6)
+        G = nx.Graph()
+        mapping = {node: i for i, node in enumerate(G_temp.nodes())}
+        
+        # 2. Enlaces Cardinales (Estructura Base)
+        for u_coord, v_coord in G_temp.edges():
+            u, v = mapping[u_coord], mapping[v_coord]
+            # Distancia al centro para lógica MultiLevel
+            dist = abs(u_coord[0] - 2) + abs(u_coord[1] - 2.5)
+            
+            if dist < 1.5:
+                lat = random.uniform(0.5, 1.5)  # Core: Rápido
+                bw = 50.0
+            else:
+                lat = random.uniform(30.0, 50.0) # Edge: Lento
+                bw = 12.0
+            G.add_edge(u, v, weight=lat, bandwidth=bw)
+
+        # 3. REDUNDANCIA CIENTÍFICA (Triangulación del Core)
+        # Añadimos diagonales solo en el centro (filas 1 a 3, cols 1 a 4)
+        # Esto crea "Caminos de Rescate" que reducen la concentración de reglas
+        for r in range(1, 4):
+            for c in range(1, 5):
+                u = mapping[(r, c)]
+                v = mapping[(r+1, c+1)]
+                # Latencia intermedia para las diagonales
+                G.add_edge(u, v, weight=15.0, bandwidth=25.0)
+
+        return G
 

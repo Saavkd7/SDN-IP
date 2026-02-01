@@ -2,31 +2,42 @@ import networkx as nx
 import itertools
 # Asegúrate de que green_models tenga las clases actualizadas (LegacyRouter, SDNSwitch)
 # que definimos en la respuesta anterior (donde solo devuelven P_BASE).
-import topology
 import os
 import json
 from green_models import NEC_PF5240 , ZodiacFX
-import matplotlib.pyplot as plt # <--- REQUIRED FOR GRAPH A
+import matplotlib.pyplot as plt 
 import numpy as np
-# ==============================================================================
+import vis_utils 
+from sndlib_loader import SNDLibXMLParser 
+# ===================   ===========================================================
 # 1. UTILS
 # ==============================================================================
 def get_config():
     if not os.path.exists('config.json'): 
-        return {"alpha": 0.5, "topology": "EuroRing"}
+        # CORRECCIÓN AQUÍ: Apunta a la carpeta correcta por defecto
+        return {"alpha": 0.5, "topology": "Top/abilene.xml"} 
     with open('config.json', 'r') as f:
         return json.load(f)
 
 def get_active_topology():
     config = get_config()
-    topo_name = config.get("topology", "EuroRing")
-    try:
-        TopoClass = getattr(topology, topo_name)
-        return TopoClass() 
-    except AttributeError:
-        return topology.EuroRing()
+    filename = config.get('topology', 'abilene.xml')
+    
+    # Construir la ruta completa si no la tiene
+    if not filename.startswith('Top/'):
+        xml_filename = os.path.join('Top', filename)
+    else:
+        xml_filename = filename
 
-from green_models import ZodiacFX, NEC_PF5240
+    if os.path.exists(xml_filename):
+        topo_loader = SNDLibXMLParser(xml_filename)
+        return topo_loader
+    else:
+        print(f"[ERROR] File not found: {xml_filename}")
+       
+
+
+
 
 def assign_green_weights(G, candidate_set, alpha):
     """
@@ -190,7 +201,7 @@ def candidates(G,a,h): # a variable a are the nodes h is the failure_dict
         candidate_table[(u,v)]=valid_candidates
     return candidate_table
 
-def find_minimum_set(candidate_table, all_nodes, max_k=5):
+def find_minimum_set(candidate_table, all_nodes, max_k=6):
     # Heurística simple para Set Cover
     num_failures = len(candidate_table)
     node_coverage = {node: set() for node in all_nodes}
@@ -315,17 +326,29 @@ def contribution(G, winner_set, total_watts_winner):
             p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
         baseline_watts += p_node
 
-    # 2. CÁLCULO DEL APORTE (GAP)
-    energy_saved = baseline_watts - total_watts_winner
-    percentage_saved = (energy_saved / baseline_watts) * 100
+    # # 2. CÁLCULO DEL APORTE (GAP)
+    # energy_saved = baseline_watts - total_watts_winner
+    # percentage_saved = (energy_saved / baseline_watts) * 100
 
-    print(f"\n=== SCIENTIFIC CONTRIBUTION REPORT ===")
-    print(f"Standard Approach (All-NEC): {baseline_watts:.2f} W")
-    print(f"Green MCS Approach (Hybrid): {total_watts_winner:.2f} W")
-    print(f"--------------------------------------")
-    print(f"NET ENERGY SAVING: {energy_saved:.2f} W")
-    print(f"EFFICIENCY GAIN:   {percentage_saved:.1f} %")
-    print(f"======================================\n")
+    baseline_watts = 0.0
+    for n in G.nodes():
+        degree = G.degree(n)
+        # Asumiendo baseline puro NEC
+        p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
+        baseline_watts += p_node
+
+    # ... (Tus prints de reporte siguen igual) ...
+
+    # LLAMADA LIMPIA A LA GRÁFICA B
+    print("[GRAPHIC] Generating Graph B (Savings)...")
+    vis_utils.plot_graph_b_savings(baseline_watts, total_watts_winner)
+    # print(f"\n=== SCIENTIFIC CONTRIBUTION REPORT ===")
+    # print(f"Standard Approach (All-NEC): {baseline_watts:.2f} W")
+    # print(f"Green MCS Approach (Hybrid): {total_watts_winner:.2f} W")
+    # print(f"--------------------------------------")
+    # print(f"NET ENERGY SAVING: {energy_saved:.2f} W")
+    # print(f"EFFICIENCY GAIN:   {percentage_saved:.1f} %")
+    # print(f"======================================\n")
     
 # ==============================================================================
 # 5. Recovery PATH
@@ -350,22 +373,16 @@ def recovery_path(alpha=None):
     if not valid_sets:
         print("No solution found.")
         return None, None
-    
-    analyze_and_plot_tradeoff(G, h, cand_table, valid_sets)
-
-
 
     # Fase 2: Elegir el MEJOR Set basado en Energía/Delay (Física)
-    winner_set, winner_watts, _ = best_green_placement(G, h, cand_table, valid_sets, alpha)
+    winner_set, _ , _ = best_green_placement(G, h, cand_table, valid_sets, alpha)
     print(f"[MCS BRIDGE] Selected Winner for Alpha={alpha}: {winner_set}")
-    contribution(G, winner_set, winner_watts)
     # Fase 3: Construir el Diccionario Failover (Tu lógica original)
     # Asignamos el mejor héroe DENTRO del winner_set para cada falla
     failover = {}
     
     # Importante: Aseguramos que el grafo tenga los pesos del ganador para el cálculo final
     assign_green_weights(G, winner_set, alpha)
-
     for (u, v), affected in h.items():
         if not affected: continue # Si no hay destinos afectados, no hay regla
         
@@ -389,9 +406,8 @@ def recovery_path(alpha=None):
             print(f"WARNING: Winner set {winner_set} cannot cover failure {(u,v)} logically.")
 
     print(f"[FAILOVER MAP]: Generated {len(failover)} assignments.")
-    check_saturation(G, h, winner_set, failover)
 
-    return winner_set, failover
+    return winner_set, failover, G
 #============================================================================================================================================================
 
 # 6. SATURACION RULES 
@@ -427,55 +443,48 @@ def check_saturation(G, h, winner_set, failover_map):
     return status
 
 
-# ==============================================================================
-# 5. GRAPH A: ALPHA TRADEOFF ANALYSIS
-# ==============================================================================
-def analyze_and_plot_tradeoff(G, h, cand_table, valid_sets):
-    print("\n--- GENERATING GRAPH A: ALPHA TRADEOFF ---")
+#=============================================================================================================================================================
+
+# 7. GRAPHICS
+
+#==============================================================================================================================================================
+def analyze_tradeoff_sequence(G, h, cand_table, valid_sets):
+    print("\n--- COLLECTING DATA FOR GRAPH A ---")
     
-    alphas = np.linspace(0, 1, 11) # 0.0, 0.1, ... 1.0
+    alphas = np.linspace(0, 1, 11) 
     results_watts = []
     results_score = []
-    winner_sets_history = []
 
     for a in alphas:
-        # Ejecutamos el motor de decisión para cada Alpha
-        w_set, w_watts, w_score = best_green_placement(G, h, cand_table, valid_sets, alpha=a)
+        # Solo calculamos, no imprimimos todo el log para no ensuciar
+        _, w_watts, w_score = best_green_placement(G, h, cand_table, valid_sets, alpha=a)
         results_watts.append(w_watts)
         results_score.append(w_score)
-        winner_sets_history.append(str(w_set))
-    
-    # Plotting
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    vis_utils.plot_graph_a_tradeoff(alphas, results_watts, results_score)
 
-    color = 'tab:green'
-    ax1.set_xlabel('Alpha (Energy Priority)')
-    ax1.set_ylabel('Total Network Power (Watts)', color=color)
-    ax1.plot(alphas, results_watts, color=color, marker='o', label='Power Consumption')
-    ax1.tick_params(axis='y', labelcolor=color)
-    ax1.grid(True, linestyle='--', alpha=0.6)
 
-    ax2 = ax1.twinx()  # Segundo eje Y para el Score/Delay
-    color = 'tab:blue'
-    ax2.set_ylabel('Optimization Score (Metric)', color=color)
-    ax2.plot(alphas, results_score, color=color, marker='x', linestyle='--', label='Path Metric Cost')
-    ax2.tick_params(axis='y', labelcolor=color)
 
-    plt.title('GRAPH A: Energy vs. Latency Trade-off Analysis')
-    fig.tight_layout()
-    
-    # Guardar gráfico
-    plt.savefig('graph_a_tradeoff.png')
-    print("Graph A saved as 'graph_a_tradeoff.png'")
-    
-    # Detectar cambios de candidatos
-    unique_winners = set(winner_sets_history)
-    if len(unique_winners) > 1:
-        print(f"OBSERVATION: The winner set CHANGED during alpha sweep! Unique sets found: {len(unique_winners)}")
-    else:
-        print("OBSERVATION: The winner set remained stable across all alphas (Topological dominance).")
 
 
 if __name__ == '__main__':
+    alpha=None
+    topo = get_active_topology()
+    G = topo.get_graph()
+    
+    if alpha is None:
+        config = get_config()
+        alpha = float(config.get('alpha', 0.5))
+    
+    print(f"Running MCS with Alpha: {alpha}")
+    
+    h = failure_dict(G)
+    cand_table = candidates(G, G.nodes(), h)
+    valid_sets = find_minimum_set(cand_table, G.nodes())
+    winner_set, winner_watts, _ = best_green_placement(G, h, cand_table, valid_sets, alpha)
+
 
     recovery_path()
+    analyze_tradeoff_sequence(G, h, cand_table, valid_sets)
+    check_saturation(G, h, winner_set, failover)
+    contribution(G, winner_set, winner_watts)
+

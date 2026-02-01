@@ -3,7 +3,7 @@ from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel
 from mininet.topo import Topo
-from abilene_topo import Abilene
+from MCS import  recovery_path
 from mininet.link import TCLink
 import traffic_injector
 import time
@@ -12,17 +12,43 @@ import os
 class Topology(Topo):
     def __init__(self, *args, **params):
         super().__init__(*args, **params)
-        topo = Abilene()
-        switches = {}
-        for i in topo.city_names:
-            dpid_int = topo.citiesID[i]
-            dpid_hex = "{:016x}".format(dpid_int)
-            switches[i] = self.addSwitch(i, dpid=dpid_hex, protocols='OpenFlow13')
-            h = self.addHost(f'h_{i}')
-            self.addLink(h, switches[i], bw=1000, delay='0ms')
         
-        for u, v, bw, delay in topo.links:
-            self.addLink(switches[u], switches[v], delay=delay)
+        #Get the real Graph from the MCS.py 
+        # recovery_path return: (winner_set, failover, G)
+        _, _, G = recovery_path() 
+        switches = {}
+        print(f"--- MININET: Creating {len(G.nodes())} Swtiches From  XML ---")
+        # 2. Agregar Switches y Hosts (Iterando nodos de NetworkX)
+        for n in G.nodes():
+            # n is the integer ID  (1, 2, 3...)
+            #Real name e.g 'Berling' If there's not exist , Use ID
+            node_label = G.nodes[n].get('label', str(n))
+            
+            # DPID FORMAT Hexadecimal for Mininet (e.g: '0000000000000001')
+            dpid_hex = "{:016x}".format(n)
+            # Adding switch
+            # Usamos the real name for the switch (e.g Berling)
+            switches[n] = self.addSwitch(node_label, dpid=dpid_hex, protocols='OpenFlow13')
+            
+            # Adding a host connect to the switch (e.g: 'h_Berlin')
+            # Dynamic IP: 10.0.0.1, 10.0.0.2...
+            h = self.addHost(f'h_{node_label}')
+            # Link Host-Switch (Infinity Bandwithd, delay 0)
+            self.addLink(h, switches[n])
+
+        # 3. Adding links among switches (Iterating edges de NetworkX)
+        print(f"--- MININET: Creating {len(G.edges())} Links From XML ---")
+        
+        for u, v, data in G.edges(data=True):
+            # 'data' is the dictionary of attributes of the link in NetworkX 
+            # Extracting Delay  :Your parser saves: 'delay_str' (e.g: '4.52ms')
+            #If there's not exist , we put '1ms' by default 
+            delay_val = data.get('delay_str', '1ms') 
+            # Extraer BW: Your parser saves 'bandwidth'
+            bw_val = data.get('bandwidth', 1000) # Default 1000 Mbps
+            # Agregar el Link usando las referencias guardadas en el dict 'switches'
+            # Adding the link using the reerences save in the dict 'switches'
+            self.addLink(switches[u], switches[v], bw=bw_val, delay=delay_val)
 
 def run_network():
     topo = Topology()

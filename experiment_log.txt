@@ -1,13 +1,67 @@
 loading app ryu.py
+loading app ryu.controller.ofp_handler
 loading app ryu.topology.switches
 loading app ryu.controller.ofp_handler
 instantiating app ryu.py of MCS
-Found 2 optimal sets of size 4!
-Found 2 optimal sets of size 4!
-[12:09:07.591] The heroes will be Nodes: ['CHIN', 'DNVR', 'LOSA', 'WASH']
-instantiating app ryu.topology.switches of Switches
+[SNDLIB] Initial load: 12 nodes, 15 links.
+[CLEANUP] Pruning 1 leaf nodes (Degree 1)...
+   >>> PRUNED LEAF: ID=1, Name='ATLAM5'
+[SNDLIB] Final Topology: 11 nodes, 14 links.
+Running MCS with Alpha: 1.0
+Searching for optimal sets (Max size checked: 6)...
+Found 3 valid sets of size 5!
+MAX NUMER OF RULES: 110
+
+--- EVALUATING 3 VALID SETS (Alpha=1.0) ---
+  -> Avg Cost per Failure: 2.89 (Total: 80.98 / Failures: 28)
+Set (3, 4, 5, 8, 12) | Struct: 795.1W | Ctrl: 0.2453W | TOTAL: 795.35W | Score: 80.9801
+  -> Avg Cost per Failure: 1.67 (Total: 46.89 / Failures: 28)
+Set (3, 5, 7, 8, 12) | Struct: 795.1W | Ctrl: 0.2453W | TOTAL: 795.35W | Score: 46.8852
+  -> Avg Cost per Failure: 2.54 (Total: 70.99 / Failures: 28)
+Set (3, 5, 8, 11, 12) | Struct: 795.5W | Ctrl: 0.2453W | TOTAL: 795.72W | Score: 70.9864
+[MCS BRIDGE] Selected Winner for Alpha=1.0: (3, 5, 7, 8, 12)
+[FAILOVER MAP]: Generated 28 assignments.
+
+--- NAME MAPPING DEBUG ---
+--------------------------
+
+[11:22:47.001] MCS INITIALIZED. Topology: 11 nodes.
+[11:22:47.001] GREEN HEROES SELECTED: ['CHINng', 'HSTNng', 'KSCYng', 'LOSAng', 'WASHng']
 instantiating app ryu.controller.ofp_handler of OFPHandler
-[12:09:08.096] HERO NODE ONLINE: LOSA is ready to accept tunnels.
-[12:09:08.096] HERO NODE ONLINE: CHIN is ready to accept tunnels.
-[12:09:08.097] HERO NODE ONLINE: WASH is ready to accept tunnels.
-[12:09:08.098] HERO NODE ONLINE: DNVR is ready to accept tunnels.
+instantiating app ryu.topology.switches of Switches
+[15:20:39.677] HERO NODE ONLINE: HSTNng is ready to accept tunnels.
+[15:20:39.679] HERO NODE ONLINE: CHINng is ready to accept tunnels.
+[15:20:39.680] HERO NODE ONLINE: LOSAng is ready to accept tunnels.
+[15:20:39.680] HERO NODE ONLINE: WASHng is ready to accept tunnels.
+[15:20:39.704] MCS PROTECTION READY: Link LOSAng->SNVAng protected by HERO HSTNng
+[15:20:41.812] MCS PROTECTION READY: Link IPLSng->CHINng protected by HERO WASHng
+[15:20:41.816] MCS PROTECTION READY: Link ATLAng->WASHng protected by HERO CHINng
+[15:20:42.168] MCS PROTECTION READY: Link CHINng->IPLSng protected by HERO WASHng
+[15:20:42.172] MCS PROTECTION READY: Link WASHng->ATLAng protected by HERO CHINng
+[15:20:47.682] HERO NODE ONLINE: KSCYng is ready to accept tunnels.
+[15:20:48.150] MCS PROTECTION READY: Link KSCYng->HSTNng protected by HERO LOSAng
+[15:20:48.154] MCS PROTECTION READY: Link KSCYng->DNVRng protected by HERO HSTNng
+[15:20:48.155] MCS PROTECTION READY: Link KSCYng->IPLSng protected by HERO HSTNng
+[15:20:48.156] MCS PROTECTION READY: Link IPLSng->KSCYng protected by HERO HSTNng
+[15:20:48.201] MCS PROTECTION READY: Link HSTNng->KSCYng protected by HERO LOSAng
+[15:20:48.405] MCS PROTECTION READY: Link DNVRng->KSCYng protected by HERO LOSAng
+[15:20:50.297] MCS PROTECTION READY: Link DNVRng->STTLng protected by HERO HSTNng
+[15:20:50.600] MCS PROTECTION READY: Link STTLng->SNVAng protected by HERO KSCYng
+[15:20:50.605] MCS PROTECTION READY: Link STTLng->DNVRng protected by HERO LOSAng
+[15:20:51.008] MCS PROTECTION READY: Link SNVAng->STTLng protected by HERO KSCYng
+[15:24:02.715] LINK FAILURE: HSTNng -> ATLAng detected.
+[15:24:02.715] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
+[15:24:02.715]   (Data is being encapsulated with MPLS Label 7 automatically by Switch HSTNng)
+[15:24:02.717] LINK FAILURE: ATLAng -> HSTNng detected.
+[15:24:02.717] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
+[15:24:02.717]   (Data is being encapsulated with MPLS Label 7 automatically by Switch ATLAng)
+[15:24:17.468] MCS PROTECTION READY: Link ATLAng->HSTNng protected by HERO KSCYng
+[15:24:18.131] MCS PROTECTION READY: Link HSTNng->ATLAng protected by HERO KSCYng
+[15:29:35.755] LINK FAILURE: HSTNng -> ATLAng detected.
+[15:29:35.755] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
+[15:29:35.755]   (Data is being encapsulated with MPLS Label 7 automatically by Switch HSTNng)
+[15:29:35.756] LINK FAILURE: ATLAng -> HSTNng detected.
+[15:29:35.756] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
+[15:29:35.756]   (Data is being encapsulated with MPLS Label 7 automatically by Switch ATLAng)
+[15:30:01.636] MCS PROTECTION READY: Link ATLAng->HSTNng protected by HERO KSCYng
+[15:30:01.637] MCS PROTECTION READY: Link HSTNng->ATLAng protected by HERO KSCYng
