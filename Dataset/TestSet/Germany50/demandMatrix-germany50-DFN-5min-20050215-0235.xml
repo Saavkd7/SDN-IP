@@ -1,0 +1,6487 @@
+<?xml version="1.0"?>
+<network xmlns="http://sndlib.zib.de/network" version="1.0">
+ <meta>
+  <granularity>5min</granularity>
+  <time>20050215-0235</time>
+  <unit>MBITPERSEC</unit>
+  <origin>DFN Verein http://www.dfn.de, German Research Network, measurements mapped to germany50</origin>
+ </meta>
+ <networkStructure>
+  <nodes coordinatesType="geographical">
+   <node id="Aachen">
+    <coordinates>
+     <x>6.04</x>
+     <y>50.76</y>
+    </coordinates>
+   </node>
+   <node id="Augsburg">
+    <coordinates>
+     <x>10.9</x>
+     <y>48.33</y>
+    </coordinates>
+   </node>
+   <node id="Bayreuth">
+    <coordinates>
+     <x>11.59</x>
+     <y>49.93</y>
+    </coordinates>
+   </node>
+   <node id="Berlin">
+    <coordinates>
+     <x>13.39</x>
+     <y>52.52</y>
+    </coordinates>
+   </node>
+   <node id="Bielefeld">
+    <coordinates>
+     <x>8.5</x>
+     <y>52.04</y>
+    </coordinates>
+   </node>
+   <node id="Braunschweig">
+    <coordinates>
+     <x>10.55</x>
+     <y>52.28</y>
+    </coordinates>
+   </node>
+   <node id="Bremen">
+    <coordinates>
+     <x>8.85</x>
+     <y>53.11</y>
+    </coordinates>
+   </node>
+   <node id="Bremerhaven">
+    <coordinates>
+     <x>8.58</x>
+     <y>53.54</y>
+    </coordinates>
+   </node>
+   <node id="Chemnitz">
+    <coordinates>
+     <x>12.93</x>
+     <y>50.84</y>
+    </coordinates>
+   </node>
+   <node id="Darmstadt">
+    <coordinates>
+     <x>8.65</x>
+     <y>49.89</y>
+    </coordinates>
+   </node>
+   <node id="Dortmund">
+    <coordinates>
+     <x>7.45</x>
+     <y>51.51</y>
+    </coordinates>
+   </node>
+   <node id="Dresden">
+    <coordinates>
+     <x>13.73</x>
+     <y>51.03</y>
+    </coordinates>
+   </node>
+   <node id="Duesseldorf">
+    <coordinates>
+     <x>6.77</x>
+     <y>51.25</y>
+    </coordinates>
+   </node>
+   <node id="Erfurt">
+    <coordinates>
+     <x>11.04</x>
+     <y>50.98</y>
+    </coordinates>
+   </node>
+   <node id="Essen">
+    <coordinates>
+     <x>7.02</x>
+     <y>51.46</y>
+    </coordinates>
+   </node>
+   <node id="Flensburg">
+    <coordinates>
+     <x>9.45</x>
+     <y>54.77</y>
+    </coordinates>
+   </node>
+   <node id="Frankfurt">
+    <coordinates>
+     <x>8.71</x>
+     <y>50.12</y>
+    </coordinates>
+   </node>
+   <node id="Freiburg">
+    <coordinates>
+     <x>7.8</x>
+     <y>47.98</y>
+    </coordinates>
+   </node>
+   <node id="Fulda">
+    <coordinates>
+     <x>9.69</x>
+     <y>50.56</y>
+    </coordinates>
+   </node>
+   <node id="Giessen">
+    <coordinates>
+     <x>8.67</x>
+     <y>50.57</y>
+    </coordinates>
+   </node>
+   <node id="Greifswald">
+    <coordinates>
+     <x>13.4</x>
+     <y>54.09</y>
+    </coordinates>
+   </node>
+   <node id="Hamburg">
+    <coordinates>
+     <x>9.99</x>
+     <y>53.57</y>
+    </coordinates>
+   </node>
+   <node id="Hannover">
+    <coordinates>
+     <x>9.72</x>
+     <y>52.38</y>
+    </coordinates>
+   </node>
+   <node id="Kaiserslautern">
+    <coordinates>
+     <x>7.75</x>
+     <y>49.43</y>
+    </coordinates>
+   </node>
+   <node id="Karlsruhe">
+    <coordinates>
+     <x>8.41</x>
+     <y>49.01</y>
+    </coordinates>
+   </node>
+   <node id="Kassel">
+    <coordinates>
+     <x>9.51</x>
+     <y>51.32</y>
+    </coordinates>
+   </node>
+   <node id="Kempten">
+    <coordinates>
+     <x>10.32</x>
+     <y>47.72</y>
+    </coordinates>
+   </node>
+   <node id="Kiel">
+    <coordinates>
+     <x>10.12</x>
+     <y>54.34</y>
+    </coordinates>
+   </node>
+   <node id="Koblenz">
+    <coordinates>
+     <x>7.52</x>
+     <y>50.4</y>
+    </coordinates>
+   </node>
+   <node id="Koeln">
+    <coordinates>
+     <x>6.87</x>
+     <y>50.94</y>
+    </coordinates>
+   </node>
+   <node id="Konstanz">
+    <coordinates>
+     <x>9.18</x>
+     <y>47.66</y>
+    </coordinates>
+   </node>
+   <node id="Leipzig">
+    <coordinates>
+     <x>12.38</x>
+     <y>51.34</y>
+    </coordinates>
+   </node>
+   <node id="Magdeburg">
+    <coordinates>
+     <x>11.64</x>
+     <y>52.14</y>
+    </coordinates>
+   </node>
+   <node id="Mannheim">
+    <coordinates>
+     <x>8.49</x>
+     <y>49.49</y>
+    </coordinates>
+   </node>
+   <node id="Muenchen">
+    <coordinates>
+     <x>11.57</x>
+     <y>48.15</y>
+    </coordinates>
+   </node>
+   <node id="Muenster">
+    <coordinates>
+     <x>7.6</x>
+     <y>51.97</y>
+    </coordinates>
+   </node>
+   <node id="Norden">
+    <coordinates>
+     <x>7.21</x>
+     <y>53.6</y>
+    </coordinates>
+   </node>
+   <node id="Nuernberg">
+    <coordinates>
+     <x>11.03</x>
+     <y>49.57</y>
+    </coordinates>
+   </node>
+   <node id="Oldenburg">
+    <coordinates>
+     <x>8.21</x>
+     <y>53.11</y>
+    </coordinates>
+   </node>
+   <node id="Osnabrueck">
+    <coordinates>
+     <x>8.03</x>
+     <y>52.28</y>
+    </coordinates>
+   </node>
+   <node id="Passau">
+    <coordinates>
+     <x>13.46</x>
+     <y>48.57</y>
+    </coordinates>
+   </node>
+   <node id="Regensburg">
+    <coordinates>
+     <x>12.09</x>
+     <y>49.0</y>
+    </coordinates>
+   </node>
+   <node id="Saarbruecken">
+    <coordinates>
+     <x>7.03</x>
+     <y>49.23</y>
+    </coordinates>
+   </node>
+   <node id="Schwerin">
+    <coordinates>
+     <x>11.45</x>
+     <y>53.55</y>
+    </coordinates>
+   </node>
+   <node id="Siegen">
+    <coordinates>
+     <x>8.03</x>
+     <y>50.91</y>
+    </coordinates>
+   </node>
+   <node id="Stuttgart">
+    <coordinates>
+     <x>9.1</x>
+     <y>48.74</y>
+    </coordinates>
+   </node>
+   <node id="Trier">
+    <coordinates>
+     <x>6.68</x>
+     <y>49.75</y>
+    </coordinates>
+   </node>
+   <node id="Ulm">
+    <coordinates>
+     <x>9.99</x>
+     <y>48.4</y>
+    </coordinates>
+   </node>
+   <node id="Wesel">
+    <coordinates>
+     <x>6.37</x>
+     <y>51.39</y>
+    </coordinates>
+   </node>
+   <node id="Wuerzburg">
+    <coordinates>
+     <x>9.97</x>
+     <y>49.78</y>
+    </coordinates>
+   </node>
+  </nodes>
+  <links>
+  </links>
+ </networkStructure>
+ <demands>
+  <demand id="Bremen_Nuernberg">
+   <source>Bremen</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.003201 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Kassel">
+   <source>Stuttgart</source>
+   <target>Kassel</target>
+   <demandValue> 3.322331 </demandValue>
+  </demand>
+  <demand id="Kiel_Magdeburg">
+   <source>Kiel</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000121 </demandValue>
+  </demand>
+  <demand id="Mannheim_Duesseldorf">
+   <source>Mannheim</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000011 </demandValue>
+  </demand>
+  <demand id="Muenchen_Bremerhaven">
+   <source>Muenchen</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.002599 </demandValue>
+  </demand>
+  <demand id="Kassel_Giessen">
+   <source>Kassel</source>
+   <target>Giessen</target>
+   <demandValue> 0.000333 </demandValue>
+  </demand>
+  <demand id="Hannover_Essen">
+   <source>Hannover</source>
+   <target>Essen</target>
+   <demandValue> 1.061783 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Aachen">
+   <source>Karlsruhe</source>
+   <target>Aachen</target>
+   <demandValue> 0.002370 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Schwerin">
+   <source>Saarbruecken</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000495 </demandValue>
+  </demand>
+  <demand id="Regensburg_Magdeburg">
+   <source>Regensburg</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000264 </demandValue>
+  </demand>
+  <demand id="Muenchen_Hamburg">
+   <source>Muenchen</source>
+   <target>Hamburg</target>
+   <demandValue> 0.247988 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Augsburg">
+   <source>Kaiserslautern</source>
+   <target>Augsburg</target>
+   <demandValue> 0.038147 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Oldenburg">
+   <source>Chemnitz</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.593275 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Kaiserslautern">
+   <source>Frankfurt</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 4.793394 </demandValue>
+  </demand>
+  <demand id="Koeln_Dortmund">
+   <source>Koeln</source>
+   <target>Dortmund</target>
+   <demandValue> 0.004711 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Berlin">
+   <source>Bayreuth</source>
+   <target>Berlin</target>
+   <demandValue> 0.088113 </demandValue>
+  </demand>
+  <demand id="Erfurt_Muenchen">
+   <source>Erfurt</source>
+   <target>Muenchen</target>
+   <demandValue> 3.102579 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Karlsruhe">
+   <source>Frankfurt</source>
+   <target>Karlsruhe</target>
+   <demandValue> 16.668941 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Muenster">
+   <source>Magdeburg</source>
+   <target>Muenster</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Hamburg_Darmstadt">
+   <source>Hamburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.518617 </demandValue>
+  </demand>
+  <demand id="Kassel_Osnabrueck">
+   <source>Kassel</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.828094 </demandValue>
+  </demand>
+  <demand id="Regensburg_Karlsruhe">
+   <source>Regensburg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.001566 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Nuernberg">
+   <source>Magdeburg</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000044 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Berlin">
+   <source>Nuernberg</source>
+   <target>Berlin</target>
+   <demandValue> 1.141557 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Bremen">
+   <source>Osnabrueck</source>
+   <target>Bremen</target>
+   <demandValue> 0.000175 </demandValue>
+  </demand>
+  <demand id="Muenchen_Duesseldorf">
+   <source>Muenchen</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.004542 </demandValue>
+  </demand>
+  <demand id="Dresden_Berlin">
+   <source>Dresden</source>
+   <target>Berlin</target>
+   <demandValue> 3.590501 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Muenchen">
+   <source>Bremerhaven</source>
+   <target>Muenchen</target>
+   <demandValue> 0.004629 </demandValue>
+  </demand>
+  <demand id="Freiburg_Kaiserslautern">
+   <source>Freiburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000051 </demandValue>
+  </demand>
+  <demand id="Passau_Oldenburg">
+   <source>Passau</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Berlin">
+   <source>Bremerhaven</source>
+   <target>Berlin</target>
+   <demandValue> 0.067799 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Koeln">
+   <source>Osnabrueck</source>
+   <target>Koeln</target>
+   <demandValue> 0.037769 </demandValue>
+  </demand>
+  <demand id="Schwerin_Essen">
+   <source>Schwerin</source>
+   <target>Essen</target>
+   <demandValue> 0.000014 </demandValue>
+  </demand>
+  <demand id="Kassel_Duesseldorf">
+   <source>Kassel</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.014566 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Frankfurt">
+   <source>Kaiserslautern</source>
+   <target>Frankfurt</target>
+   <demandValue> 53.574771 </demandValue>
+  </demand>
+  <demand id="Greifswald_Darmstadt">
+   <source>Greifswald</source>
+   <target>Darmstadt</target>
+   <demandValue> 2.177639 </demandValue>
+  </demand>
+  <demand id="Hamburg_Kassel">
+   <source>Hamburg</source>
+   <target>Kassel</target>
+   <demandValue> 0.185661 </demandValue>
+  </demand>
+  <demand id="Hannover_Karlsruhe">
+   <source>Hannover</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.675945 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Muenchen">
+   <source>Frankfurt</source>
+   <target>Muenchen</target>
+   <demandValue> 30.035613 </demandValue>
+  </demand>
+  <demand id="Bremen_Greifswald">
+   <source>Bremen</source>
+   <target>Greifswald</target>
+   <demandValue> 0.050161 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Kaiserslautern">
+   <source>Chemnitz</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Essen_Duesseldorf">
+   <source>Essen</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000019 </demandValue>
+  </demand>
+  <demand id="Muenchen_Kaiserslautern">
+   <source>Muenchen</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.051546 </demandValue>
+  </demand>
+  <demand id="Hannover_Passau">
+   <source>Hannover</source>
+   <target>Passau</target>
+   <demandValue> 0.001104 </demandValue>
+  </demand>
+  <demand id="Kassel_Erfurt">
+   <source>Kassel</source>
+   <target>Erfurt</target>
+   <demandValue> 1.600520 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Osnabrueck">
+   <source>Darmstadt</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.453840 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Siegen">
+   <source>Saarbruecken</source>
+   <target>Siegen</target>
+   <demandValue> 0.000016 </demandValue>
+  </demand>
+  <demand id="Essen_Kiel">
+   <source>Essen</source>
+   <target>Kiel</target>
+   <demandValue> 0.000448 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Magdeburg">
+   <source>Darmstadt</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.527133 </demandValue>
+  </demand>
+  <demand id="Regensburg_Schwerin">
+   <source>Regensburg</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000214 </demandValue>
+  </demand>
+  <demand id="Berlin_Magdeburg">
+   <source>Berlin</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.233765 </demandValue>
+  </demand>
+  <demand id="Bremen_Bremerhaven">
+   <source>Bremen</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Bremen">
+   <source>Oldenburg</source>
+   <target>Bremen</target>
+   <demandValue> 0.016906 </demandValue>
+  </demand>
+  <demand id="Regensburg_Fulda">
+   <source>Regensburg</source>
+   <target>Fulda</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Augsburg">
+   <source>Frankfurt</source>
+   <target>Augsburg</target>
+   <demandValue> 3.929565 </demandValue>
+  </demand>
+  <demand id="Mannheim_Muenster">
+   <source>Mannheim</source>
+   <target>Muenster</target>
+   <demandValue> 0.000249 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Stuttgart">
+   <source>Osnabrueck</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.001308 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Kassel">
+   <source>Bayreuth</source>
+   <target>Kassel</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Giessen_Greifswald">
+   <source>Giessen</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000081 </demandValue>
+  </demand>
+  <demand id="Norden_Oldenburg">
+   <source>Norden</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.046964 </demandValue>
+  </demand>
+  <demand id="Augsburg_Darmstadt">
+   <source>Augsburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.090512 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Darmstadt">
+   <source>Frankfurt</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.220012 </demandValue>
+  </demand>
+  <demand id="Muenchen_Giessen">
+   <source>Muenchen</source>
+   <target>Giessen</target>
+   <demandValue> 0.024462 </demandValue>
+  </demand>
+  <demand id="Dresden_Osnabrueck">
+   <source>Dresden</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Mannheim_Hamburg">
+   <source>Mannheim</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000607 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Koeln">
+   <source>Kaiserslautern</source>
+   <target>Koeln</target>
+   <demandValue> 0.056379 </demandValue>
+  </demand>
+  <demand id="Muenchen_Passau">
+   <source>Muenchen</source>
+   <target>Passau</target>
+   <demandValue> 0.010241 </demandValue>
+  </demand>
+  <demand id="Ulm_Muenchen">
+   <source>Ulm</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000023 </demandValue>
+  </demand>
+  <demand id="Giessen_Karlsruhe">
+   <source>Giessen</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.009193 </demandValue>
+  </demand>
+  <demand id="Augsburg_Stuttgart">
+   <source>Augsburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000195 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Erfurt">
+   <source>Magdeburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.064572 </demandValue>
+  </demand>
+  <demand id="Kiel_Braunschweig">
+   <source>Kiel</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Schwerin_Stuttgart">
+   <source>Schwerin</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000104 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Wuerzburg">
+   <source>Stuttgart</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.102037 </demandValue>
+  </demand>
+  <demand id="Hannover_Braunschweig">
+   <source>Hannover</source>
+   <target>Braunschweig</target>
+   <demandValue> 2.652176 </demandValue>
+  </demand>
+  <demand id="Erfurt_Bremerhaven">
+   <source>Erfurt</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.003815 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Koeln">
+   <source>Saarbruecken</source>
+   <target>Koeln</target>
+   <demandValue> 0.000488 </demandValue>
+  </demand>
+  <demand id="Erfurt_Muenster">
+   <source>Erfurt</source>
+   <target>Muenster</target>
+   <demandValue> 0.000361 </demandValue>
+  </demand>
+  <demand id="Passau_Kassel">
+   <source>Passau</source>
+   <target>Kassel</target>
+   <demandValue> 0.000068 </demandValue>
+  </demand>
+  <demand id="Berlin_Wuerzburg">
+   <source>Berlin</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.028099 </demandValue>
+  </demand>
+  <demand id="Regensburg_Osnabrueck">
+   <source>Regensburg</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000677 </demandValue>
+  </demand>
+  <demand id="Bremen_Frankfurt">
+   <source>Bremen</source>
+   <target>Frankfurt</target>
+   <demandValue> 59.158768 </demandValue>
+  </demand>
+  <demand id="Erfurt_Hannover">
+   <source>Erfurt</source>
+   <target>Hannover</target>
+   <demandValue> 0.670865 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Bremen">
+   <source>Duesseldorf</source>
+   <target>Bremen</target>
+   <demandValue> 0.070003 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Fulda">
+   <source>Braunschweig</source>
+   <target>Fulda</target>
+   <demandValue> 0.000032 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Kaiserslautern">
+   <source>Nuernberg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.005534 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Flensburg">
+   <source>Frankfurt</source>
+   <target>Flensburg</target>
+   <demandValue> 0.107307 </demandValue>
+  </demand>
+  <demand id="Koeln_Darmstadt">
+   <source>Koeln</source>
+   <target>Darmstadt</target>
+   <demandValue> 3.305334 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Regensburg">
+   <source>Frankfurt</source>
+   <target>Regensburg</target>
+   <demandValue> 3.509368 </demandValue>
+  </demand>
+  <demand id="Erfurt_Frankfurt">
+   <source>Erfurt</source>
+   <target>Frankfurt</target>
+   <demandValue> 48.679545 </demandValue>
+  </demand>
+  <demand id="Ulm_Nuernberg">
+   <source>Ulm</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.001285 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Kiel">
+   <source>Frankfurt</source>
+   <target>Kiel</target>
+   <demandValue> 2.080255 </demandValue>
+  </demand>
+  <demand id="Essen_Darmstadt">
+   <source>Essen</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.646325 </demandValue>
+  </demand>
+  <demand id="Muenchen_Mannheim">
+   <source>Muenchen</source>
+   <target>Mannheim</target>
+   <demandValue> 0.012741 </demandValue>
+  </demand>
+  <demand id="Mannheim_Kaiserslautern">
+   <source>Mannheim</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000023 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Dresden">
+   <source>Saarbruecken</source>
+   <target>Dresden</target>
+   <demandValue> 0.000182 </demandValue>
+  </demand>
+  <demand id="Giessen_Fulda">
+   <source>Giessen</source>
+   <target>Fulda</target>
+   <demandValue> 0.001284 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Greifswald">
+   <source>Oldenburg</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000194 </demandValue>
+  </demand>
+  <demand id="Erfurt_Aachen">
+   <source>Erfurt</source>
+   <target>Aachen</target>
+   <demandValue> 0.006475 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Karlsruhe">
+   <source>Darmstadt</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.028747 </demandValue>
+  </demand>
+  <demand id="Essen_Regensburg">
+   <source>Essen</source>
+   <target>Regensburg</target>
+   <demandValue> 0.002996 </demandValue>
+  </demand>
+  <demand id="Dortmund_Oldenburg">
+   <source>Dortmund</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000815 </demandValue>
+  </demand>
+  <demand id="Greifswald_Oldenburg">
+   <source>Greifswald</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000290 </demandValue>
+  </demand>
+  <demand id="Aachen_Koeln">
+   <source>Aachen</source>
+   <target>Koeln</target>
+   <demandValue> 2.476501 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Leipzig">
+   <source>Karlsruhe</source>
+   <target>Leipzig</target>
+   <demandValue> 0.000024 </demandValue>
+  </demand>
+  <demand id="Erfurt_Oldenburg">
+   <source>Erfurt</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.024655 </demandValue>
+  </demand>
+  <demand id="Leipzig_Berlin">
+   <source>Leipzig</source>
+   <target>Berlin</target>
+   <demandValue> 1.306014 </demandValue>
+  </demand>
+  <demand id="Hamburg_Kaiserslautern">
+   <source>Hamburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.014083 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Oldenburg">
+   <source>Saarbruecken</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000049 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Dortmund">
+   <source>Duesseldorf</source>
+   <target>Dortmund</target>
+   <demandValue> 0.015852 </demandValue>
+  </demand>
+  <demand id="Koeln_Leipzig">
+   <source>Koeln</source>
+   <target>Leipzig</target>
+   <demandValue> 0.514424 </demandValue>
+  </demand>
+  <demand id="Dortmund_Essen">
+   <source>Dortmund</source>
+   <target>Essen</target>
+   <demandValue> 0.002681 </demandValue>
+  </demand>
+  <demand id="Kiel_Hannover">
+   <source>Kiel</source>
+   <target>Hannover</target>
+   <demandValue> 0.623606 </demandValue>
+  </demand>
+  <demand id="Leipzig_Bremerhaven">
+   <source>Leipzig</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.007698 </demandValue>
+  </demand>
+  <demand id="Hamburg_Kiel">
+   <source>Hamburg</source>
+   <target>Kiel</target>
+   <demandValue> 0.000247 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Braunschweig">
+   <source>Osnabrueck</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.025960 </demandValue>
+  </demand>
+  <demand id="Hannover_Nuernberg">
+   <source>Hannover</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.422480 </demandValue>
+  </demand>
+  <demand id="Berlin_Hamburg">
+   <source>Berlin</source>
+   <target>Hamburg</target>
+   <demandValue> 0.242635 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Muenster">
+   <source>Braunschweig</source>
+   <target>Muenster</target>
+   <demandValue> 0.002511 </demandValue>
+  </demand>
+  <demand id="Muenster_Aachen">
+   <source>Muenster</source>
+   <target>Aachen</target>
+   <demandValue> 0.018801 </demandValue>
+  </demand>
+  <demand id="Schwerin_Karlsruhe">
+   <source>Schwerin</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.001423 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Frankfurt">
+   <source>Saarbruecken</source>
+   <target>Frankfurt</target>
+   <demandValue> 4.408597 </demandValue>
+  </demand>
+  <demand id="Essen_Koeln">
+   <source>Essen</source>
+   <target>Koeln</target>
+   <demandValue> 0.106604 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Greifswald">
+   <source>Frankfurt</source>
+   <target>Greifswald</target>
+   <demandValue> 9.372531 </demandValue>
+  </demand>
+  <demand id="Schwerin_Berlin">
+   <source>Schwerin</source>
+   <target>Berlin</target>
+   <demandValue> 0.167935 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Magdeburg">
+   <source>Chemnitz</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000042 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Oldenburg">
+   <source>Duesseldorf</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000077 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Muenster">
+   <source>Frankfurt</source>
+   <target>Muenster</target>
+   <demandValue> 17.559814 </demandValue>
+  </demand>
+  <demand id="Hannover_Greifswald">
+   <source>Hannover</source>
+   <target>Greifswald</target>
+   <demandValue> 0.823609 </demandValue>
+  </demand>
+  <demand id="Muenster_Berlin">
+   <source>Muenster</source>
+   <target>Berlin</target>
+   <demandValue> 0.333199 </demandValue>
+  </demand>
+  <demand id="Bremen_Dresden">
+   <source>Bremen</source>
+   <target>Dresden</target>
+   <demandValue> 0.000365 </demandValue>
+  </demand>
+  <demand id="Leipzig_Kassel">
+   <source>Leipzig</source>
+   <target>Kassel</target>
+   <demandValue> 0.514389 </demandValue>
+  </demand>
+  <demand id="Dresden_Nuernberg">
+   <source>Dresden</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.002278 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Kiel">
+   <source>Saarbruecken</source>
+   <target>Kiel</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Berlin_Norden">
+   <source>Berlin</source>
+   <target>Norden</target>
+   <demandValue> 0.000132 </demandValue>
+  </demand>
+  <demand id="Regensburg_Stuttgart">
+   <source>Regensburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.004089 </demandValue>
+  </demand>
+  <demand id="Flensburg_Braunschweig">
+   <source>Flensburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000017 </demandValue>
+  </demand>
+  <demand id="Kiel_Darmstadt">
+   <source>Kiel</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.110016 </demandValue>
+  </demand>
+  <demand id="Hamburg_Muenchen">
+   <source>Hamburg</source>
+   <target>Muenchen</target>
+   <demandValue> 1.366220 </demandValue>
+  </demand>
+  <demand id="Hamburg_Erfurt">
+   <source>Hamburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.466978 </demandValue>
+  </demand>
+  <demand id="Norden_Kaiserslautern">
+   <source>Norden</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000028 </demandValue>
+  </demand>
+  <demand id="Dortmund_Berlin">
+   <source>Dortmund</source>
+   <target>Berlin</target>
+   <demandValue> 0.071350 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Magdeburg">
+   <source>Stuttgart</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.311447 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Greifswald">
+   <source>Darmstadt</source>
+   <target>Greifswald</target>
+   <demandValue> 0.912603 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Giessen">
+   <source>Karlsruhe</source>
+   <target>Giessen</target>
+   <demandValue> 0.000443 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Kaiserslautern">
+   <source>Saarbruecken</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.008040 </demandValue>
+  </demand>
+  <demand id="Norden_Darmstadt">
+   <source>Norden</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.000349 </demandValue>
+  </demand>
+  <demand id="Muenchen_Saarbruecken">
+   <source>Muenchen</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.016152 </demandValue>
+  </demand>
+  <demand id="Trier_Osnabrueck">
+   <source>Trier</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000188 </demandValue>
+  </demand>
+  <demand id="Berlin_Darmstadt">
+   <source>Berlin</source>
+   <target>Darmstadt</target>
+   <demandValue> 4.602346 </demandValue>
+  </demand>
+  <demand id="Muenchen_Schwerin">
+   <source>Muenchen</source>
+   <target>Schwerin</target>
+   <demandValue> 0.765718 </demandValue>
+  </demand>
+  <demand id="Koeln_Norden">
+   <source>Koeln</source>
+   <target>Norden</target>
+   <demandValue> 0.000024 </demandValue>
+  </demand>
+  <demand id="Dortmund_Frankfurt">
+   <source>Dortmund</source>
+   <target>Frankfurt</target>
+   <demandValue> 8.202005 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Braunschweig">
+   <source>Nuernberg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.001677 </demandValue>
+  </demand>
+  <demand id="Muenchen_Kempten">
+   <source>Muenchen</source>
+   <target>Kempten</target>
+   <demandValue> 0.001415 </demandValue>
+  </demand>
+  <demand id="Schwerin_Braunschweig">
+   <source>Schwerin</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000248 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Duesseldorf">
+   <source>Stuttgart</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.059804 </demandValue>
+  </demand>
+  <demand id="Berlin_Augsburg">
+   <source>Berlin</source>
+   <target>Augsburg</target>
+   <demandValue> 0.005528 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Bremen">
+   <source>Saarbruecken</source>
+   <target>Bremen</target>
+   <demandValue> 0.000011 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Duesseldorf">
+   <source>Darmstadt</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.002304 </demandValue>
+  </demand>
+  <demand id="Bremen_Kaiserslautern">
+   <source>Bremen</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.025134 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Chemnitz">
+   <source>Bayreuth</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000234 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Mannheim">
+   <source>Darmstadt</source>
+   <target>Mannheim</target>
+   <demandValue> 0.004347 </demandValue>
+  </demand>
+  <demand id="Hamburg_Saarbruecken">
+   <source>Hamburg</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.038452 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Berlin">
+   <source>Osnabrueck</source>
+   <target>Berlin</target>
+   <demandValue> 0.001827 </demandValue>
+  </demand>
+  <demand id="Siegen_Darmstadt">
+   <source>Siegen</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.082295 </demandValue>
+  </demand>
+  <demand id="Mannheim_Leipzig">
+   <source>Mannheim</source>
+   <target>Leipzig</target>
+   <demandValue> 0.000036 </demandValue>
+  </demand>
+  <demand id="Leipzig_Darmstadt">
+   <source>Leipzig</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.277524 </demandValue>
+  </demand>
+  <demand id="Erfurt_Schwerin">
+   <source>Erfurt</source>
+   <target>Schwerin</target>
+   <demandValue> 0.003408 </demandValue>
+  </demand>
+  <demand id="Norden_Bremen">
+   <source>Norden</source>
+   <target>Bremen</target>
+   <demandValue> 0.000027 </demandValue>
+  </demand>
+  <demand id="Dresden_Hamburg">
+   <source>Dresden</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000406 </demandValue>
+  </demand>
+  <demand id="Koeln_Erfurt">
+   <source>Koeln</source>
+   <target>Erfurt</target>
+   <demandValue> 3.524448 </demandValue>
+  </demand>
+  <demand id="Kassel_Koeln">
+   <source>Kassel</source>
+   <target>Koeln</target>
+   <demandValue> 1.128271 </demandValue>
+  </demand>
+  <demand id="Muenchen_Siegen">
+   <source>Muenchen</source>
+   <target>Siegen</target>
+   <demandValue> 0.003916 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Magdeburg">
+   <source>Kaiserslautern</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000725 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Leipzig">
+   <source>Osnabrueck</source>
+   <target>Leipzig</target>
+   <demandValue> 1.864602 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Osnabrueck">
+   <source>Nuernberg</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000341 </demandValue>
+  </demand>
+  <demand id="Freiburg_Frankfurt">
+   <source>Freiburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.003420 </demandValue>
+  </demand>
+  <demand id="Siegen_Braunschweig">
+   <source>Siegen</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000063 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Duesseldorf">
+   <source>Nuernberg</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000622 </demandValue>
+  </demand>
+  <demand id="Kiel_Frankfurt">
+   <source>Kiel</source>
+   <target>Frankfurt</target>
+   <demandValue> 3.670923 </demandValue>
+  </demand>
+  <demand id="Hannover_Augsburg">
+   <source>Hannover</source>
+   <target>Augsburg</target>
+   <demandValue> 0.076436 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Kassel">
+   <source>Darmstadt</source>
+   <target>Kassel</target>
+   <demandValue> 2.137941 </demandValue>
+  </demand>
+  <demand id="Mannheim_Nuernberg">
+   <source>Mannheim</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000014 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Leipzig">
+   <source>Nuernberg</source>
+   <target>Leipzig</target>
+   <demandValue> 17.148237 </demandValue>
+  </demand>
+  <demand id="Hannover_Duesseldorf">
+   <source>Hannover</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.183422 </demandValue>
+  </demand>
+  <demand id="Berlin_Passau">
+   <source>Berlin</source>
+   <target>Passau</target>
+   <demandValue> 0.003222 </demandValue>
+  </demand>
+  <demand id="Muenchen_Augsburg">
+   <source>Muenchen</source>
+   <target>Augsburg</target>
+   <demandValue> 0.032855 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Karlsruhe">
+   <source>Duesseldorf</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000129 </demandValue>
+  </demand>
+  <demand id="Hamburg_Muenster">
+   <source>Hamburg</source>
+   <target>Muenster</target>
+   <demandValue> 0.000515 </demandValue>
+  </demand>
+  <demand id="Dresden_Kiel">
+   <source>Dresden</source>
+   <target>Kiel</target>
+   <demandValue> 0.000018 </demandValue>
+  </demand>
+  <demand id="Erfurt_Essen">
+   <source>Erfurt</source>
+   <target>Essen</target>
+   <demandValue> 0.000181 </demandValue>
+  </demand>
+  <demand id="Siegen_Koeln">
+   <source>Siegen</source>
+   <target>Koeln</target>
+   <demandValue> 0.003596 </demandValue>
+  </demand>
+  <demand id="Aachen_Hannover">
+   <source>Aachen</source>
+   <target>Hannover</target>
+   <demandValue> 0.032227 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Leipzig">
+   <source>Saarbruecken</source>
+   <target>Leipzig</target>
+   <demandValue> 0.001084 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Hannover">
+   <source>Osnabrueck</source>
+   <target>Hannover</target>
+   <demandValue> 0.324234 </demandValue>
+  </demand>
+  <demand id="Hamburg_Aachen">
+   <source>Hamburg</source>
+   <target>Aachen</target>
+   <demandValue> 0.019297 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Berlin">
+   <source>Wuerzburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.026838 </demandValue>
+  </demand>
+  <demand id="Dortmund_Osnabrueck">
+   <source>Dortmund</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000340 </demandValue>
+  </demand>
+  <demand id="Kiel_Oldenburg">
+   <source>Kiel</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000542 </demandValue>
+  </demand>
+  <demand id="Aachen_Regensburg">
+   <source>Aachen</source>
+   <target>Regensburg</target>
+   <demandValue> 0.002548 </demandValue>
+  </demand>
+  <demand id="Norden_Stuttgart">
+   <source>Norden</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Kassel_Fulda">
+   <source>Kassel</source>
+   <target>Fulda</target>
+   <demandValue> 0.000148 </demandValue>
+  </demand>
+  <demand id="Flensburg_Frankfurt">
+   <source>Flensburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.066916 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Hamburg">
+   <source>Duesseldorf</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000217 </demandValue>
+  </demand>
+  <demand id="Norden_Leipzig">
+   <source>Norden</source>
+   <target>Leipzig</target>
+   <demandValue> 0.000025 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Trier">
+   <source>Nuernberg</source>
+   <target>Trier</target>
+   <demandValue> 0.000001 </demandValue>
+  </demand>
+  <demand id="Norden_Nuernberg">
+   <source>Norden</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000019 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Flensburg">
+   <source>Braunschweig</source>
+   <target>Flensburg</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Dortmund_Kassel">
+   <source>Dortmund</source>
+   <target>Kassel</target>
+   <demandValue> 0.000105 </demandValue>
+  </demand>
+  <demand id="Muenchen_Dresden">
+   <source>Muenchen</source>
+   <target>Dresden</target>
+   <demandValue> 0.745796 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Kassel">
+   <source>Duesseldorf</source>
+   <target>Kassel</target>
+   <demandValue> 0.000159 </demandValue>
+  </demand>
+  <demand id="Essen_Aachen">
+   <source>Essen</source>
+   <target>Aachen</target>
+   <demandValue> 4.158307 </demandValue>
+  </demand>
+  <demand id="Passau_Braunschweig">
+   <source>Passau</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000072 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Bremen">
+   <source>Kaiserslautern</source>
+   <target>Bremen</target>
+   <demandValue> 0.021393 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Fulda">
+   <source>Frankfurt</source>
+   <target>Fulda</target>
+   <demandValue> 0.007716 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Wuerzburg">
+   <source>Darmstadt</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.211329 </demandValue>
+  </demand>
+  <demand id="Schwerin_Muenster">
+   <source>Schwerin</source>
+   <target>Muenster</target>
+   <demandValue> 0.000413 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Trier">
+   <source>Oldenburg</source>
+   <target>Trier</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Giessen_Osnabrueck">
+   <source>Giessen</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000627 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Braunschweig">
+   <source>Magdeburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000062 </demandValue>
+  </demand>
+  <demand id="Koeln_Fulda">
+   <source>Koeln</source>
+   <target>Fulda</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Leipzig_Magdeburg">
+   <source>Leipzig</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.083149 </demandValue>
+  </demand>
+  <demand id="Hannover_Regensburg">
+   <source>Hannover</source>
+   <target>Regensburg</target>
+   <demandValue> 0.641928 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Darmstadt">
+   <source>Oldenburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.276021 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Leipzig">
+   <source>Darmstadt</source>
+   <target>Leipzig</target>
+   <demandValue> 0.912125 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Koeln">
+   <source>Karlsruhe</source>
+   <target>Koeln</target>
+   <demandValue> 0.000285 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Bayreuth">
+   <source>Stuttgart</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.392380 </demandValue>
+  </demand>
+  <demand id="Berlin_Leipzig">
+   <source>Berlin</source>
+   <target>Leipzig</target>
+   <demandValue> 30.194857 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Erfurt">
+   <source>Oldenburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.233763 </demandValue>
+  </demand>
+  <demand id="Schwerin_Leipzig">
+   <source>Schwerin</source>
+   <target>Leipzig</target>
+   <demandValue> 5.632450 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Frankfurt">
+   <source>Stuttgart</source>
+   <target>Frankfurt</target>
+   <demandValue> 69.279494 </demandValue>
+  </demand>
+  <demand id="Kiel_Kassel">
+   <source>Kiel</source>
+   <target>Kassel</target>
+   <demandValue> 0.002203 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Darmstadt">
+   <source>Osnabrueck</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.588716 </demandValue>
+  </demand>
+  <demand id="Regensburg_Bremerhaven">
+   <source>Regensburg</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000016 </demandValue>
+  </demand>
+  <demand id="Giessen_Frankfurt">
+   <source>Giessen</source>
+   <target>Frankfurt</target>
+   <demandValue> 5.560034 </demandValue>
+  </demand>
+  <demand id="Dresden_Braunschweig">
+   <source>Dresden</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.011889 </demandValue>
+  </demand>
+  <demand id="Hannover_Chemnitz">
+   <source>Hannover</source>
+   <target>Chemnitz</target>
+   <demandValue> 3.666846 </demandValue>
+  </demand>
+  <demand id="Hamburg_Augsburg">
+   <source>Hamburg</source>
+   <target>Augsburg</target>
+   <demandValue> 0.000011 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Osnabrueck">
+   <source>Braunschweig</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.012507 </demandValue>
+  </demand>
+  <demand id="Berlin_Mannheim">
+   <source>Berlin</source>
+   <target>Mannheim</target>
+   <demandValue> 0.040771 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Frankfurt">
+   <source>Chemnitz</source>
+   <target>Frankfurt</target>
+   <demandValue> 142.714780 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Bayreuth">
+   <source>Oldenburg</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.001438 </demandValue>
+  </demand>
+  <demand id="Augsburg_Wuerzburg">
+   <source>Augsburg</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000393 </demandValue>
+  </demand>
+  <demand id="Dortmund_Hannover">
+   <source>Dortmund</source>
+   <target>Hannover</target>
+   <demandValue> 0.120131 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Wuerzburg">
+   <source>Oldenburg</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000046 </demandValue>
+  </demand>
+  <demand id="Fulda_Darmstadt">
+   <source>Fulda</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.000064 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Schwerin">
+   <source>Stuttgart</source>
+   <target>Schwerin</target>
+   <demandValue> 1.121498 </demandValue>
+  </demand>
+  <demand id="Leipzig_Bremen">
+   <source>Leipzig</source>
+   <target>Bremen</target>
+   <demandValue> 0.319223 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Stuttgart">
+   <source>Bayreuth</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000019 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Schwerin">
+   <source>Duesseldorf</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000001 </demandValue>
+  </demand>
+  <demand id="Muenchen_Kassel">
+   <source>Muenchen</source>
+   <target>Kassel</target>
+   <demandValue> 0.509311 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Dortmund">
+   <source>Frankfurt</source>
+   <target>Dortmund</target>
+   <demandValue> 4.134038 </demandValue>
+  </demand>
+  <demand id="Passau_Wuerzburg">
+   <source>Passau</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000049 </demandValue>
+  </demand>
+  <demand id="Essen_Karlsruhe">
+   <source>Essen</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.015860 </demandValue>
+  </demand>
+  <demand id="Kiel_Berlin">
+   <source>Kiel</source>
+   <target>Berlin</target>
+   <demandValue> 0.000896 </demandValue>
+  </demand>
+  <demand id="Leipzig_Passau">
+   <source>Leipzig</source>
+   <target>Passau</target>
+   <demandValue> 0.000203 </demandValue>
+  </demand>
+  <demand id="Schwerin_Erfurt">
+   <source>Schwerin</source>
+   <target>Erfurt</target>
+   <demandValue> 0.414623 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Mannheim">
+   <source>Frankfurt</source>
+   <target>Mannheim</target>
+   <demandValue> 0.246590 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Hamburg">
+   <source>Osnabrueck</source>
+   <target>Hamburg</target>
+   <demandValue> 0.036041 </demandValue>
+  </demand>
+  <demand id="Dortmund_Kaiserslautern">
+   <source>Dortmund</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000136 </demandValue>
+  </demand>
+  <demand id="Koeln_Giessen">
+   <source>Koeln</source>
+   <target>Giessen</target>
+   <demandValue> 0.059020 </demandValue>
+  </demand>
+  <demand id="Dortmund_Giessen">
+   <source>Dortmund</source>
+   <target>Giessen</target>
+   <demandValue> 0.000029 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Giessen">
+   <source>Oldenburg</source>
+   <target>Giessen</target>
+   <demandValue> 0.000067 </demandValue>
+  </demand>
+  <demand id="Flensburg_Koeln">
+   <source>Flensburg</source>
+   <target>Koeln</target>
+   <demandValue> 0.000071 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Ulm">
+   <source>Nuernberg</source>
+   <target>Ulm</target>
+   <demandValue> 0.000542 </demandValue>
+  </demand>
+  <demand id="Hannover_Norden">
+   <source>Hannover</source>
+   <target>Norden</target>
+   <demandValue> 0.022564 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Nuernberg">
+   <source>Saarbruecken</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000249 </demandValue>
+  </demand>
+  <demand id="Hamburg_Stuttgart">
+   <source>Hamburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000845 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Chemnitz">
+   <source>Saarbruecken</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.043081 </demandValue>
+  </demand>
+  <demand id="Muenchen_Oldenburg">
+   <source>Muenchen</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.068119 </demandValue>
+  </demand>
+  <demand id="Trier_Darmstadt">
+   <source>Trier</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.008278 </demandValue>
+  </demand>
+  <demand id="Muenchen_Frankfurt">
+   <source>Muenchen</source>
+   <target>Frankfurt</target>
+   <demandValue> 53.066990 </demandValue>
+  </demand>
+  <demand id="Dortmund_Leipzig">
+   <source>Dortmund</source>
+   <target>Leipzig</target>
+   <demandValue> 1.775649 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Bayreuth">
+   <source>Saarbruecken</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.000024 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Kassel">
+   <source>Oldenburg</source>
+   <target>Kassel</target>
+   <demandValue> 0.017906 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Berlin">
+   <source>Duesseldorf</source>
+   <target>Berlin</target>
+   <demandValue> 0.000308 </demandValue>
+  </demand>
+  <demand id="Leipzig_Stuttgart">
+   <source>Leipzig</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.208153 </demandValue>
+  </demand>
+  <demand id="Bremen_Chemnitz">
+   <source>Bremen</source>
+   <target>Chemnitz</target>
+   <demandValue> 1.257856 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Oldenburg">
+   <source>Kaiserslautern</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000407 </demandValue>
+  </demand>
+  <demand id="Aachen_Erfurt">
+   <source>Aachen</source>
+   <target>Erfurt</target>
+   <demandValue> 1.403086 </demandValue>
+  </demand>
+  <demand id="Siegen_Essen">
+   <source>Siegen</source>
+   <target>Essen</target>
+   <demandValue> 0.000003 </demandValue>
+  </demand>
+  <demand id="Bremen_Erfurt">
+   <source>Bremen</source>
+   <target>Erfurt</target>
+   <demandValue> 2.628296 </demandValue>
+  </demand>
+  <demand id="Leipzig_Trier">
+   <source>Leipzig</source>
+   <target>Trier</target>
+   <demandValue> 0.000712 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Dresden">
+   <source>Osnabrueck</source>
+   <target>Dresden</target>
+   <demandValue> 0.000054 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Regensburg">
+   <source>Darmstadt</source>
+   <target>Regensburg</target>
+   <demandValue> 0.595530 </demandValue>
+  </demand>
+  <demand id="Dresden_Giessen">
+   <source>Dresden</source>
+   <target>Giessen</target>
+   <demandValue> 0.025441 </demandValue>
+  </demand>
+  <demand id="Kassel_Braunschweig">
+   <source>Kassel</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.010185 </demandValue>
+  </demand>
+  <demand id="Muenster_Greifswald">
+   <source>Muenster</source>
+   <target>Greifswald</target>
+   <demandValue> 0.001750 </demandValue>
+  </demand>
+  <demand id="Dortmund_Koeln">
+   <source>Dortmund</source>
+   <target>Koeln</target>
+   <demandValue> 0.002383 </demandValue>
+  </demand>
+  <demand id="Muenchen_Nuernberg">
+   <source>Muenchen</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.236691 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Braunschweig">
+   <source>Frankfurt</source>
+   <target>Braunschweig</target>
+   <demandValue> 62.018480 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Oldenburg">
+   <source>Stuttgart</source>
+   <target>Oldenburg</target>
+   <demandValue> 4.367578 </demandValue>
+  </demand>
+  <demand id="Aachen_Darmstadt">
+   <source>Aachen</source>
+   <target>Darmstadt</target>
+   <demandValue> 9.394974 </demandValue>
+  </demand>
+  <demand id="Berlin_Karlsruhe">
+   <source>Berlin</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.260159 </demandValue>
+  </demand>
+  <demand id="Augsburg_Hannover">
+   <source>Augsburg</source>
+   <target>Hannover</target>
+   <demandValue> 0.000120 </demandValue>
+  </demand>
+  <demand id="Essen_Braunschweig">
+   <source>Essen</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.003666 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Passau">
+   <source>Oldenburg</source>
+   <target>Passau</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Greifswald_Kassel">
+   <source>Greifswald</source>
+   <target>Kassel</target>
+   <demandValue> 0.000331 </demandValue>
+  </demand>
+  <demand id="Mannheim_Koeln">
+   <source>Mannheim</source>
+   <target>Koeln</target>
+   <demandValue> 0.001911 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Siegen">
+   <source>Nuernberg</source>
+   <target>Siegen</target>
+   <demandValue> 0.000049 </demandValue>
+  </demand>
+  <demand id="Dresden_Regensburg">
+   <source>Dresden</source>
+   <target>Regensburg</target>
+   <demandValue> 0.004394 </demandValue>
+  </demand>
+  <demand id="Erfurt_Darmstadt">
+   <source>Erfurt</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.645679 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Muenchen">
+   <source>Darmstadt</source>
+   <target>Muenchen</target>
+   <demandValue> 0.553969 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Dresden">
+   <source>Darmstadt</source>
+   <target>Dresden</target>
+   <demandValue> 0.973567 </demandValue>
+  </demand>
+  <demand id="Muenchen_Stuttgart">
+   <source>Muenchen</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.390221 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Essen">
+   <source>Karlsruhe</source>
+   <target>Essen</target>
+   <demandValue> 0.000288 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Erfurt">
+   <source>Kaiserslautern</source>
+   <target>Erfurt</target>
+   <demandValue> 5.015734 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Bremerhaven">
+   <source>Oldenburg</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.020317 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Muenster">
+   <source>Oldenburg</source>
+   <target>Muenster</target>
+   <demandValue> 0.064626 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Koeln">
+   <source>Braunschweig</source>
+   <target>Koeln</target>
+   <demandValue> 0.653582 </demandValue>
+  </demand>
+  <demand id="Berlin_Kaiserslautern">
+   <source>Berlin</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.038996 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Muenster">
+   <source>Kaiserslautern</source>
+   <target>Muenster</target>
+   <demandValue> 0.003947 </demandValue>
+  </demand>
+  <demand id="Schwerin_Koeln">
+   <source>Schwerin</source>
+   <target>Koeln</target>
+   <demandValue> 0.342204 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Kiel">
+   <source>Braunschweig</source>
+   <target>Kiel</target>
+   <demandValue> 0.000072 </demandValue>
+  </demand>
+  <demand id="Kiel_Koeln">
+   <source>Kiel</source>
+   <target>Koeln</target>
+   <demandValue> 0.012044 </demandValue>
+  </demand>
+  <demand id="Mannheim_Aachen">
+   <source>Mannheim</source>
+   <target>Aachen</target>
+   <demandValue> 0.000021 </demandValue>
+  </demand>
+  <demand id="Muenster_Leipzig">
+   <source>Muenster</source>
+   <target>Leipzig</target>
+   <demandValue> 5.916241 </demandValue>
+  </demand>
+  <demand id="Essen_Hannover">
+   <source>Essen</source>
+   <target>Hannover</target>
+   <demandValue> 0.777110 </demandValue>
+  </demand>
+  <demand id="Dresden_Erfurt">
+   <source>Dresden</source>
+   <target>Erfurt</target>
+   <demandValue> 12.399761 </demandValue>
+  </demand>
+  <demand id="Aachen_Hamburg">
+   <source>Aachen</source>
+   <target>Hamburg</target>
+   <demandValue> 0.842656 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Muenchen">
+   <source>Wuerzburg</source>
+   <target>Muenchen</target>
+   <demandValue> 0.109504 </demandValue>
+  </demand>
+  <demand id="Bremen_Hamburg">
+   <source>Bremen</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000214 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Hamburg">
+   <source>Bremerhaven</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000682 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Nuernberg">
+   <source>Stuttgart</source>
+   <target>Nuernberg</target>
+   <demandValue> 27.836198 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Kassel">
+   <source>Osnabrueck</source>
+   <target>Kassel</target>
+   <demandValue> 0.027476 </demandValue>
+  </demand>
+  <demand id="Greifswald_Muenchen">
+   <source>Greifswald</source>
+   <target>Muenchen</target>
+   <demandValue> 34.678332 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Essen">
+   <source>Darmstadt</source>
+   <target>Essen</target>
+   <demandValue> 0.678522 </demandValue>
+  </demand>
+  <demand id="Siegen_Erfurt">
+   <source>Siegen</source>
+   <target>Erfurt</target>
+   <demandValue> 0.047908 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Greifswald">
+   <source>Stuttgart</source>
+   <target>Greifswald</target>
+   <demandValue> 0.514986 </demandValue>
+  </demand>
+  <demand id="Koeln_Bremerhaven">
+   <source>Koeln</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000078 </demandValue>
+  </demand>
+  <demand id="Berlin_Muenchen">
+   <source>Berlin</source>
+   <target>Muenchen</target>
+   <demandValue> 20.347024 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Erfurt">
+   <source>Duesseldorf</source>
+   <target>Erfurt</target>
+   <demandValue> 0.008067 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Karlsruhe">
+   <source>Osnabrueck</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.078205 </demandValue>
+  </demand>
+  <demand id="Hamburg_Bremerhaven">
+   <source>Hamburg</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.004205 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Bayreuth">
+   <source>Darmstadt</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.086077 </demandValue>
+  </demand>
+  <demand id="Schwerin_Darmstadt">
+   <source>Schwerin</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.585801 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Leipzig">
+   <source>Stuttgart</source>
+   <target>Leipzig</target>
+   <demandValue> 1.311468 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Passau">
+   <source>Nuernberg</source>
+   <target>Passau</target>
+   <demandValue> 0.003499 </demandValue>
+  </demand>
+  <demand id="Hannover_Mannheim">
+   <source>Hannover</source>
+   <target>Mannheim</target>
+   <demandValue> 0.003862 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Dresden">
+   <source>Kaiserslautern</source>
+   <target>Dresden</target>
+   <demandValue> 0.000132 </demandValue>
+  </demand>
+  <demand id="Berlin_Bayreuth">
+   <source>Berlin</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.011258 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Schwerin">
+   <source>Nuernberg</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000387 </demandValue>
+  </demand>
+  <demand id="Hamburg_Frankfurt">
+   <source>Hamburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 30.611497 </demandValue>
+  </demand>
+  <demand id="Leipzig_Regensburg">
+   <source>Leipzig</source>
+   <target>Regensburg</target>
+   <demandValue> 0.042993 </demandValue>
+  </demand>
+  <demand id="Aachen_Dortmund">
+   <source>Aachen</source>
+   <target>Dortmund</target>
+   <demandValue> 0.002401 </demandValue>
+  </demand>
+  <demand id="Kiel_Karlsruhe">
+   <source>Kiel</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Erfurt_Osnabrueck">
+   <source>Erfurt</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.002324 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Essen">
+   <source>Osnabrueck</source>
+   <target>Essen</target>
+   <demandValue> 0.000285 </demandValue>
+  </demand>
+  <demand id="Hannover_Erfurt">
+   <source>Hannover</source>
+   <target>Erfurt</target>
+   <demandValue> 2.563264 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Schwerin">
+   <source>Magdeburg</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000022 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Essen">
+   <source>Kaiserslautern</source>
+   <target>Essen</target>
+   <demandValue> 0.000102 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Saarbruecken">
+   <source>Stuttgart</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.059405 </demandValue>
+  </demand>
+  <demand id="Koeln_Hannover">
+   <source>Koeln</source>
+   <target>Hannover</target>
+   <demandValue> 0.136260 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Kassel">
+   <source>Nuernberg</source>
+   <target>Kassel</target>
+   <demandValue> 0.000773 </demandValue>
+  </demand>
+  <demand id="Norden_Koeln">
+   <source>Norden</source>
+   <target>Koeln</target>
+   <demandValue> 0.000027 </demandValue>
+  </demand>
+  <demand id="Berlin_Braunschweig">
+   <source>Berlin</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.116526 </demandValue>
+  </demand>
+  <demand id="Norden_Frankfurt">
+   <source>Norden</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.190019 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Leipzig">
+   <source>Magdeburg</source>
+   <target>Leipzig</target>
+   <demandValue> 4.577839 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Greifswald">
+   <source>Braunschweig</source>
+   <target>Greifswald</target>
+   <demandValue> 0.002241 </demandValue>
+  </demand>
+  <demand id="Regensburg_Aachen">
+   <source>Regensburg</source>
+   <target>Aachen</target>
+   <demandValue> 0.001708 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Norden">
+   <source>Braunschweig</source>
+   <target>Norden</target>
+   <demandValue> 0.000035 </demandValue>
+  </demand>
+  <demand id="Kiel_Leipzig">
+   <source>Kiel</source>
+   <target>Leipzig</target>
+   <demandValue> 0.003815 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Hamburg">
+   <source>Oldenburg</source>
+   <target>Hamburg</target>
+   <demandValue> 0.007741 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Bayreuth">
+   <source>Nuernberg</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.003914 </demandValue>
+  </demand>
+  <demand id="Greifswald_Braunschweig">
+   <source>Greifswald</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000668 </demandValue>
+  </demand>
+  <demand id="Augsburg_Kiel">
+   <source>Augsburg</source>
+   <target>Kiel</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Augsburg_Regensburg">
+   <source>Augsburg</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000438 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Siegen">
+   <source>Darmstadt</source>
+   <target>Siegen</target>
+   <demandValue> 0.002505 </demandValue>
+  </demand>
+  <demand id="Kassel_Frankfurt">
+   <source>Kassel</source>
+   <target>Frankfurt</target>
+   <demandValue> 102.758857 </demandValue>
+  </demand>
+  <demand id="Dortmund_Muenster">
+   <source>Dortmund</source>
+   <target>Muenster</target>
+   <demandValue> 0.000366 </demandValue>
+  </demand>
+  <demand id="Hamburg_Mannheim">
+   <source>Hamburg</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000521 </demandValue>
+  </demand>
+  <demand id="Dortmund_Wuerzburg">
+   <source>Dortmund</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Kiel">
+   <source>Bremerhaven</source>
+   <target>Kiel</target>
+   <demandValue> 0.000030 </demandValue>
+  </demand>
+  <demand id="Muenster_Frankfurt">
+   <source>Muenster</source>
+   <target>Frankfurt</target>
+   <demandValue> 49.114695 </demandValue>
+  </demand>
+  <demand id="Dortmund_Bayreuth">
+   <source>Dortmund</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.000305 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Aachen">
+   <source>Braunschweig</source>
+   <target>Aachen</target>
+   <demandValue> 2.133189 </demandValue>
+  </demand>
+  <demand id="Erfurt_Karlsruhe">
+   <source>Erfurt</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.002562 </demandValue>
+  </demand>
+  <demand id="Hannover_Schwerin">
+   <source>Hannover</source>
+   <target>Schwerin</target>
+   <demandValue> 2.963005 </demandValue>
+  </demand>
+  <demand id="Schwerin_Norden">
+   <source>Schwerin</source>
+   <target>Norden</target>
+   <demandValue> 0.000051 </demandValue>
+  </demand>
+  <demand id="Erfurt_Dresden">
+   <source>Erfurt</source>
+   <target>Dresden</target>
+   <demandValue> 0.187627 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Hannover">
+   <source>Duesseldorf</source>
+   <target>Hannover</target>
+   <demandValue> 0.134791 </demandValue>
+  </demand>
+  <demand id="Muenster_Osnabrueck">
+   <source>Muenster</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000303 </demandValue>
+  </demand>
+  <demand id="Dresden_Karlsruhe">
+   <source>Dresden</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.027107 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Kiel">
+   <source>Stuttgart</source>
+   <target>Kiel</target>
+   <demandValue> 0.383921 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Muenster">
+   <source>Stuttgart</source>
+   <target>Muenster</target>
+   <demandValue> 1.588910 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Koeln">
+   <source>Duesseldorf</source>
+   <target>Koeln</target>
+   <demandValue> 0.014298 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Stuttgart">
+   <source>Braunschweig</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.054598 </demandValue>
+  </demand>
+  <demand id="Trier_Karlsruhe">
+   <source>Trier</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.010536 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Erfurt">
+   <source>Wuerzburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.007737 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Hamburg">
+   <source>Saarbruecken</source>
+   <target>Hamburg</target>
+   <demandValue> 0.008359 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Magdeburg">
+   <source>Bremerhaven</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Koeln">
+   <source>Wuerzburg</source>
+   <target>Koeln</target>
+   <demandValue> 0.057996 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Braunschweig">
+   <source>Stuttgart</source>
+   <target>Braunschweig</target>
+   <demandValue> 1.177916 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Berlin">
+   <source>Braunschweig</source>
+   <target>Berlin</target>
+   <demandValue> 0.104782 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Magdeburg">
+   <source>Braunschweig</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.011809 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Braunschweig">
+   <source>Oldenburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.095556 </demandValue>
+  </demand>
+  <demand id="Berlin_Duesseldorf">
+   <source>Berlin</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000954 </demandValue>
+  </demand>
+  <demand id="Hamburg_Dresden">
+   <source>Hamburg</source>
+   <target>Dresden</target>
+   <demandValue> 0.004605 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Koeln">
+   <source>Nuernberg</source>
+   <target>Koeln</target>
+   <demandValue> 0.096947 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Osnabrueck">
+   <source>Karlsruhe</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000712 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Koeln">
+   <source>Frankfurt</source>
+   <target>Koeln</target>
+   <demandValue> 33.504515 </demandValue>
+  </demand>
+  <demand id="Mannheim_Frankfurt">
+   <source>Mannheim</source>
+   <target>Frankfurt</target>
+   <demandValue> 1.206858 </demandValue>
+  </demand>
+  <demand id="Giessen_Stuttgart">
+   <source>Giessen</source>
+   <target>Stuttgart</target>
+   <demandValue> 1.191487 </demandValue>
+  </demand>
+  <demand id="Trier_Muenchen">
+   <source>Trier</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000132 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Stuttgart">
+   <source>Darmstadt</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.231573 </demandValue>
+  </demand>
+  <demand id="Erfurt_Leipzig">
+   <source>Erfurt</source>
+   <target>Leipzig</target>
+   <demandValue> 11.247572 </demandValue>
+  </demand>
+  <demand id="Greifswald_Schwerin">
+   <source>Greifswald</source>
+   <target>Schwerin</target>
+   <demandValue> 0.418417 </demandValue>
+  </demand>
+  <demand id="Passau_Hannover">
+   <source>Passau</source>
+   <target>Hannover</target>
+   <demandValue> 0.000049 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Aachen">
+   <source>Frankfurt</source>
+   <target>Aachen</target>
+   <demandValue> 39.660737 </demandValue>
+  </demand>
+  <demand id="Muenchen_Osnabrueck">
+   <source>Muenchen</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.103788 </demandValue>
+  </demand>
+  <demand id="Trier_Hannover">
+   <source>Trier</source>
+   <target>Hannover</target>
+   <demandValue> 0.006195 </demandValue>
+  </demand>
+  <demand id="Koeln_Greifswald">
+   <source>Koeln</source>
+   <target>Greifswald</target>
+   <demandValue> 0.215394 </demandValue>
+  </demand>
+  <demand id="Ulm_Erfurt">
+   <source>Ulm</source>
+   <target>Erfurt</target>
+   <demandValue> 0.000017 </demandValue>
+  </demand>
+  <demand id="Muenchen_Magdeburg">
+   <source>Muenchen</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.176600 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Essen">
+   <source>Bremerhaven</source>
+   <target>Essen</target>
+   <demandValue> 0.000059 </demandValue>
+  </demand>
+  <demand id="Kiel_Bremen">
+   <source>Kiel</source>
+   <target>Bremen</target>
+   <demandValue> 0.002803 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Frankfurt">
+   <source>Darmstadt</source>
+   <target>Frankfurt</target>
+   <demandValue> 4.623948 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Stuttgart">
+   <source>Duesseldorf</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Bremen">
+   <source>Stuttgart</source>
+   <target>Bremen</target>
+   <demandValue> 1.370249 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Wuerzburg">
+   <source>Frankfurt</source>
+   <target>Wuerzburg</target>
+   <demandValue> 1.656498 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Dortmund">
+   <source>Stuttgart</source>
+   <target>Dortmund</target>
+   <demandValue> 0.166613 </demandValue>
+  </demand>
+  <demand id="Kiel_Muenchen">
+   <source>Kiel</source>
+   <target>Muenchen</target>
+   <demandValue> 0.316784 </demandValue>
+  </demand>
+  <demand id="Muenchen_Bayreuth">
+   <source>Muenchen</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.074680 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Darmstadt">
+   <source>Bayreuth</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.310202 </demandValue>
+  </demand>
+  <demand id="Ulm_Frankfurt">
+   <source>Ulm</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.000357 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Chemnitz">
+   <source>Oldenburg</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.009359 </demandValue>
+  </demand>
+  <demand id="Berlin_Muenster">
+   <source>Berlin</source>
+   <target>Muenster</target>
+   <demandValue> 0.074316 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Karlsruhe">
+   <source>Magdeburg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Muenster_Stuttgart">
+   <source>Muenster</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.001094 </demandValue>
+  </demand>
+  <demand id="Leipzig_Koeln">
+   <source>Leipzig</source>
+   <target>Koeln</target>
+   <demandValue> 2.491881 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Berlin">
+   <source>Darmstadt</source>
+   <target>Berlin</target>
+   <demandValue> 1.506462 </demandValue>
+  </demand>
+  <demand id="Dresden_Bremen">
+   <source>Dresden</source>
+   <target>Bremen</target>
+   <demandValue> 0.000003 </demandValue>
+  </demand>
+  <demand id="Regensburg_Kassel">
+   <source>Regensburg</source>
+   <target>Kassel</target>
+   <demandValue> 0.006185 </demandValue>
+  </demand>
+  <demand id="Bremen_Muenchen">
+   <source>Bremen</source>
+   <target>Muenchen</target>
+   <demandValue> 4.134815 </demandValue>
+  </demand>
+  <demand id="Essen_Stuttgart">
+   <source>Essen</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.001004 </demandValue>
+  </demand>
+  <demand id="Muenchen_Bremen">
+   <source>Muenchen</source>
+   <target>Bremen</target>
+   <demandValue> 0.348091 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Siegen">
+   <source>Braunschweig</source>
+   <target>Siegen</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Dresden_Leipzig">
+   <source>Dresden</source>
+   <target>Leipzig</target>
+   <demandValue> 26.406604 </demandValue>
+  </demand>
+  <demand id="Regensburg_Frankfurt">
+   <source>Regensburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 4.570566 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Dortmund">
+   <source>Magdeburg</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Regensburg_Chemnitz">
+   <source>Regensburg</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000045 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Koeln">
+   <source>Darmstadt</source>
+   <target>Koeln</target>
+   <demandValue> 1.210200 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Kempten">
+   <source>Frankfurt</source>
+   <target>Kempten</target>
+   <demandValue> 0.054756 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Regensburg">
+   <source>Oldenburg</source>
+   <target>Regensburg</target>
+   <demandValue> 0.006860 </demandValue>
+  </demand>
+  <demand id="Leipzig_Osnabrueck">
+   <source>Leipzig</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.085940 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Stuttgart">
+   <source>Kaiserslautern</source>
+   <target>Stuttgart</target>
+   <demandValue> 15.783152 </demandValue>
+  </demand>
+  <demand id="Koeln_Wuerzburg">
+   <source>Koeln</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000951 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Schwerin">
+   <source>Kaiserslautern</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000153 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Leipzig">
+   <source>Bayreuth</source>
+   <target>Leipzig</target>
+   <demandValue> 1.693816 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Darmstadt">
+   <source>Wuerzburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.117669 </demandValue>
+  </demand>
+  <demand id="Kiel_Hamburg">
+   <source>Kiel</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000474 </demandValue>
+  </demand>
+  <demand id="Dresden_Chemnitz">
+   <source>Dresden</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.005821 </demandValue>
+  </demand>
+  <demand id="Giessen_Muenster">
+   <source>Giessen</source>
+   <target>Muenster</target>
+   <demandValue> 0.010783 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Darmstadt">
+   <source>Nuernberg</source>
+   <target>Darmstadt</target>
+   <demandValue> 3.498293 </demandValue>
+  </demand>
+  <demand id="Trier_Stuttgart">
+   <source>Trier</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.252200 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Bayreuth">
+   <source>Braunschweig</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.000024 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Saarbruecken">
+   <source>Kaiserslautern</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.009173 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Wuerzburg">
+   <source>Braunschweig</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000394 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Schwerin">
+   <source>Darmstadt</source>
+   <target>Schwerin</target>
+   <demandValue> 1.350067 </demandValue>
+  </demand>
+  <demand id="Berlin_Aachen">
+   <source>Berlin</source>
+   <target>Aachen</target>
+   <demandValue> 0.330964 </demandValue>
+  </demand>
+  <demand id="Giessen_Oldenburg">
+   <source>Giessen</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000110 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Dortmund">
+   <source>Darmstadt</source>
+   <target>Dortmund</target>
+   <demandValue> 0.112081 </demandValue>
+  </demand>
+  <demand id="Hamburg_Berlin">
+   <source>Hamburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.499956 </demandValue>
+  </demand>
+  <demand id="Leipzig_Bayreuth">
+   <source>Leipzig</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.063703 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Mannheim">
+   <source>Duesseldorf</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Hannover">
+   <source>Chemnitz</source>
+   <target>Hannover</target>
+   <demandValue> 2.613760 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Darmstadt">
+   <source>Duesseldorf</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.002887 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Hannover">
+   <source>Darmstadt</source>
+   <target>Hannover</target>
+   <demandValue> 0.738492 </demandValue>
+  </demand>
+  <demand id="Koeln_Dresden">
+   <source>Koeln</source>
+   <target>Dresden</target>
+   <demandValue> 0.279973 </demandValue>
+  </demand>
+  <demand id="Essen_Bremen">
+   <source>Essen</source>
+   <target>Bremen</target>
+   <demandValue> 0.001235 </demandValue>
+  </demand>
+  <demand id="Essen_Oldenburg">
+   <source>Essen</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.308412 </demandValue>
+  </demand>
+  <demand id="Fulda_Stuttgart">
+   <source>Fulda</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.026410 </demandValue>
+  </demand>
+  <demand id="Kassel_Wuerzburg">
+   <source>Kassel</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.028341 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Leipzig">
+   <source>Bremerhaven</source>
+   <target>Leipzig</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Passau">
+   <source>Braunschweig</source>
+   <target>Passau</target>
+   <demandValue> 0.000075 </demandValue>
+  </demand>
+  <demand id="Berlin_Bremerhaven">
+   <source>Berlin</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.004193 </demandValue>
+  </demand>
+  <demand id="Aachen_Wuerzburg">
+   <source>Aachen</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000122 </demandValue>
+  </demand>
+  <demand id="Siegen_Regensburg">
+   <source>Siegen</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000051 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Muenster">
+   <source>Chemnitz</source>
+   <target>Muenster</target>
+   <demandValue> 0.131909 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Berlin">
+   <source>Karlsruhe</source>
+   <target>Berlin</target>
+   <demandValue> 0.000301 </demandValue>
+  </demand>
+  <demand id="Giessen_Braunschweig">
+   <source>Giessen</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.001427 </demandValue>
+  </demand>
+  <demand id="Koeln_Saarbruecken">
+   <source>Koeln</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.010318 </demandValue>
+  </demand>
+  <demand id="Koeln_Kassel">
+   <source>Koeln</source>
+   <target>Kassel</target>
+   <demandValue> 1.358392 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Bremen">
+   <source>Chemnitz</source>
+   <target>Bremen</target>
+   <demandValue> 0.268812 </demandValue>
+  </demand>
+  <demand id="Dresden_Muenchen">
+   <source>Dresden</source>
+   <target>Muenchen</target>
+   <demandValue> 15.483105 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Koeln">
+   <source>Bremerhaven</source>
+   <target>Koeln</target>
+   <demandValue> 0.000083 </demandValue>
+  </demand>
+  <demand id="Bremen_Osnabrueck">
+   <source>Bremen</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.002808 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Hannover">
+   <source>Magdeburg</source>
+   <target>Hannover</target>
+   <demandValue> 0.000288 </demandValue>
+  </demand>
+  <demand id="Koeln_Magdeburg">
+   <source>Koeln</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.057857 </demandValue>
+  </demand>
+  <demand id="Regensburg_Bayreuth">
+   <source>Regensburg</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.001470 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Erfurt">
+   <source>Bayreuth</source>
+   <target>Erfurt</target>
+   <demandValue> 0.631396 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Bremerhaven">
+   <source>Stuttgart</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.001249 </demandValue>
+  </demand>
+  <demand id="Essen_Erfurt">
+   <source>Essen</source>
+   <target>Erfurt</target>
+   <demandValue> 0.610864 </demandValue>
+  </demand>
+  <demand id="Hamburg_Braunschweig">
+   <source>Hamburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.005974 </demandValue>
+  </demand>
+  <demand id="Trier_Berlin">
+   <source>Trier</source>
+   <target>Berlin</target>
+   <demandValue> 0.000153 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Oldenburg">
+   <source>Braunschweig</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.253098 </demandValue>
+  </demand>
+  <demand id="Dortmund_Regensburg">
+   <source>Dortmund</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000080 </demandValue>
+  </demand>
+  <demand id="Hannover_Hamburg">
+   <source>Hannover</source>
+   <target>Hamburg</target>
+   <demandValue> 0.880721 </demandValue>
+  </demand>
+  <demand id="Hannover_Wuerzburg">
+   <source>Hannover</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.336727 </demandValue>
+  </demand>
+  <demand id="Koeln_Augsburg">
+   <source>Koeln</source>
+   <target>Augsburg</target>
+   <demandValue> 0.034581 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Karlsruhe">
+   <source>Saarbruecken</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.001148 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Frankfurt">
+   <source>Magdeburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 19.618509 </demandValue>
+  </demand>
+  <demand id="Bremen_Darmstadt">
+   <source>Bremen</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.344887 </demandValue>
+  </demand>
+  <demand id="Passau_Darmstadt">
+   <source>Passau</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.163520 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Saarbruecken">
+   <source>Darmstadt</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.085900 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Nuernberg">
+   <source>Chemnitz</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Hannover_Kempten">
+   <source>Hannover</source>
+   <target>Kempten</target>
+   <demandValue> 0.083237 </demandValue>
+  </demand>
+  <demand id="Greifswald_Erfurt">
+   <source>Greifswald</source>
+   <target>Erfurt</target>
+   <demandValue> 0.495851 </demandValue>
+  </demand>
+  <demand id="Kassel_Leipzig">
+   <source>Kassel</source>
+   <target>Leipzig</target>
+   <demandValue> 12.273478 </demandValue>
+  </demand>
+  <demand id="Kempten_Frankfurt">
+   <source>Kempten</source>
+   <target>Frankfurt</target>
+   <demandValue> 1.360091 </demandValue>
+  </demand>
+  <demand id="Giessen_Nuernberg">
+   <source>Giessen</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000423 </demandValue>
+  </demand>
+  <demand id="Siegen_Muenster">
+   <source>Siegen</source>
+   <target>Muenster</target>
+   <demandValue> 0.000036 </demandValue>
+  </demand>
+  <demand id="Mannheim_Giessen">
+   <source>Mannheim</source>
+   <target>Giessen</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Muenchen_Trier">
+   <source>Muenchen</source>
+   <target>Trier</target>
+   <demandValue> 0.000168 </demandValue>
+  </demand>
+  <demand id="Passau_Kaiserslautern">
+   <source>Passau</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000109 </demandValue>
+  </demand>
+  <demand id="Leipzig_Giessen">
+   <source>Leipzig</source>
+   <target>Giessen</target>
+   <demandValue> 0.054200 </demandValue>
+  </demand>
+  <demand id="Koeln_Bayreuth">
+   <source>Koeln</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.002778 </demandValue>
+  </demand>
+  <demand id="Hamburg_Hannover">
+   <source>Hamburg</source>
+   <target>Hannover</target>
+   <demandValue> 4.996230 </demandValue>
+  </demand>
+  <demand id="Dresden_Dortmund">
+   <source>Dresden</source>
+   <target>Dortmund</target>
+   <demandValue> 0.002918 </demandValue>
+  </demand>
+  <demand id="Dresden_Koeln">
+   <source>Dresden</source>
+   <target>Koeln</target>
+   <demandValue> 1.067489 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Oldenburg">
+   <source>Darmstadt</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.442271 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Leipzig">
+   <source>Chemnitz</source>
+   <target>Leipzig</target>
+   <demandValue> 61.046547 </demandValue>
+  </demand>
+  <demand id="Hannover_Stuttgart">
+   <source>Hannover</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.322652 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Muenchen">
+   <source>Osnabrueck</source>
+   <target>Muenchen</target>
+   <demandValue> 0.934742 </demandValue>
+  </demand>
+  <demand id="Koeln_Trier">
+   <source>Koeln</source>
+   <target>Trier</target>
+   <demandValue> 0.000409 </demandValue>
+  </demand>
+  <demand id="Kassel_Schwerin">
+   <source>Kassel</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000261 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Schwerin">
+   <source>Braunschweig</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000912 </demandValue>
+  </demand>
+  <demand id="Dresden_Hannover">
+   <source>Dresden</source>
+   <target>Hannover</target>
+   <demandValue> 3.314152 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Hamburg">
+   <source>Frankfurt</source>
+   <target>Hamburg</target>
+   <demandValue> 70.754283 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Dortmund">
+   <source>Osnabrueck</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000070 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Wuerzburg">
+   <source>Nuernberg</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.001373 </demandValue>
+  </demand>
+  <demand id="Giessen_Erfurt">
+   <source>Giessen</source>
+   <target>Erfurt</target>
+   <demandValue> 0.200503 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Hannover">
+   <source>Frankfurt</source>
+   <target>Hannover</target>
+   <demandValue> 14.089749 </demandValue>
+  </demand>
+  <demand id="Muenchen_Regensburg">
+   <source>Muenchen</source>
+   <target>Regensburg</target>
+   <demandValue> 0.184842 </demandValue>
+  </demand>
+  <demand id="Koeln_Kiel">
+   <source>Koeln</source>
+   <target>Kiel</target>
+   <demandValue> 0.053935 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Passau">
+   <source>Darmstadt</source>
+   <target>Passau</target>
+   <demandValue> 0.004158 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Bremerhaven">
+   <source>Darmstadt</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.007579 </demandValue>
+  </demand>
+  <demand id="Regensburg_Siegen">
+   <source>Regensburg</source>
+   <target>Siegen</target>
+   <demandValue> 0.000074 </demandValue>
+  </demand>
+  <demand id="Koeln_Duesseldorf">
+   <source>Koeln</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000770 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Greifswald">
+   <source>Bremerhaven</source>
+   <target>Greifswald</target>
+   <demandValue> 0.002627 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Oldenburg">
+   <source>Bremerhaven</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.035558 </demandValue>
+  </demand>
+  <demand id="Muenchen_Erfurt">
+   <source>Muenchen</source>
+   <target>Erfurt</target>
+   <demandValue> 5.321280 </demandValue>
+  </demand>
+  <demand id="Augsburg_Karlsruhe">
+   <source>Augsburg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000399 </demandValue>
+  </demand>
+  <demand id="Freiburg_Braunschweig">
+   <source>Freiburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Nuernberg">
+   <source>Duesseldorf</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000070 </demandValue>
+  </demand>
+  <demand id="Konstanz_Stuttgart">
+   <source>Konstanz</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000001 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Stuttgart">
+   <source>Bremerhaven</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000055 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Augsburg">
+   <source>Nuernberg</source>
+   <target>Augsburg</target>
+   <demandValue> 0.000643 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Saarbruecken">
+   <source>Frankfurt</source>
+   <target>Saarbruecken</target>
+   <demandValue> 5.561193 </demandValue>
+  </demand>
+  <demand id="Kassel_Mannheim">
+   <source>Kassel</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000984 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Giessen">
+   <source>Saarbruecken</source>
+   <target>Giessen</target>
+   <demandValue> 0.000009 </demandValue>
+  </demand>
+  <demand id="Hamburg_Regensburg">
+   <source>Hamburg</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000101 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Giessen">
+   <source>Braunschweig</source>
+   <target>Giessen</target>
+   <demandValue> 0.001830 </demandValue>
+  </demand>
+  <demand id="Hannover_Giessen">
+   <source>Hannover</source>
+   <target>Giessen</target>
+   <demandValue> 0.268165 </demandValue>
+  </demand>
+  <demand id="Kassel_Muenster">
+   <source>Kassel</source>
+   <target>Muenster</target>
+   <demandValue> 0.003866 </demandValue>
+  </demand>
+  <demand id="Hannover_Bremen">
+   <source>Hannover</source>
+   <target>Bremen</target>
+   <demandValue> 1.868666 </demandValue>
+  </demand>
+  <demand id="Aachen_Leipzig">
+   <source>Aachen</source>
+   <target>Leipzig</target>
+   <demandValue> 0.031189 </demandValue>
+  </demand>
+  <demand id="Dortmund_Chemnitz">
+   <source>Dortmund</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000015 </demandValue>
+  </demand>
+  <demand id="Dortmund_Nuernberg">
+   <source>Dortmund</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000034 </demandValue>
+  </demand>
+  <demand id="Hamburg_Schwerin">
+   <source>Hamburg</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000033 </demandValue>
+  </demand>
+  <demand id="Aachen_Bremen">
+   <source>Aachen</source>
+   <target>Bremen</target>
+   <demandValue> 0.059827 </demandValue>
+  </demand>
+  <demand id="Dortmund_Bremen">
+   <source>Dortmund</source>
+   <target>Bremen</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Flensburg_Muenchen">
+   <source>Flensburg</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000049 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Frankfurt">
+   <source>Braunschweig</source>
+   <target>Frankfurt</target>
+   <demandValue> 127.376598 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Augsburg">
+   <source>Oldenburg</source>
+   <target>Augsburg</target>
+   <demandValue> 0.003353 </demandValue>
+  </demand>
+  <demand id="Augsburg_Magdeburg">
+   <source>Augsburg</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000028 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Muenchen">
+   <source>Duesseldorf</source>
+   <target>Muenchen</target>
+   <demandValue> 0.031968 </demandValue>
+  </demand>
+  <demand id="Dortmund_Karlsruhe">
+   <source>Dortmund</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.012226 </demandValue>
+  </demand>
+  <demand id="Essen_Schwerin">
+   <source>Essen</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000016 </demandValue>
+  </demand>
+  <demand id="Norden_Berlin">
+   <source>Norden</source>
+   <target>Berlin</target>
+   <demandValue> 0.000031 </demandValue>
+  </demand>
+  <demand id="Mannheim_Kassel">
+   <source>Mannheim</source>
+   <target>Kassel</target>
+   <demandValue> 0.003283 </demandValue>
+  </demand>
+  <demand id="Muenster_Hamburg">
+   <source>Muenster</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000977 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Kiel">
+   <source>Darmstadt</source>
+   <target>Kiel</target>
+   <demandValue> 0.067612 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Hamburg">
+   <source>Kaiserslautern</source>
+   <target>Hamburg</target>
+   <demandValue> 0.018646 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Kassel">
+   <source>Braunschweig</source>
+   <target>Kassel</target>
+   <demandValue> 0.006805 </demandValue>
+  </demand>
+  <demand id="Aachen_Essen">
+   <source>Aachen</source>
+   <target>Essen</target>
+   <demandValue> 0.067169 </demandValue>
+  </demand>
+  <demand id="Regensburg_Mannheim">
+   <source>Regensburg</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Berlin_Kempten">
+   <source>Berlin</source>
+   <target>Kempten</target>
+   <demandValue> 0.000033 </demandValue>
+  </demand>
+  <demand id="Hamburg_Dortmund">
+   <source>Hamburg</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000267 </demandValue>
+  </demand>
+  <demand id="Kassel_Kiel">
+   <source>Kassel</source>
+   <target>Kiel</target>
+   <demandValue> 0.001793 </demandValue>
+  </demand>
+  <demand id="Muenster_Braunschweig">
+   <source>Muenster</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.001584 </demandValue>
+  </demand>
+  <demand id="Koeln_Essen">
+   <source>Koeln</source>
+   <target>Essen</target>
+   <demandValue> 0.108796 </demandValue>
+  </demand>
+  <demand id="Augsburg_Muenchen">
+   <source>Augsburg</source>
+   <target>Muenchen</target>
+   <demandValue> 1.490756 </demandValue>
+  </demand>
+  <demand id="Hamburg_Essen">
+   <source>Hamburg</source>
+   <target>Essen</target>
+   <demandValue> 0.000529 </demandValue>
+  </demand>
+  <demand id="Leipzig_Muenchen">
+   <source>Leipzig</source>
+   <target>Muenchen</target>
+   <demandValue> 4.196790 </demandValue>
+  </demand>
+  <demand id="Muenchen_Greifswald">
+   <source>Muenchen</source>
+   <target>Greifswald</target>
+   <demandValue> 2.511625 </demandValue>
+  </demand>
+  <demand id="Berlin_Ulm">
+   <source>Berlin</source>
+   <target>Ulm</target>
+   <demandValue> 0.000122 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Braunschweig">
+   <source>Darmstadt</source>
+   <target>Braunschweig</target>
+   <demandValue> 1.240064 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Frankfurt">
+   <source>Wuerzburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 4.162489 </demandValue>
+  </demand>
+  <demand id="Regensburg_Hannover">
+   <source>Regensburg</source>
+   <target>Hannover</target>
+   <demandValue> 0.015028 </demandValue>
+  </demand>
+  <demand id="Muenster_Dortmund">
+   <source>Muenster</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000417 </demandValue>
+  </demand>
+  <demand id="Augsburg_Saarbruecken">
+   <source>Augsburg</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000018 </demandValue>
+  </demand>
+  <demand id="Erfurt_Giessen">
+   <source>Erfurt</source>
+   <target>Giessen</target>
+   <demandValue> 0.114144 </demandValue>
+  </demand>
+  <demand id="Kempten_Koeln">
+   <source>Kempten</source>
+   <target>Koeln</target>
+   <demandValue> 0.001912 </demandValue>
+  </demand>
+  <demand id="Erfurt_Regensburg">
+   <source>Erfurt</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000101 </demandValue>
+  </demand>
+  <demand id="Hamburg_Osnabrueck">
+   <source>Hamburg</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.001232 </demandValue>
+  </demand>
+  <demand id="Regensburg_Berlin">
+   <source>Regensburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.015357 </demandValue>
+  </demand>
+  <demand id="Norden_Hannover">
+   <source>Norden</source>
+   <target>Hannover</target>
+   <demandValue> 0.060747 </demandValue>
+  </demand>
+  <demand id="Giessen_Dresden">
+   <source>Giessen</source>
+   <target>Dresden</target>
+   <demandValue> 0.000496 </demandValue>
+  </demand>
+  <demand id="Greifswald_Stuttgart">
+   <source>Greifswald</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.046875 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Hannover">
+   <source>Stuttgart</source>
+   <target>Hannover</target>
+   <demandValue> 2.014614 </demandValue>
+  </demand>
+  <demand id="Aachen_Berlin">
+   <source>Aachen</source>
+   <target>Berlin</target>
+   <demandValue> 0.020500 </demandValue>
+  </demand>
+  <demand id="Aachen_Karlsruhe">
+   <source>Aachen</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.812866 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Erfurt">
+   <source>Osnabrueck</source>
+   <target>Erfurt</target>
+   <demandValue> 0.228030 </demandValue>
+  </demand>
+  <demand id="Flensburg_Hannover">
+   <source>Flensburg</source>
+   <target>Hannover</target>
+   <demandValue> 0.002671 </demandValue>
+  </demand>
+  <demand id="Erfurt_Kassel">
+   <source>Erfurt</source>
+   <target>Kassel</target>
+   <demandValue> 0.001491 </demandValue>
+  </demand>
+  <demand id="Siegen_Stuttgart">
+   <source>Siegen</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.205636 </demandValue>
+  </demand>
+  <demand id="Aachen_Kiel">
+   <source>Aachen</source>
+   <target>Kiel</target>
+   <demandValue> 0.000102 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Kiel">
+   <source>Oldenburg</source>
+   <target>Kiel</target>
+   <demandValue> 0.009714 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Essen">
+   <source>Chemnitz</source>
+   <target>Essen</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Kiel_Nuernberg">
+   <source>Kiel</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.019079 </demandValue>
+  </demand>
+  <demand id="Greifswald_Muenster">
+   <source>Greifswald</source>
+   <target>Muenster</target>
+   <demandValue> 0.001377 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Karlsruhe">
+   <source>Oldenburg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.071984 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Augsburg">
+   <source>Darmstadt</source>
+   <target>Augsburg</target>
+   <demandValue> 0.093599 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Giessen">
+   <source>Darmstadt</source>
+   <target>Giessen</target>
+   <demandValue> 0.044140 </demandValue>
+  </demand>
+  <demand id="Konstanz_Frankfurt">
+   <source>Konstanz</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.000126 </demandValue>
+  </demand>
+  <demand id="Schwerin_Muenchen">
+   <source>Schwerin</source>
+   <target>Muenchen</target>
+   <demandValue> 2.257163 </demandValue>
+  </demand>
+  <demand id="Siegen_Leipzig">
+   <source>Siegen</source>
+   <target>Leipzig</target>
+   <demandValue> 0.000001 </demandValue>
+  </demand>
+  <demand id="Muenster_Kaiserslautern">
+   <source>Muenster</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.001211 </demandValue>
+  </demand>
+  <demand id="Schwerin_Greifswald">
+   <source>Schwerin</source>
+   <target>Greifswald</target>
+   <demandValue> 0.009717 </demandValue>
+  </demand>
+  <demand id="Dortmund_Erfurt">
+   <source>Dortmund</source>
+   <target>Erfurt</target>
+   <demandValue> 0.154776 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Muenchen">
+   <source>Magdeburg</source>
+   <target>Muenchen</target>
+   <demandValue> 0.622653 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Leipzig">
+   <source>Braunschweig</source>
+   <target>Leipzig</target>
+   <demandValue> 0.032291 </demandValue>
+  </demand>
+  <demand id="Hannover_Oldenburg">
+   <source>Hannover</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.342406 </demandValue>
+  </demand>
+  <demand id="Greifswald_Karlsruhe">
+   <source>Greifswald</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.044981 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Dortmund">
+   <source>Bayreuth</source>
+   <target>Dortmund</target>
+   <demandValue> 0.001970 </demandValue>
+  </demand>
+  <demand id="Giessen_Kassel">
+   <source>Giessen</source>
+   <target>Kassel</target>
+   <demandValue> 0.000378 </demandValue>
+  </demand>
+  <demand id="Koeln_Passau">
+   <source>Koeln</source>
+   <target>Passau</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Bremen_Berlin">
+   <source>Bremen</source>
+   <target>Berlin</target>
+   <demandValue> 0.100313 </demandValue>
+  </demand>
+  <demand id="Trier_Koeln">
+   <source>Trier</source>
+   <target>Koeln</target>
+   <demandValue> 0.000234 </demandValue>
+  </demand>
+  <demand id="Dresden_Bremerhaven">
+   <source>Dresden</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000168 </demandValue>
+  </demand>
+  <demand id="Hannover_Berlin">
+   <source>Hannover</source>
+   <target>Berlin</target>
+   <demandValue> 2.296997 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Koeln">
+   <source>Chemnitz</source>
+   <target>Koeln</target>
+   <demandValue> 2.872918 </demandValue>
+  </demand>
+  <demand id="Giessen_Darmstadt">
+   <source>Giessen</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.065166 </demandValue>
+  </demand>
+  <demand id="Muenster_Nuernberg">
+   <source>Muenster</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.002116 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Frankfurt">
+   <source>Osnabrueck</source>
+   <target>Frankfurt</target>
+   <demandValue> 6.346602 </demandValue>
+  </demand>
+  <demand id="Bremen_Leipzig">
+   <source>Bremen</source>
+   <target>Leipzig</target>
+   <demandValue> 0.007056 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Augsburg">
+   <source>Stuttgart</source>
+   <target>Augsburg</target>
+   <demandValue> 0.095782 </demandValue>
+  </demand>
+  <demand id="Aachen_Schwerin">
+   <source>Aachen</source>
+   <target>Schwerin</target>
+   <demandValue> 0.022280 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Bremen">
+   <source>Karlsruhe</source>
+   <target>Bremen</target>
+   <demandValue> 0.001139 </demandValue>
+  </demand>
+  <demand id="Koeln_Nuernberg">
+   <source>Koeln</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.007788 </demandValue>
+  </demand>
+  <demand id="Kiel_Aachen">
+   <source>Kiel</source>
+   <target>Aachen</target>
+   <demandValue> 0.000132 </demandValue>
+  </demand>
+  <demand id="Erfurt_Magdeburg">
+   <source>Erfurt</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Muenster_Oldenburg">
+   <source>Muenster</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.750656 </demandValue>
+  </demand>
+  <demand id="Mannheim_Regensburg">
+   <source>Mannheim</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Hannover_Aachen">
+   <source>Hannover</source>
+   <target>Aachen</target>
+   <demandValue> 3.569475 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Kaiserslautern">
+   <source>Magdeburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000407 </demandValue>
+  </demand>
+  <demand id="Greifswald_Nuernberg">
+   <source>Greifswald</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000056 </demandValue>
+  </demand>
+  <demand id="Giessen_Schwerin">
+   <source>Giessen</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000736 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Stuttgart">
+   <source>Magdeburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000068 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Karlsruhe">
+   <source>Braunschweig</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.007693 </demandValue>
+  </demand>
+  <demand id="Muenster_Hannover">
+   <source>Muenster</source>
+   <target>Hannover</target>
+   <demandValue> 2.870544 </demandValue>
+  </demand>
+  <demand id="Mannheim_Hannover">
+   <source>Mannheim</source>
+   <target>Hannover</target>
+   <demandValue> 0.000044 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Dresden">
+   <source>Braunschweig</source>
+   <target>Dresden</target>
+   <demandValue> 0.001111 </demandValue>
+  </demand>
+  <demand id="Essen_Hamburg">
+   <source>Essen</source>
+   <target>Hamburg</target>
+   <demandValue> 0.014452 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Regensburg">
+   <source>Duesseldorf</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Kiel_Essen">
+   <source>Kiel</source>
+   <target>Essen</target>
+   <demandValue> 0.000214 </demandValue>
+  </demand>
+  <demand id="Giessen_Leipzig">
+   <source>Giessen</source>
+   <target>Leipzig</target>
+   <demandValue> 0.038208 </demandValue>
+  </demand>
+  <demand id="Regensburg_Oldenburg">
+   <source>Regensburg</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.110424 </demandValue>
+  </demand>
+  <demand id="Kassel_Essen">
+   <source>Kassel</source>
+   <target>Essen</target>
+   <demandValue> 0.067005 </demandValue>
+  </demand>
+  <demand id="Bremen_Kassel">
+   <source>Bremen</source>
+   <target>Kassel</target>
+   <demandValue> 0.000652 </demandValue>
+  </demand>
+  <demand id="Schwerin_Oldenburg">
+   <source>Schwerin</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.013541 </demandValue>
+  </demand>
+  <demand id="Regensburg_Braunschweig">
+   <source>Regensburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.002904 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Nuernberg">
+   <source>Karlsruhe</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000193 </demandValue>
+  </demand>
+  <demand id="Norden_Erfurt">
+   <source>Norden</source>
+   <target>Erfurt</target>
+   <demandValue> 0.006212 </demandValue>
+  </demand>
+  <demand id="Hannover_Magdeburg">
+   <source>Hannover</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.832417 </demandValue>
+  </demand>
+  <demand id="Muenchen_Berlin">
+   <source>Muenchen</source>
+   <target>Berlin</target>
+   <demandValue> 1.271200 </demandValue>
+  </demand>
+  <demand id="Dortmund_Aachen">
+   <source>Dortmund</source>
+   <target>Aachen</target>
+   <demandValue> 0.139496 </demandValue>
+  </demand>
+  <demand id="Dortmund_Muenchen">
+   <source>Dortmund</source>
+   <target>Muenchen</target>
+   <demandValue> 2.014919 </demandValue>
+  </demand>
+  <demand id="Leipzig_Muenster">
+   <source>Leipzig</source>
+   <target>Muenster</target>
+   <demandValue> 0.433930 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Stuttgart">
+   <source>Karlsruhe</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.094849 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Darmstadt">
+   <source>Saarbruecken</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.024233 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Dresden">
+   <source>Nuernberg</source>
+   <target>Dresden</target>
+   <demandValue> 0.004195 </demandValue>
+  </demand>
+  <demand id="Regensburg_Giessen">
+   <source>Regensburg</source>
+   <target>Giessen</target>
+   <demandValue> 0.000116 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Hamburg">
+   <source>Stuttgart</source>
+   <target>Hamburg</target>
+   <demandValue> 0.505404 </demandValue>
+  </demand>
+  <demand id="Leipzig_Mannheim">
+   <source>Leipzig</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000694 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Frankfurt">
+   <source>Karlsruhe</source>
+   <target>Frankfurt</target>
+   <demandValue> 9.161713 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Giessen">
+   <source>Stuttgart</source>
+   <target>Giessen</target>
+   <demandValue> 0.276255 </demandValue>
+  </demand>
+  <demand id="Berlin_Koeln">
+   <source>Berlin</source>
+   <target>Koeln</target>
+   <demandValue> 0.983370 </demandValue>
+  </demand>
+  <demand id="Hannover_Bayreuth">
+   <source>Hannover</source>
+   <target>Bayreuth</target>
+   <demandValue> 1.148109 </demandValue>
+  </demand>
+  <demand id="Koeln_Oldenburg">
+   <source>Koeln</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.326950 </demandValue>
+  </demand>
+  <demand id="Leipzig_Essen">
+   <source>Leipzig</source>
+   <target>Essen</target>
+   <demandValue> 0.155257 </demandValue>
+  </demand>
+  <demand id="Greifswald_Leipzig">
+   <source>Greifswald</source>
+   <target>Leipzig</target>
+   <demandValue> 4.082441 </demandValue>
+  </demand>
+  <demand id="Muenchen_Chemnitz">
+   <source>Muenchen</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.849565 </demandValue>
+  </demand>
+  <demand id="Erfurt_Stuttgart">
+   <source>Erfurt</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000949 </demandValue>
+  </demand>
+  <demand id="Leipzig_Kiel">
+   <source>Leipzig</source>
+   <target>Kiel</target>
+   <demandValue> 0.008865 </demandValue>
+  </demand>
+  <demand id="Essen_Muenchen">
+   <source>Essen</source>
+   <target>Muenchen</target>
+   <demandValue> 3.663883 </demandValue>
+  </demand>
+  <demand id="Schwerin_Dresden">
+   <source>Schwerin</source>
+   <target>Dresden</target>
+   <demandValue> 0.000425 </demandValue>
+  </demand>
+  <demand id="Aachen_Nuernberg">
+   <source>Aachen</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.001829 </demandValue>
+  </demand>
+  <demand id="Berlin_Osnabrueck">
+   <source>Berlin</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.038630 </demandValue>
+  </demand>
+  <demand id="Berlin_Chemnitz">
+   <source>Berlin</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.466197 </demandValue>
+  </demand>
+  <demand id="Berlin_Giessen">
+   <source>Berlin</source>
+   <target>Giessen</target>
+   <demandValue> 0.008688 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Nuernberg">
+   <source>Frankfurt</source>
+   <target>Nuernberg</target>
+   <demandValue> 11.959792 </demandValue>
+  </demand>
+  <demand id="Schwerin_Aachen">
+   <source>Schwerin</source>
+   <target>Aachen</target>
+   <demandValue> 0.001109 </demandValue>
+  </demand>
+  <demand id="Mannheim_Dresden">
+   <source>Mannheim</source>
+   <target>Dresden</target>
+   <demandValue> 0.000262 </demandValue>
+  </demand>
+  <demand id="Regensburg_Nuernberg">
+   <source>Regensburg</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.030762 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Berlin">
+   <source>Chemnitz</source>
+   <target>Berlin</target>
+   <demandValue> 0.972793 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Frankfurt">
+   <source>Nuernberg</source>
+   <target>Frankfurt</target>
+   <demandValue> 36.389948 </demandValue>
+  </demand>
+  <demand id="Regensburg_Muenchen">
+   <source>Regensburg</source>
+   <target>Muenchen</target>
+   <demandValue> 0.393766 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Kassel">
+   <source>Frankfurt</source>
+   <target>Kassel</target>
+   <demandValue> 31.234078 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Greifswald">
+   <source>Saarbruecken</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000079 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Freiburg">
+   <source>Frankfurt</source>
+   <target>Freiburg</target>
+   <demandValue> 0.001526 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Stuttgart">
+   <source>Oldenburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.013310 </demandValue>
+  </demand>
+  <demand id="Hannover_Saarbruecken">
+   <source>Hannover</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.118349 </demandValue>
+  </demand>
+  <demand id="Hannover_Frankfurt">
+   <source>Hannover</source>
+   <target>Frankfurt</target>
+   <demandValue> 11.067539 </demandValue>
+  </demand>
+  <demand id="Augsburg_Oldenburg">
+   <source>Augsburg</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.003838 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Hannover">
+   <source>Bayreuth</source>
+   <target>Hannover</target>
+   <demandValue> 0.023920 </demandValue>
+  </demand>
+  <demand id="Aachen_Frankfurt">
+   <source>Aachen</source>
+   <target>Frankfurt</target>
+   <demandValue> 105.700729 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Aachen">
+   <source>Oldenburg</source>
+   <target>Aachen</target>
+   <demandValue> 0.002973 </demandValue>
+  </demand>
+  <demand id="Bremen_Saarbruecken">
+   <source>Bremen</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000318 </demandValue>
+  </demand>
+  <demand id="Siegen_Wuerzburg">
+   <source>Siegen</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000003 </demandValue>
+  </demand>
+  <demand id="Greifswald_Bremen">
+   <source>Greifswald</source>
+   <target>Bremen</target>
+   <demandValue> 0.046326 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Muenchen">
+   <source>Chemnitz</source>
+   <target>Muenchen</target>
+   <demandValue> 22.811497 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Flensburg">
+   <source>Osnabrueck</source>
+   <target>Flensburg</target>
+   <demandValue> 0.000078 </demandValue>
+  </demand>
+  <demand id="Siegen_Hamburg">
+   <source>Siegen</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000190 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Muenchen">
+   <source>Kaiserslautern</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000544 </demandValue>
+  </demand>
+  <demand id="Essen_Nuernberg">
+   <source>Essen</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.003676 </demandValue>
+  </demand>
+  <demand id="Hannover_Muenster">
+   <source>Hannover</source>
+   <target>Muenster</target>
+   <demandValue> 2.976012 </demandValue>
+  </demand>
+  <demand id="Leipzig_Wuerzburg">
+   <source>Leipzig</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.006950 </demandValue>
+  </demand>
+  <demand id="Koeln_Braunschweig">
+   <source>Koeln</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.280921 </demandValue>
+  </demand>
+  <demand id="Hannover_Darmstadt">
+   <source>Hannover</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.826854 </demandValue>
+  </demand>
+  <demand id="Konstanz_Muenchen">
+   <source>Konstanz</source>
+   <target>Muenchen</target>
+   <demandValue> 0.002436 </demandValue>
+  </demand>
+  <demand id="Kassel_Siegen">
+   <source>Kassel</source>
+   <target>Siegen</target>
+   <demandValue> 0.656952 </demandValue>
+  </demand>
+  <demand id="Giessen_Dortmund">
+   <source>Giessen</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000175 </demandValue>
+  </demand>
+  <demand id="Schwerin_Bremerhaven">
+   <source>Schwerin</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000017 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Nuernberg">
+   <source>Darmstadt</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.554144 </demandValue>
+  </demand>
+  <demand id="Berlin_Frankfurt">
+   <source>Berlin</source>
+   <target>Frankfurt</target>
+   <demandValue> 117.083626 </demandValue>
+  </demand>
+  <demand id="Schwerin_Magdeburg">
+   <source>Schwerin</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.001132 </demandValue>
+  </demand>
+  <demand id="Siegen_Saarbruecken">
+   <source>Siegen</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Leipzig_Hamburg">
+   <source>Leipzig</source>
+   <target>Hamburg</target>
+   <demandValue> 0.200431 </demandValue>
+  </demand>
+  <demand id="Hannover_Trier">
+   <source>Hannover</source>
+   <target>Trier</target>
+   <demandValue> 0.364443 </demandValue>
+  </demand>
+  <demand id="Erfurt_Kiel">
+   <source>Erfurt</source>
+   <target>Kiel</target>
+   <demandValue> 0.000132 </demandValue>
+  </demand>
+  <demand id="Norden_Dresden">
+   <source>Norden</source>
+   <target>Dresden</target>
+   <demandValue> 0.047331 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Dresden">
+   <source>Chemnitz</source>
+   <target>Dresden</target>
+   <demandValue> 0.020690 </demandValue>
+  </demand>
+  <demand id="Bremen_Koeln">
+   <source>Bremen</source>
+   <target>Koeln</target>
+   <demandValue> 0.197400 </demandValue>
+  </demand>
+  <demand id="Regensburg_Koeln">
+   <source>Regensburg</source>
+   <target>Koeln</target>
+   <demandValue> 0.082597 </demandValue>
+  </demand>
+  <demand id="Passau_Erfurt">
+   <source>Passau</source>
+   <target>Erfurt</target>
+   <demandValue> 0.022895 </demandValue>
+  </demand>
+  <demand id="Koeln_Muenchen">
+   <source>Koeln</source>
+   <target>Muenchen</target>
+   <demandValue> 0.336591 </demandValue>
+  </demand>
+  <demand id="Leipzig_Erfurt">
+   <source>Leipzig</source>
+   <target>Erfurt</target>
+   <demandValue> 1.549739 </demandValue>
+  </demand>
+  <demand id="Regensburg_Duesseldorf">
+   <source>Regensburg</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Hannover_Muenchen">
+   <source>Hannover</source>
+   <target>Muenchen</target>
+   <demandValue> 1.175557 </demandValue>
+  </demand>
+  <demand id="Kempten_Muenchen">
+   <source>Kempten</source>
+   <target>Muenchen</target>
+   <demandValue> 0.550851 </demandValue>
+  </demand>
+  <demand id="Passau_Frankfurt">
+   <source>Passau</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.511326 </demandValue>
+  </demand>
+  <demand id="Muenchen_Dortmund">
+   <source>Muenchen</source>
+   <target>Dortmund</target>
+   <demandValue> 0.700034 </demandValue>
+  </demand>
+  <demand id="Siegen_Oldenburg">
+   <source>Siegen</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.008474 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Regensburg">
+   <source>Wuerzburg</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000397 </demandValue>
+  </demand>
+  <demand id="Regensburg_Dresden">
+   <source>Regensburg</source>
+   <target>Dresden</target>
+   <demandValue> 0.004561 </demandValue>
+  </demand>
+  <demand id="Dresden_Essen">
+   <source>Dresden</source>
+   <target>Essen</target>
+   <demandValue> 8.805863 </demandValue>
+  </demand>
+  <demand id="Norden_Bremerhaven">
+   <source>Norden</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.011884 </demandValue>
+  </demand>
+  <demand id="Muenster_Darmstadt">
+   <source>Muenster</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.792725 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Schwerin">
+   <source>Oldenburg</source>
+   <target>Schwerin</target>
+   <demandValue> 0.034801 </demandValue>
+  </demand>
+  <demand id="Berlin_Schwerin">
+   <source>Berlin</source>
+   <target>Schwerin</target>
+   <demandValue> 0.144184 </demandValue>
+  </demand>
+  <demand id="Hamburg_Leipzig">
+   <source>Hamburg</source>
+   <target>Leipzig</target>
+   <demandValue> 0.004347 </demandValue>
+  </demand>
+  <demand id="Kassel_Oldenburg">
+   <source>Kassel</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.090294 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Muenster">
+   <source>Saarbruecken</source>
+   <target>Muenster</target>
+   <demandValue> 0.000051 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Leipzig">
+   <source>Oldenburg</source>
+   <target>Leipzig</target>
+   <demandValue> 0.032191 </demandValue>
+  </demand>
+  <demand id="Aachen_Braunschweig">
+   <source>Aachen</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.087179 </demandValue>
+  </demand>
+  <demand id="Norden_Flensburg">
+   <source>Norden</source>
+   <target>Flensburg</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Saarbruecken">
+   <source>Braunschweig</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000046 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Bremen">
+   <source>Braunschweig</source>
+   <target>Bremen</target>
+   <demandValue> 0.001240 </demandValue>
+  </demand>
+  <demand id="Kassel_Hamburg">
+   <source>Kassel</source>
+   <target>Hamburg</target>
+   <demandValue> 0.283529 </demandValue>
+  </demand>
+  <demand id="Fulda_Koeln">
+   <source>Fulda</source>
+   <target>Koeln</target>
+   <demandValue> 0.000017 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Karlsruhe">
+   <source>Stuttgart</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.044708 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Hannover">
+   <source>Kaiserslautern</source>
+   <target>Hannover</target>
+   <demandValue> 0.002360 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Aachen">
+   <source>Magdeburg</source>
+   <target>Aachen</target>
+   <demandValue> 0.000050 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Essen">
+   <source>Frankfurt</source>
+   <target>Essen</target>
+   <demandValue> 15.786339 </demandValue>
+  </demand>
+  <demand id="Kassel_Saarbruecken">
+   <source>Kassel</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Osnabrueck">
+   <source>Chemnitz</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Erfurt_Koeln">
+   <source>Erfurt</source>
+   <target>Koeln</target>
+   <demandValue> 0.900118 </demandValue>
+  </demand>
+  <demand id="Muenchen_Koeln">
+   <source>Muenchen</source>
+   <target>Koeln</target>
+   <demandValue> 6.801897 </demandValue>
+  </demand>
+  <demand id="Berlin_Flensburg">
+   <source>Berlin</source>
+   <target>Flensburg</target>
+   <demandValue> 0.001269 </demandValue>
+  </demand>
+  <demand id="Leipzig_Dortmund">
+   <source>Leipzig</source>
+   <target>Dortmund</target>
+   <demandValue> 0.077741 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Essen">
+   <source>Wuerzburg</source>
+   <target>Essen</target>
+   <demandValue> 0.000346 </demandValue>
+  </demand>
+  <demand id="Dortmund_Siegen">
+   <source>Dortmund</source>
+   <target>Siegen</target>
+   <demandValue> 0.000027 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Kaiserslautern">
+   <source>Osnabrueck</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000186 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Regensburg">
+   <source>Stuttgart</source>
+   <target>Regensburg</target>
+   <demandValue> 0.176913 </demandValue>
+  </demand>
+  <demand id="Fulda_Kassel">
+   <source>Fulda</source>
+   <target>Kassel</target>
+   <demandValue> 0.000775 </demandValue>
+  </demand>
+  <demand id="Augsburg_Kaiserslautern">
+   <source>Augsburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000413 </demandValue>
+  </demand>
+  <demand id="Dortmund_Hamburg">
+   <source>Dortmund</source>
+   <target>Hamburg</target>
+   <demandValue> 0.003655 </demandValue>
+  </demand>
+  <demand id="Dortmund_Duesseldorf">
+   <source>Dortmund</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000235 </demandValue>
+  </demand>
+  <demand id="Regensburg_Wuerzburg">
+   <source>Regensburg</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Siegen_Dortmund">
+   <source>Siegen</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000028 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Darmstadt">
+   <source>Karlsruhe</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.002764 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Freiburg">
+   <source>Braunschweig</source>
+   <target>Freiburg</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Erfurt">
+   <source>Chemnitz</source>
+   <target>Erfurt</target>
+   <demandValue> 4.413249 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Frankfurt">
+   <source>Oldenburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 8.271258 </demandValue>
+  </demand>
+  <demand id="Dortmund_Darmstadt">
+   <source>Dortmund</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.131710 </demandValue>
+  </demand>
+  <demand id="Hamburg_Bremen">
+   <source>Hamburg</source>
+   <target>Bremen</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Kassel_Stuttgart">
+   <source>Kassel</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.141826 </demandValue>
+  </demand>
+  <demand id="Muenster_Koeln">
+   <source>Muenster</source>
+   <target>Koeln</target>
+   <demandValue> 0.221909 </demandValue>
+  </demand>
+  <demand id="Dresden_Stuttgart">
+   <source>Dresden</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.271065 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Siegen">
+   <source>Stuttgart</source>
+   <target>Siegen</target>
+   <demandValue> 3.294492 </demandValue>
+  </demand>
+  <demand id="Mannheim_Braunschweig">
+   <source>Mannheim</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000015 </demandValue>
+  </demand>
+  <demand id="Hannover_Flensburg">
+   <source>Hannover</source>
+   <target>Flensburg</target>
+   <demandValue> 0.010483 </demandValue>
+  </demand>
+  <demand id="Siegen_Berlin">
+   <source>Siegen</source>
+   <target>Berlin</target>
+   <demandValue> 0.000057 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Greifswald">
+   <source>Osnabrueck</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000078 </demandValue>
+  </demand>
+  <demand id="Hannover_Dortmund">
+   <source>Hannover</source>
+   <target>Dortmund</target>
+   <demandValue> 0.596252 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Erfurt">
+   <source>Frankfurt</source>
+   <target>Erfurt</target>
+   <demandValue> 33.389039 </demandValue>
+  </demand>
+  <demand id="Regensburg_Erfurt">
+   <source>Regensburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.132716 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Trier">
+   <source>Frankfurt</source>
+   <target>Trier</target>
+   <demandValue> 2.802036 </demandValue>
+  </demand>
+  <demand id="Koeln_Aachen">
+   <source>Koeln</source>
+   <target>Aachen</target>
+   <demandValue> 0.517656 </demandValue>
+  </demand>
+  <demand id="Hannover_Bremerhaven">
+   <source>Hannover</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.011383 </demandValue>
+  </demand>
+  <demand id="Giessen_Hannover">
+   <source>Giessen</source>
+   <target>Hannover</target>
+   <demandValue> 0.003761 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Bremen">
+   <source>Darmstadt</source>
+   <target>Bremen</target>
+   <demandValue> 0.839317 </demandValue>
+  </demand>
+  <demand id="Kempten_Braunschweig">
+   <source>Kempten</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000015 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Hamburg">
+   <source>Nuernberg</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000223 </demandValue>
+  </demand>
+  <demand id="Hamburg_Oldenburg">
+   <source>Hamburg</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.165248 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Dortmund">
+   <source>Braunschweig</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000393 </demandValue>
+  </demand>
+  <demand id="Hannover_Dresden">
+   <source>Hannover</source>
+   <target>Dresden</target>
+   <demandValue> 2.549906 </demandValue>
+  </demand>
+  <demand id="Hamburg_Magdeburg">
+   <source>Hamburg</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000475 </demandValue>
+  </demand>
+  <demand id="Muenchen_Konstanz">
+   <source>Muenchen</source>
+   <target>Konstanz</target>
+   <demandValue> 0.001243 </demandValue>
+  </demand>
+  <demand id="Aachen_Muenster">
+   <source>Aachen</source>
+   <target>Muenster</target>
+   <demandValue> 0.000407 </demandValue>
+  </demand>
+  <demand id="Schwerin_Hannover">
+   <source>Schwerin</source>
+   <target>Hannover</target>
+   <demandValue> 0.556155 </demandValue>
+  </demand>
+  <demand id="Siegen_Kiel">
+   <source>Siegen</source>
+   <target>Kiel</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Mannheim_Stuttgart">
+   <source>Mannheim</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.105085 </demandValue>
+  </demand>
+  <demand id="Hamburg_Karlsruhe">
+   <source>Hamburg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000730 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Muenchen">
+   <source>Stuttgart</source>
+   <target>Muenchen</target>
+   <demandValue> 0.801726 </demandValue>
+  </demand>
+  <demand id="Kassel_Regensburg">
+   <source>Kassel</source>
+   <target>Regensburg</target>
+   <demandValue> 0.002060 </demandValue>
+  </demand>
+  <demand id="Regensburg_Leipzig">
+   <source>Regensburg</source>
+   <target>Leipzig</target>
+   <demandValue> 0.636780 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Augsburg">
+   <source>Braunschweig</source>
+   <target>Augsburg</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Nuernberg">
+   <source>Wuerzburg</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.007883 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Norden">
+   <source>Bremerhaven</source>
+   <target>Norden</target>
+   <demandValue> 0.015430 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Darmstadt">
+   <source>Kaiserslautern</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.395681 </demandValue>
+  </demand>
+  <demand id="Kassel_Berlin">
+   <source>Kassel</source>
+   <target>Berlin</target>
+   <demandValue> 0.771294 </demandValue>
+  </demand>
+  <demand id="Leipzig_Siegen">
+   <source>Leipzig</source>
+   <target>Siegen</target>
+   <demandValue> 0.000974 </demandValue>
+  </demand>
+  <demand id="Greifswald_Regensburg">
+   <source>Greifswald</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Stuttgart">
+   <source>Wuerzburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000153 </demandValue>
+  </demand>
+  <demand id="Kassel_Darmstadt">
+   <source>Kassel</source>
+   <target>Darmstadt</target>
+   <demandValue> 3.982497 </demandValue>
+  </demand>
+  <demand id="Kassel_Nuernberg">
+   <source>Kassel</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000188 </demandValue>
+  </demand>
+  <demand id="Siegen_Frankfurt">
+   <source>Siegen</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.478753 </demandValue>
+  </demand>
+  <demand id="Passau_Berlin">
+   <source>Passau</source>
+   <target>Berlin</target>
+   <demandValue> 0.000122 </demandValue>
+  </demand>
+  <demand id="Mannheim_Berlin">
+   <source>Mannheim</source>
+   <target>Berlin</target>
+   <demandValue> 0.003032 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Magdeburg">
+   <source>Oldenburg</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.001404 </demandValue>
+  </demand>
+  <demand id="Augsburg_Hamburg">
+   <source>Augsburg</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000017 </demandValue>
+  </demand>
+  <demand id="Augsburg_Nuernberg">
+   <source>Augsburg</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.009187 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Duesseldorf">
+   <source>Braunschweig</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.009139 </demandValue>
+  </demand>
+  <demand id="Leipzig_Saarbruecken">
+   <source>Leipzig</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000793 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Regensburg">
+   <source>Saarbruecken</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000078 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Braunschweig">
+   <source>Wuerzburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000109 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Erfurt">
+   <source>Karlsruhe</source>
+   <target>Erfurt</target>
+   <demandValue> 0.006757 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Essen">
+   <source>Saarbruecken</source>
+   <target>Essen</target>
+   <demandValue> 0.000009 </demandValue>
+  </demand>
+  <demand id="Hannover_Koeln">
+   <source>Hannover</source>
+   <target>Koeln</target>
+   <demandValue> 4.397719 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Karlsruhe">
+   <source>Kaiserslautern</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.018105 </demandValue>
+  </demand>
+  <demand id="Passau_Koeln">
+   <source>Passau</source>
+   <target>Koeln</target>
+   <demandValue> 0.001665 </demandValue>
+  </demand>
+  <demand id="Dresden_Aachen">
+   <source>Dresden</source>
+   <target>Aachen</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Essen_Leipzig">
+   <source>Essen</source>
+   <target>Leipzig</target>
+   <demandValue> 9.365961 </demandValue>
+  </demand>
+  <demand id="Fulda_Karlsruhe">
+   <source>Fulda</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Muenchen">
+   <source>Oldenburg</source>
+   <target>Muenchen</target>
+   <demandValue> 0.247116 </demandValue>
+  </demand>
+  <demand id="Norden_Hamburg">
+   <source>Norden</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Augsburg_Aachen">
+   <source>Augsburg</source>
+   <target>Aachen</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Dresden_Mannheim">
+   <source>Dresden</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000267 </demandValue>
+  </demand>
+  <demand id="Kiel_Erfurt">
+   <source>Kiel</source>
+   <target>Erfurt</target>
+   <demandValue> 0.048453 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Bremerhaven">
+   <source>Braunschweig</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Aachen_Stuttgart">
+   <source>Aachen</source>
+   <target>Stuttgart</target>
+   <demandValue> 38.251338 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Osnabrueck">
+   <source>Oldenburg</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.033220 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Berlin">
+   <source>Magdeburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.056779 </demandValue>
+  </demand>
+  <demand id="Hannover_Leipzig">
+   <source>Hannover</source>
+   <target>Leipzig</target>
+   <demandValue> 2.483068 </demandValue>
+  </demand>
+  <demand id="Augsburg_Schwerin">
+   <source>Augsburg</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000046 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Erfurt">
+   <source>Bremerhaven</source>
+   <target>Erfurt</target>
+   <demandValue> 0.013792 </demandValue>
+  </demand>
+  <demand id="Berlin_Regensburg">
+   <source>Berlin</source>
+   <target>Regensburg</target>
+   <demandValue> 0.215641 </demandValue>
+  </demand>
+  <demand id="Augsburg_Koeln">
+   <source>Augsburg</source>
+   <target>Koeln</target>
+   <demandValue> 0.010695 </demandValue>
+  </demand>
+  <demand id="Erfurt_Passau">
+   <source>Erfurt</source>
+   <target>Passau</target>
+   <demandValue> 0.000341 </demandValue>
+  </demand>
+  <demand id="Regensburg_Bremen">
+   <source>Regensburg</source>
+   <target>Bremen</target>
+   <demandValue> 0.000236 </demandValue>
+  </demand>
+  <demand id="Greifswald_Bremerhaven">
+   <source>Greifswald</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.001628 </demandValue>
+  </demand>
+  <demand id="Dresden_Saarbruecken">
+   <source>Dresden</source>
+   <target>Saarbruecken</target>
+   <demandValue> 1.618426 </demandValue>
+  </demand>
+  <demand id="Siegen_Karlsruhe">
+   <source>Siegen</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000098 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Oldenburg">
+   <source>Magdeburg</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000584 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Braunschweig">
+   <source>Saarbruecken</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000111 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Koeln">
+   <source>Oldenburg</source>
+   <target>Koeln</target>
+   <demandValue> 0.078155 </demandValue>
+  </demand>
+  <demand id="Aachen_Bayreuth">
+   <source>Aachen</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.002706 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Flensburg">
+   <source>Oldenburg</source>
+   <target>Flensburg</target>
+   <demandValue> 0.000011 </demandValue>
+  </demand>
+  <demand id="Kempten_Darmstadt">
+   <source>Kempten</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.000320 </demandValue>
+  </demand>
+  <demand id="Giessen_Muenchen">
+   <source>Giessen</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Kempten_Erfurt">
+   <source>Kempten</source>
+   <target>Erfurt</target>
+   <demandValue> 0.003456 </demandValue>
+  </demand>
+  <demand id="Bremen_Oldenburg">
+   <source>Bremen</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.039599 </demandValue>
+  </demand>
+  <demand id="Muenchen_Kiel">
+   <source>Muenchen</source>
+   <target>Kiel</target>
+   <demandValue> 0.027194 </demandValue>
+  </demand>
+  <demand id="Aachen_Greifswald">
+   <source>Aachen</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000224 </demandValue>
+  </demand>
+  <demand id="Bremen_Regensburg">
+   <source>Bremen</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000464 </demandValue>
+  </demand>
+  <demand id="Trier_Kaiserslautern">
+   <source>Trier</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000193 </demandValue>
+  </demand>
+  <demand id="Koeln_Kaiserslautern">
+   <source>Koeln</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.006201 </demandValue>
+  </demand>
+  <demand id="Essen_Dortmund">
+   <source>Essen</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000883 </demandValue>
+  </demand>
+  <demand id="Erfurt_Nuernberg">
+   <source>Erfurt</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.007606 </demandValue>
+  </demand>
+  <demand id="Dresden_Kassel">
+   <source>Dresden</source>
+   <target>Kassel</target>
+   <demandValue> 22.280182 </demandValue>
+  </demand>
+  <demand id="Augsburg_Erfurt">
+   <source>Augsburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.073659 </demandValue>
+  </demand>
+  <demand id="Leipzig_Karlsruhe">
+   <source>Leipzig</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.735959 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Trier">
+   <source>Stuttgart</source>
+   <target>Trier</target>
+   <demandValue> 0.357936 </demandValue>
+  </demand>
+  <demand id="Muenster_Muenchen">
+   <source>Muenster</source>
+   <target>Muenchen</target>
+   <demandValue> 1.769760 </demandValue>
+  </demand>
+  <demand id="Leipzig_Augsburg">
+   <source>Leipzig</source>
+   <target>Augsburg</target>
+   <demandValue> 0.016927 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Berlin">
+   <source>Saarbruecken</source>
+   <target>Berlin</target>
+   <demandValue> 0.000416 </demandValue>
+  </demand>
+  <demand id="Norden_Kassel">
+   <source>Norden</source>
+   <target>Kassel</target>
+   <demandValue> 0.000314 </demandValue>
+  </demand>
+  <demand id="Schwerin_Regensburg">
+   <source>Schwerin</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000934 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Bremen">
+   <source>Frankfurt</source>
+   <target>Bremen</target>
+   <demandValue> 35.752052 </demandValue>
+  </demand>
+  <demand id="Bremen_Aachen">
+   <source>Bremen</source>
+   <target>Aachen</target>
+   <demandValue> 0.583534 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Stuttgart">
+   <source>Frankfurt</source>
+   <target>Stuttgart</target>
+   <demandValue> 15.634646 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Wuerzburg">
+   <source>Kaiserslautern</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.001556 </demandValue>
+  </demand>
+  <demand id="Kiel_Flensburg">
+   <source>Kiel</source>
+   <target>Flensburg</target>
+   <demandValue> 0.002828 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Dresden">
+   <source>Stuttgart</source>
+   <target>Dresden</target>
+   <demandValue> 1.653956 </demandValue>
+  </demand>
+  <demand id="Schwerin_Frankfurt">
+   <source>Schwerin</source>
+   <target>Frankfurt</target>
+   <demandValue> 27.885457 </demandValue>
+  </demand>
+  <demand id="Bremen_Duesseldorf">
+   <source>Bremen</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.013054 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Stuttgart">
+   <source>Saarbruecken</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.480392 </demandValue>
+  </demand>
+  <demand id="Koeln_Muenster">
+   <source>Koeln</source>
+   <target>Muenster</target>
+   <demandValue> 0.406901 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Duesseldorf">
+   <source>Frankfurt</source>
+   <target>Duesseldorf</target>
+   <demandValue> 2.287450 </demandValue>
+  </demand>
+  <demand id="Bremen_Karlsruhe">
+   <source>Bremen</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.001685 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Schwerin">
+   <source>Bremerhaven</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000024 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Kassel">
+   <source>Magdeburg</source>
+   <target>Kassel</target>
+   <demandValue> 0.000117 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Duesseldorf">
+   <source>Saarbruecken</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Berlin">
+   <source>Stuttgart</source>
+   <target>Berlin</target>
+   <demandValue> 8.973628 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Muenster">
+   <source>Nuernberg</source>
+   <target>Muenster</target>
+   <demandValue> 0.000102 </demandValue>
+  </demand>
+  <demand id="Augsburg_Berlin">
+   <source>Augsburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.015776 </demandValue>
+  </demand>
+  <demand id="Koeln_Hamburg">
+   <source>Koeln</source>
+   <target>Hamburg</target>
+   <demandValue> 0.077049 </demandValue>
+  </demand>
+  <demand id="Trier_Frankfurt">
+   <source>Trier</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.751129 </demandValue>
+  </demand>
+  <demand id="Muenster_Essen">
+   <source>Muenster</source>
+   <target>Essen</target>
+   <demandValue> 0.041349 </demandValue>
+  </demand>
+  <demand id="Koeln_Osnabrueck">
+   <source>Koeln</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.029642 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Aachen">
+   <source>Nuernberg</source>
+   <target>Aachen</target>
+   <demandValue> 0.000153 </demandValue>
+  </demand>
+  <demand id="Giessen_Koeln">
+   <source>Giessen</source>
+   <target>Koeln</target>
+   <demandValue> 0.129900 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Aachen">
+   <source>Bremerhaven</source>
+   <target>Aachen</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Berlin_Dortmund">
+   <source>Berlin</source>
+   <target>Dortmund</target>
+   <demandValue> 0.036623 </demandValue>
+  </demand>
+  <demand id="Augsburg_Frankfurt">
+   <source>Augsburg</source>
+   <target>Frankfurt</target>
+   <demandValue> 1.530541 </demandValue>
+  </demand>
+  <demand id="Kassel_Karlsruhe">
+   <source>Kassel</source>
+   <target>Karlsruhe</target>
+   <demandValue> 1.519547 </demandValue>
+  </demand>
+  <demand id="Augsburg_Braunschweig">
+   <source>Augsburg</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000979 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Bremen">
+   <source>Bremerhaven</source>
+   <target>Bremen</target>
+   <demandValue> 0.000015 </demandValue>
+  </demand>
+  <demand id="Kassel_Bremen">
+   <source>Kassel</source>
+   <target>Bremen</target>
+   <demandValue> 0.000471 </demandValue>
+  </demand>
+  <demand id="Berlin_Trier">
+   <source>Berlin</source>
+   <target>Trier</target>
+   <demandValue> 0.051616 </demandValue>
+  </demand>
+  <demand id="Fulda_Erfurt">
+   <source>Fulda</source>
+   <target>Erfurt</target>
+   <demandValue> 0.002073 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Dresden">
+   <source>Oldenburg</source>
+   <target>Dresden</target>
+   <demandValue> 0.062566 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Nuernberg">
+   <source>Braunschweig</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000207 </demandValue>
+  </demand>
+  <demand id="Hamburg_Giessen">
+   <source>Hamburg</source>
+   <target>Giessen</target>
+   <demandValue> 0.001994 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Braunschweig">
+   <source>Bremerhaven</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000017 </demandValue>
+  </demand>
+  <demand id="Leipzig_Hannover">
+   <source>Leipzig</source>
+   <target>Hannover</target>
+   <demandValue> 1.845197 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Chemnitz">
+   <source>Braunschweig</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000939 </demandValue>
+  </demand>
+  <demand id="Bremen_Hannover">
+   <source>Bremen</source>
+   <target>Hannover</target>
+   <demandValue> 15.015912 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Chemnitz">
+   <source>Bremerhaven</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Kaiserslautern">
+   <source>Darmstadt</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.146508 </demandValue>
+  </demand>
+  <demand id="Greifswald_Hamburg">
+   <source>Greifswald</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000057 </demandValue>
+  </demand>
+  <demand id="Muenster_Chemnitz">
+   <source>Muenster</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.016541 </demandValue>
+  </demand>
+  <demand id="Kassel_Dortmund">
+   <source>Kassel</source>
+   <target>Dortmund</target>
+   <demandValue> 0.596787 </demandValue>
+  </demand>
+  <demand id="Essen_Kassel">
+   <source>Essen</source>
+   <target>Kassel</target>
+   <demandValue> 0.044679 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Oldenburg">
+   <source>Bayreuth</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000363 </demandValue>
+  </demand>
+  <demand id="Norden_Regensburg">
+   <source>Norden</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Muenster_Mannheim">
+   <source>Muenster</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000132 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Hannover">
+   <source>Saarbruecken</source>
+   <target>Hannover</target>
+   <demandValue> 0.005446 </demandValue>
+  </demand>
+  <demand id="Siegen_Hannover">
+   <source>Siegen</source>
+   <target>Hannover</target>
+   <demandValue> 0.005224 </demandValue>
+  </demand>
+  <demand id="Flensburg_Norden">
+   <source>Flensburg</source>
+   <target>Norden</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Muenster_Erfurt">
+   <source>Muenster</source>
+   <target>Erfurt</target>
+   <demandValue> 0.824720 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Schwerin">
+   <source>Chemnitz</source>
+   <target>Schwerin</target>
+   <demandValue> 0.000082 </demandValue>
+  </demand>
+  <demand id="Berlin_Bremen">
+   <source>Berlin</source>
+   <target>Bremen</target>
+   <demandValue> 0.055613 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Nuernberg">
+   <source>Oldenburg</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.002947 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Darmstadt">
+   <source>Stuttgart</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.144526 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Trier">
+   <source>Saarbruecken</source>
+   <target>Trier</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Giessen_Hamburg">
+   <source>Giessen</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Augsburg_Bremen">
+   <source>Augsburg</source>
+   <target>Bremen</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Augsburg_Leipzig">
+   <source>Augsburg</source>
+   <target>Leipzig</target>
+   <demandValue> 0.001472 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Darmstadt">
+   <source>Bremerhaven</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.291308 </demandValue>
+  </demand>
+  <demand id="Regensburg_Augsburg">
+   <source>Regensburg</source>
+   <target>Augsburg</target>
+   <demandValue> 0.000070 </demandValue>
+  </demand>
+  <demand id="Kempten_Berlin">
+   <source>Kempten</source>
+   <target>Berlin</target>
+   <demandValue> 0.000012 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Bremerhaven">
+   <source>Frankfurt</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.217888 </demandValue>
+  </demand>
+  <demand id="Berlin_Hannover">
+   <source>Berlin</source>
+   <target>Hannover</target>
+   <demandValue> 0.087062 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Karlsruhe">
+   <source>Wuerzburg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.003723 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Stuttgart">
+   <source>Nuernberg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.025567 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Hamburg">
+   <source>Karlsruhe</source>
+   <target>Hamburg</target>
+   <demandValue> 0.008644 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Koeln">
+   <source>Stuttgart</source>
+   <target>Koeln</target>
+   <demandValue> 2.754187 </demandValue>
+  </demand>
+  <demand id="Greifswald_Kaiserslautern">
+   <source>Greifswald</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Giessen">
+   <source>Frankfurt</source>
+   <target>Giessen</target>
+   <demandValue> 3.130662 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Hannover">
+   <source>Nuernberg</source>
+   <target>Hannover</target>
+   <demandValue> 0.077726 </demandValue>
+  </demand>
+  <demand id="Dortmund_Braunschweig">
+   <source>Dortmund</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000597 </demandValue>
+  </demand>
+  <demand id="Leipzig_Frankfurt">
+   <source>Leipzig</source>
+   <target>Frankfurt</target>
+   <demandValue> 25.823656 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Oldenburg">
+   <source>Frankfurt</source>
+   <target>Oldenburg</target>
+   <demandValue> 9.175481 </demandValue>
+  </demand>
+  <demand id="Essen_Kaiserslautern">
+   <source>Essen</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.019455 </demandValue>
+  </demand>
+  <demand id="Passau_Bremen">
+   <source>Passau</source>
+   <target>Bremen</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Greifswald_Hannover">
+   <source>Greifswald</source>
+   <target>Hannover</target>
+   <demandValue> 0.000479 </demandValue>
+  </demand>
+  <demand id="Siegen_Giessen">
+   <source>Siegen</source>
+   <target>Giessen</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Bremen_Braunschweig">
+   <source>Bremen</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.002304 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Berlin">
+   <source>Kaiserslautern</source>
+   <target>Berlin</target>
+   <demandValue> 0.006399 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Osnabrueck">
+   <source>Frankfurt</source>
+   <target>Osnabrueck</target>
+   <demandValue> 9.343119 </demandValue>
+  </demand>
+  <demand id="Essen_Dresden">
+   <source>Essen</source>
+   <target>Dresden</target>
+   <demandValue> 0.203608 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Schwerin">
+   <source>Frankfurt</source>
+   <target>Schwerin</target>
+   <demandValue> 21.895515 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Greifswald">
+   <source>Nuernberg</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000152 </demandValue>
+  </demand>
+  <demand id="Koeln_Bremen">
+   <source>Koeln</source>
+   <target>Bremen</target>
+   <demandValue> 0.266221 </demandValue>
+  </demand>
+  <demand id="Passau_Nuernberg">
+   <source>Passau</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.003179 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Passau">
+   <source>Frankfurt</source>
+   <target>Passau</target>
+   <demandValue> 0.587396 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Muenchen">
+   <source>Saarbruecken</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000031 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Passau">
+   <source>Stuttgart</source>
+   <target>Passau</target>
+   <demandValue> 0.011693 </demandValue>
+  </demand>
+  <demand id="Muenchen_Leipzig">
+   <source>Muenchen</source>
+   <target>Leipzig</target>
+   <demandValue> 0.439888 </demandValue>
+  </demand>
+  <demand id="Schwerin_Kassel">
+   <source>Schwerin</source>
+   <target>Kassel</target>
+   <demandValue> 0.000441 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Konstanz">
+   <source>Frankfurt</source>
+   <target>Konstanz</target>
+   <demandValue> 0.000631 </demandValue>
+  </demand>
+  <demand id="Berlin_Dresden">
+   <source>Berlin</source>
+   <target>Dresden</target>
+   <demandValue> 0.476702 </demandValue>
+  </demand>
+  <demand id="Schwerin_Giessen">
+   <source>Schwerin</source>
+   <target>Giessen</target>
+   <demandValue> 0.002405 </demandValue>
+  </demand>
+  <demand id="Leipzig_Kempten">
+   <source>Leipzig</source>
+   <target>Kempten</target>
+   <demandValue> 0.040545 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Karlsruhe">
+   <source>Chemnitz</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000030 </demandValue>
+  </demand>
+  <demand id="Dresden_Norden">
+   <source>Dresden</source>
+   <target>Norden</target>
+   <demandValue> 2.663320 </demandValue>
+  </demand>
+  <demand id="Kassel_Dresden">
+   <source>Kassel</source>
+   <target>Dresden</target>
+   <demandValue> 3.065837 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Flensburg">
+   <source>Darmstadt</source>
+   <target>Flensburg</target>
+   <demandValue> 0.018239 </demandValue>
+  </demand>
+  <demand id="Greifswald_Koeln">
+   <source>Greifswald</source>
+   <target>Koeln</target>
+   <demandValue> 0.392827 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Aachen">
+   <source>Chemnitz</source>
+   <target>Aachen</target>
+   <demandValue> 0.040270 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Chemnitz">
+   <source>Frankfurt</source>
+   <target>Chemnitz</target>
+   <demandValue> 23.596461 </demandValue>
+  </demand>
+  <demand id="Berlin_Greifswald">
+   <source>Berlin</source>
+   <target>Greifswald</target>
+   <demandValue> 0.039577 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Essen">
+   <source>Nuernberg</source>
+   <target>Essen</target>
+   <demandValue> 0.000660 </demandValue>
+  </demand>
+  <demand id="Leipzig_Duesseldorf">
+   <source>Leipzig</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.018262 </demandValue>
+  </demand>
+  <demand id="Muenchen_Karlsruhe">
+   <source>Muenchen</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.035128 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Hamburg">
+   <source>Braunschweig</source>
+   <target>Hamburg</target>
+   <demandValue> 0.006379 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Kassel">
+   <source>Bremerhaven</source>
+   <target>Kassel</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Hannover_Kiel">
+   <source>Hannover</source>
+   <target>Kiel</target>
+   <demandValue> 0.286979 </demandValue>
+  </demand>
+  <demand id="Koeln_Regensburg">
+   <source>Koeln</source>
+   <target>Regensburg</target>
+   <demandValue> 0.019523 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Braunschweig">
+   <source>Chemnitz</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000030 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Duesseldorf">
+   <source>Oldenburg</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000036 </demandValue>
+  </demand>
+  <demand id="Leipzig_Aachen">
+   <source>Leipzig</source>
+   <target>Aachen</target>
+   <demandValue> 0.654394 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Darmstadt">
+   <source>Magdeburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.521460 </demandValue>
+  </demand>
+  <demand id="Passau_Leipzig">
+   <source>Passau</source>
+   <target>Leipzig</target>
+   <demandValue> 0.008977 </demandValue>
+  </demand>
+  <demand id="Dortmund_Dresden">
+   <source>Dortmund</source>
+   <target>Dresden</target>
+   <demandValue> 0.003751 </demandValue>
+  </demand>
+  <demand id="Muenchen_Muenster">
+   <source>Muenchen</source>
+   <target>Muenster</target>
+   <demandValue> 0.332792 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Bremerhaven">
+   <source>Magdeburg</source>
+   <target>Bremerhaven</target>
+   <demandValue> 0.000214 </demandValue>
+  </demand>
+  <demand id="Hannover_Siegen">
+   <source>Hannover</source>
+   <target>Siegen</target>
+   <demandValue> 0.122686 </demandValue>
+  </demand>
+  <demand id="Flensburg_Kiel">
+   <source>Flensburg</source>
+   <target>Kiel</target>
+   <demandValue> 0.001917 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Muenchen">
+   <source>Braunschweig</source>
+   <target>Muenchen</target>
+   <demandValue> 8.381049 </demandValue>
+  </demand>
+  <demand id="Dresden_Frankfurt">
+   <source>Dresden</source>
+   <target>Frankfurt</target>
+   <demandValue> 119.001297 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Giessen">
+   <source>Osnabrueck</source>
+   <target>Giessen</target>
+   <demandValue> 0.001162 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Osnabrueck">
+   <source>Stuttgart</source>
+   <target>Osnabrueck</target>
+   <demandValue> 6.080699 </demandValue>
+  </demand>
+  <demand id="Koeln_Kempten">
+   <source>Koeln</source>
+   <target>Kempten</target>
+   <demandValue> 0.017399 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Kaiserslautern">
+   <source>Braunschweig</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000421 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Aachen">
+   <source>Darmstadt</source>
+   <target>Aachen</target>
+   <demandValue> 2.943906 </demandValue>
+  </demand>
+  <demand id="Flensburg_Osnabrueck">
+   <source>Flensburg</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.000030 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Mannheim">
+   <source>Braunschweig</source>
+   <target>Mannheim</target>
+   <demandValue> 0.000019 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Norden">
+   <source>Oldenburg</source>
+   <target>Norden</target>
+   <demandValue> 0.007214 </demandValue>
+  </demand>
+  <demand id="Koeln_Mannheim">
+   <source>Koeln</source>
+   <target>Mannheim</target>
+   <demandValue> 0.044334 </demandValue>
+  </demand>
+  <demand id="Muenchen_Braunschweig">
+   <source>Muenchen</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.590912 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Erfurt">
+   <source>Nuernberg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.398648 </demandValue>
+  </demand>
+  <demand id="Giessen_Bremen">
+   <source>Giessen</source>
+   <target>Bremen</target>
+   <demandValue> 0.000264 </demandValue>
+  </demand>
+  <demand id="Fulda_Regensburg">
+   <source>Fulda</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Hamburg_Nuernberg">
+   <source>Hamburg</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000447 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Kassel">
+   <source>Wuerzburg</source>
+   <target>Kassel</target>
+   <demandValue> 0.001322 </demandValue>
+  </demand>
+  <demand id="Leipzig_Chemnitz">
+   <source>Leipzig</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.980989 </demandValue>
+  </demand>
+  <demand id="Berlin_Essen">
+   <source>Berlin</source>
+   <target>Essen</target>
+   <demandValue> 0.229858 </demandValue>
+  </demand>
+  <demand id="Regensburg_Essen">
+   <source>Regensburg</source>
+   <target>Essen</target>
+   <demandValue> 0.001271 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Muenchen">
+   <source>Karlsruhe</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000153 </demandValue>
+  </demand>
+  <demand id="Siegen_Nuernberg">
+   <source>Siegen</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000096 </demandValue>
+  </demand>
+  <demand id="Regensburg_Trier">
+   <source>Regensburg</source>
+   <target>Trier</target>
+   <demandValue> 0.003984 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Giessen">
+   <source>Nuernberg</source>
+   <target>Giessen</target>
+   <demandValue> 0.000677 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Erfurt">
+   <source>Saarbruecken</source>
+   <target>Erfurt</target>
+   <demandValue> 0.276831 </demandValue>
+  </demand>
+  <demand id="Greifswald_Chemnitz">
+   <source>Greifswald</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000155 </demandValue>
+  </demand>
+  <demand id="Greifswald_Berlin">
+   <source>Greifswald</source>
+   <target>Berlin</target>
+   <demandValue> 0.032241 </demandValue>
+  </demand>
+  <demand id="Regensburg_Greifswald">
+   <source>Regensburg</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000032 </demandValue>
+  </demand>
+  <demand id="Berlin_Siegen">
+   <source>Berlin</source>
+   <target>Siegen</target>
+   <demandValue> 0.000035 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Dortmund">
+   <source>Oldenburg</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000317 </demandValue>
+  </demand>
+  <demand id="Muenster_Trier">
+   <source>Muenster</source>
+   <target>Trier</target>
+   <demandValue> 0.000163 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Leipzig">
+   <source>Frankfurt</source>
+   <target>Leipzig</target>
+   <demandValue> 24.441950 </demandValue>
+  </demand>
+  <demand id="Dresden_Kaiserslautern">
+   <source>Dresden</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000046 </demandValue>
+  </demand>
+  <demand id="Mannheim_Darmstadt">
+   <source>Mannheim</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.106642 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Fulda">
+   <source>Stuttgart</source>
+   <target>Fulda</target>
+   <demandValue> 0.018801 </demandValue>
+  </demand>
+  <demand id="Berlin_Erfurt">
+   <source>Berlin</source>
+   <target>Erfurt</target>
+   <demandValue> 2.161240 </demandValue>
+  </demand>
+  <demand id="Aachen_Muenchen">
+   <source>Aachen</source>
+   <target>Muenchen</target>
+   <demandValue> 0.008433 </demandValue>
+  </demand>
+  <demand id="Aachen_Dresden">
+   <source>Aachen</source>
+   <target>Dresden</target>
+   <demandValue> 0.064921 </demandValue>
+  </demand>
+  <demand id="Augsburg_Bayreuth">
+   <source>Augsburg</source>
+   <target>Bayreuth</target>
+   <demandValue> 0.000051 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Hannover">
+   <source>Wuerzburg</source>
+   <target>Hannover</target>
+   <demandValue> 0.015320 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Essen">
+   <source>Stuttgart</source>
+   <target>Essen</target>
+   <demandValue> 1.106702 </demandValue>
+  </demand>
+  <demand id="Giessen_Berlin">
+   <source>Giessen</source>
+   <target>Berlin</target>
+   <demandValue> 0.002879 </demandValue>
+  </demand>
+  <demand id="Berlin_Fulda">
+   <source>Berlin</source>
+   <target>Fulda</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Muenchen_Aachen">
+   <source>Muenchen</source>
+   <target>Aachen</target>
+   <demandValue> 0.731677 </demandValue>
+  </demand>
+  <demand id="Siegen_Kaiserslautern">
+   <source>Siegen</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000015 </demandValue>
+  </demand>
+  <demand id="Siegen_Bremen">
+   <source>Siegen</source>
+   <target>Bremen</target>
+   <demandValue> 0.000095 </demandValue>
+  </demand>
+  <demand id="Essen_Muenster">
+   <source>Essen</source>
+   <target>Muenster</target>
+   <demandValue> 0.029959 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Wuerzburg">
+   <source>Saarbruecken</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000029 </demandValue>
+  </demand>
+  <demand id="Ulm_Darmstadt">
+   <source>Ulm</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Stuttgart">
+   <source>Chemnitz</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000127 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Dortmund">
+   <source>Nuernberg</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000173 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Magdeburg">
+   <source>Saarbruecken</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Greifswald">
+   <source>Chemnitz</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000001 </demandValue>
+  </demand>
+  <demand id="Schwerin_Nuernberg">
+   <source>Schwerin</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000199 </demandValue>
+  </demand>
+  <demand id="Augsburg_Kassel">
+   <source>Augsburg</source>
+   <target>Kassel</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Hamburg">
+   <source>Darmstadt</source>
+   <target>Hamburg</target>
+   <demandValue> 0.508544 </demandValue>
+  </demand>
+  <demand id="Leipzig_Braunschweig">
+   <source>Leipzig</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.378132 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Essen">
+   <source>Braunschweig</source>
+   <target>Essen</target>
+   <demandValue> 0.001077 </demandValue>
+  </demand>
+  <demand id="Passau_Karlsruhe">
+   <source>Passau</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000067 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Hannover">
+   <source>Braunschweig</source>
+   <target>Hannover</target>
+   <demandValue> 19.238501 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Regensburg">
+   <source>Osnabrueck</source>
+   <target>Regensburg</target>
+   <demandValue> 0.025796 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Kaiserslautern">
+   <source>Stuttgart</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.287028 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Nuernberg">
+   <source>Bremerhaven</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.001762 </demandValue>
+  </demand>
+  <demand id="Hamburg_Norden">
+   <source>Hamburg</source>
+   <target>Norden</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Leipzig">
+   <source>Wuerzburg</source>
+   <target>Leipzig</target>
+   <demandValue> 0.695467 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Regensburg">
+   <source>Braunschweig</source>
+   <target>Regensburg</target>
+   <demandValue> 0.001469 </demandValue>
+  </demand>
+  <demand id="Flensburg_Darmstadt">
+   <source>Flensburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.740919 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Nuernberg">
+   <source>Bayreuth</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.011325 </demandValue>
+  </demand>
+  <demand id="Greifswald_Frankfurt">
+   <source>Greifswald</source>
+   <target>Frankfurt</target>
+   <demandValue> 12.675840 </demandValue>
+  </demand>
+  <demand id="Berlin_Kiel">
+   <source>Berlin</source>
+   <target>Kiel</target>
+   <demandValue> 0.011194 </demandValue>
+  </demand>
+  <demand id="Greifswald_Magdeburg">
+   <source>Greifswald</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000049 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Koeln">
+   <source>Magdeburg</source>
+   <target>Koeln</target>
+   <demandValue> 0.073513 </demandValue>
+  </demand>
+  <demand id="Berlin_Oldenburg">
+   <source>Berlin</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.059142 </demandValue>
+  </demand>
+  <demand id="Muenchen_Essen">
+   <source>Muenchen</source>
+   <target>Essen</target>
+   <demandValue> 1.240416 </demandValue>
+  </demand>
+  <demand id="Koeln_Siegen">
+   <source>Koeln</source>
+   <target>Siegen</target>
+   <demandValue> 0.000155 </demandValue>
+  </demand>
+  <demand id="Hamburg_Duesseldorf">
+   <source>Hamburg</source>
+   <target>Duesseldorf</target>
+   <demandValue> 0.000064 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Bayreuth">
+   <source>Frankfurt</source>
+   <target>Bayreuth</target>
+   <demandValue> 5.035146 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Kempten">
+   <source>Stuttgart</source>
+   <target>Kempten</target>
+   <demandValue> 0.017090 </demandValue>
+  </demand>
+  <demand id="Regensburg_Kaiserslautern">
+   <source>Regensburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000082 </demandValue>
+  </demand>
+  <demand id="Mannheim_Essen">
+   <source>Mannheim</source>
+   <target>Essen</target>
+   <demandValue> 0.000122 </demandValue>
+  </demand>
+  <demand id="Regensburg_Muenster">
+   <source>Regensburg</source>
+   <target>Muenster</target>
+   <demandValue> 0.000110 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Aachen">
+   <source>Duesseldorf</source>
+   <target>Aachen</target>
+   <demandValue> 0.000684 </demandValue>
+  </demand>
+  <demand id="Regensburg_Darmstadt">
+   <source>Regensburg</source>
+   <target>Darmstadt</target>
+   <demandValue> 0.172485 </demandValue>
+  </demand>
+  <demand id="Erfurt_Braunschweig">
+   <source>Erfurt</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.020797 </demandValue>
+  </demand>
+  <demand id="Koeln_Berlin">
+   <source>Koeln</source>
+   <target>Berlin</target>
+   <demandValue> 0.244037 </demandValue>
+  </demand>
+  <demand id="Karlsruhe_Hannover">
+   <source>Karlsruhe</source>
+   <target>Hannover</target>
+   <demandValue> 0.000133 </demandValue>
+  </demand>
+  <demand id="Berlin_Stuttgart">
+   <source>Berlin</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.145105 </demandValue>
+  </demand>
+  <demand id="Fulda_Frankfurt">
+   <source>Fulda</source>
+   <target>Frankfurt</target>
+   <demandValue> 0.017934 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Saarbruecken">
+   <source>Duesseldorf</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000005 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Essen">
+   <source>Oldenburg</source>
+   <target>Essen</target>
+   <demandValue> 0.005707 </demandValue>
+  </demand>
+  <demand id="Aachen_Oldenburg">
+   <source>Aachen</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.001450 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Dresden">
+   <source>Bremerhaven</source>
+   <target>Dresden</target>
+   <demandValue> 0.000159 </demandValue>
+  </demand>
+  <demand id="Erfurt_Berlin">
+   <source>Erfurt</source>
+   <target>Berlin</target>
+   <demandValue> 0.132107 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Siegen">
+   <source>Oldenburg</source>
+   <target>Siegen</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Essen_Frankfurt">
+   <source>Essen</source>
+   <target>Frankfurt</target>
+   <demandValue> 17.104744 </demandValue>
+  </demand>
+  <demand id="Regensburg_Hamburg">
+   <source>Regensburg</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000093 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Kempten">
+   <source>Braunschweig</source>
+   <target>Kempten</target>
+   <demandValue> 0.000006 </demandValue>
+  </demand>
+  <demand id="Bremen_Stuttgart">
+   <source>Bremen</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000431 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Hannover">
+   <source>Oldenburg</source>
+   <target>Hannover</target>
+   <demandValue> 2.159596 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Berlin">
+   <source>Oldenburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.019158 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Frankfurt">
+   <source>Duesseldorf</source>
+   <target>Frankfurt</target>
+   <demandValue> 3.091169 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Darmstadt">
+   <source>Braunschweig</source>
+   <target>Darmstadt</target>
+   <demandValue> 3.311456 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Berlin">
+   <source>Frankfurt</source>
+   <target>Berlin</target>
+   <demandValue> 40.226342 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Koeln">
+   <source>Bayreuth</source>
+   <target>Koeln</target>
+   <demandValue> 0.053951 </demandValue>
+  </demand>
+  <demand id="Mannheim_Erfurt">
+   <source>Mannheim</source>
+   <target>Erfurt</target>
+   <demandValue> 0.577416 </demandValue>
+  </demand>
+  <demand id="Dortmund_Stuttgart">
+   <source>Dortmund</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000268 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Muenster">
+   <source>Darmstadt</source>
+   <target>Muenster</target>
+   <demandValue> 0.420649 </demandValue>
+  </demand>
+  <demand id="Fulda_Giessen">
+   <source>Fulda</source>
+   <target>Giessen</target>
+   <demandValue> 0.053965 </demandValue>
+  </demand>
+  <demand id="Kiel_Stuttgart">
+   <source>Kiel</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.001465 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Darmstadt">
+   <source>Chemnitz</source>
+   <target>Darmstadt</target>
+   <demandValue> 11.268032 </demandValue>
+  </demand>
+  <demand id="Flensburg_Berlin">
+   <source>Flensburg</source>
+   <target>Berlin</target>
+   <demandValue> 0.000010 </demandValue>
+  </demand>
+  <demand id="Kassel_Greifswald">
+   <source>Kassel</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000376 </demandValue>
+  </demand>
+  <demand id="Leipzig_Dresden">
+   <source>Leipzig</source>
+   <target>Dresden</target>
+   <demandValue> 0.876216 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Saarbruecken">
+   <source>Chemnitz</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000001 </demandValue>
+  </demand>
+  <demand id="Passau_Stuttgart">
+   <source>Passau</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Norden_Muenchen">
+   <source>Norden</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000172 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Greifswald">
+   <source>Duesseldorf</source>
+   <target>Greifswald</target>
+   <demandValue> 0.000019 </demandValue>
+  </demand>
+  <demand id="Kaiserslautern_Nuernberg">
+   <source>Kaiserslautern</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000320 </demandValue>
+  </demand>
+  <demand id="Leipzig_Oldenburg">
+   <source>Leipzig</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.121789 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Hannover">
+   <source>Bremerhaven</source>
+   <target>Hannover</target>
+   <demandValue> 0.042285 </demandValue>
+  </demand>
+  <demand id="Essen_Chemnitz">
+   <source>Essen</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Koeln_Karlsruhe">
+   <source>Koeln</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.004694 </demandValue>
+  </demand>
+  <demand id="Dortmund_Magdeburg">
+   <source>Dortmund</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000014 </demandValue>
+  </demand>
+  <demand id="Greifswald_Giessen">
+   <source>Greifswald</source>
+   <target>Giessen</target>
+   <demandValue> 0.000142 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Muenster">
+   <source>Osnabrueck</source>
+   <target>Muenster</target>
+   <demandValue> 0.000025 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Aachen">
+   <source>Stuttgart</source>
+   <target>Aachen</target>
+   <demandValue> 2.744504 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Dresden">
+   <source>Frankfurt</source>
+   <target>Dresden</target>
+   <demandValue> 41.983144 </demandValue>
+  </demand>
+  <demand id="Fulda_Berlin">
+   <source>Fulda</source>
+   <target>Berlin</target>
+   <demandValue> 0.000014 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Kiel">
+   <source>Nuernberg</source>
+   <target>Kiel</target>
+   <demandValue> 0.000193 </demandValue>
+  </demand>
+  <demand id="Leipzig_Nuernberg">
+   <source>Leipzig</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.163332 </demandValue>
+  </demand>
+  <demand id="Passau_Muenchen">
+   <source>Passau</source>
+   <target>Muenchen</target>
+   <demandValue> 0.011511 </demandValue>
+  </demand>
+  <demand id="Augsburg_Muenster">
+   <source>Augsburg</source>
+   <target>Muenster</target>
+   <demandValue> 0.000015 </demandValue>
+  </demand>
+  <demand id="Leipzig_Greifswald">
+   <source>Leipzig</source>
+   <target>Greifswald</target>
+   <demandValue> 0.262039 </demandValue>
+  </demand>
+  <demand id="Flensburg_Kaiserslautern">
+   <source>Flensburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Berlin_Nuernberg">
+   <source>Berlin</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.019755 </demandValue>
+  </demand>
+  <demand id="Dresden_Muenster">
+   <source>Dresden</source>
+   <target>Muenster</target>
+   <demandValue> 0.001133 </demandValue>
+  </demand>
+  <demand id="Dresden_Darmstadt">
+   <source>Dresden</source>
+   <target>Darmstadt</target>
+   <demandValue> 7.380071 </demandValue>
+  </demand>
+  <demand id="Hamburg_Koeln">
+   <source>Hamburg</source>
+   <target>Koeln</target>
+   <demandValue> 4.345846 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Braunschweig">
+   <source>Duesseldorf</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.004744 </demandValue>
+  </demand>
+  <demand id="Regensburg_Norden">
+   <source>Regensburg</source>
+   <target>Norden</target>
+   <demandValue> 0.000004 </demandValue>
+  </demand>
+  <demand id="Kassel_Magdeburg">
+   <source>Kassel</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000007 </demandValue>
+  </demand>
+  <demand id="Mannheim_Magdeburg">
+   <source>Mannheim</source>
+   <target>Magdeburg</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Regensburg">
+   <source>Magdeburg</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000102 </demandValue>
+  </demand>
+  <demand id="Braunschweig_Erfurt">
+   <source>Braunschweig</source>
+   <target>Erfurt</target>
+   <demandValue> 1.303677 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Muenchen">
+   <source>Bayreuth</source>
+   <target>Muenchen</target>
+   <demandValue> 17.674411 </demandValue>
+  </demand>
+  <demand id="Bayreuth_Frankfurt">
+   <source>Bayreuth</source>
+   <target>Frankfurt</target>
+   <demandValue> 20.042606 </demandValue>
+  </demand>
+  <demand id="Dresden_Oldenburg">
+   <source>Dresden</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.769100 </demandValue>
+  </demand>
+  <demand id="Schwerin_Bremen">
+   <source>Schwerin</source>
+   <target>Bremen</target>
+   <demandValue> 0.000437 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Ulm">
+   <source>Frankfurt</source>
+   <target>Ulm</target>
+   <demandValue> 0.000328 </demandValue>
+  </demand>
+  <demand id="Aachen_Chemnitz">
+   <source>Aachen</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.002396 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Bremen">
+   <source>Nuernberg</source>
+   <target>Bremen</target>
+   <demandValue> 0.000244 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Chemnitz">
+   <source>Nuernberg</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.000702 </demandValue>
+  </demand>
+  <demand id="Berlin_Kassel">
+   <source>Berlin</source>
+   <target>Kassel</target>
+   <demandValue> 0.194627 </demandValue>
+  </demand>
+  <demand id="Regensburg_Kiel">
+   <source>Regensburg</source>
+   <target>Kiel</target>
+   <demandValue> 0.000053 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Essen">
+   <source>Duesseldorf</source>
+   <target>Essen</target>
+   <demandValue> 0.000027 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Wuerzburg">
+   <source>Bremerhaven</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.000003 </demandValue>
+  </demand>
+  <demand id="Norden_Braunschweig">
+   <source>Norden</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000035 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Oldenburg">
+   <source>Nuernberg</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.125533 </demandValue>
+  </demand>
+  <demand id="Wuerzburg_Kaiserslautern">
+   <source>Wuerzburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.006460 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Magdeburg">
+   <source>Frankfurt</source>
+   <target>Magdeburg</target>
+   <demandValue> 6.861582 </demandValue>
+  </demand>
+  <demand id="Muenster_Dresden">
+   <source>Muenster</source>
+   <target>Dresden</target>
+   <demandValue> 0.000343 </demandValue>
+  </demand>
+  <demand id="Ulm_Karlsruhe">
+   <source>Ulm</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.000002 </demandValue>
+  </demand>
+  <demand id="Hannover_Osnabrueck">
+   <source>Hannover</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.629583 </demandValue>
+  </demand>
+  <demand id="Muenster_Regensburg">
+   <source>Muenster</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000102 </demandValue>
+  </demand>
+  <demand id="Hannover_Kassel">
+   <source>Hannover</source>
+   <target>Kassel</target>
+   <demandValue> 2.596866 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Mannheim">
+   <source>Stuttgart</source>
+   <target>Mannheim</target>
+   <demandValue> 0.009005 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Siegen">
+   <source>Frankfurt</source>
+   <target>Siegen</target>
+   <demandValue> 2.065669 </demandValue>
+  </demand>
+  <demand id="Bremen_Essen">
+   <source>Bremen</source>
+   <target>Essen</target>
+   <demandValue> 0.000949 </demandValue>
+  </demand>
+  <demand id="Flensburg_Oldenburg">
+   <source>Flensburg</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.000009 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Dresden">
+   <source>Magdeburg</source>
+   <target>Dresden</target>
+   <demandValue> 0.005355 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Kaiserslautern">
+   <source>Oldenburg</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.002536 </demandValue>
+  </demand>
+  <demand id="Regensburg_Dortmund">
+   <source>Regensburg</source>
+   <target>Dortmund</target>
+   <demandValue> 0.000031 </demandValue>
+  </demand>
+  <demand id="Koeln_Schwerin">
+   <source>Koeln</source>
+   <target>Schwerin</target>
+   <demandValue> 0.436083 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Nuernberg">
+   <source>Osnabrueck</source>
+   <target>Nuernberg</target>
+   <demandValue> 0.000060 </demandValue>
+  </demand>
+  <demand id="Koeln_Frankfurt">
+   <source>Koeln</source>
+   <target>Frankfurt</target>
+   <demandValue> 86.816801 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Regensburg">
+   <source>Bremerhaven</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000071 </demandValue>
+  </demand>
+  <demand id="Flensburg_Erfurt">
+   <source>Flensburg</source>
+   <target>Erfurt</target>
+   <demandValue> 0.001090 </demandValue>
+  </demand>
+  <demand id="Leipzig_Schwerin">
+   <source>Leipzig</source>
+   <target>Schwerin</target>
+   <demandValue> 0.522643 </demandValue>
+  </demand>
+  <demand id="Muenchen_Darmstadt">
+   <source>Muenchen</source>
+   <target>Darmstadt</target>
+   <demandValue> 1.527271 </demandValue>
+  </demand>
+  <demand id="Regensburg_Passau">
+   <source>Regensburg</source>
+   <target>Passau</target>
+   <demandValue> 0.001692 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Kaiserslautern">
+   <source>Duesseldorf</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.000238 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Chemnitz">
+   <source>Stuttgart</source>
+   <target>Chemnitz</target>
+   <demandValue> 2.015068 </demandValue>
+  </demand>
+  <demand id="Kassel_Muenchen">
+   <source>Kassel</source>
+   <target>Muenchen</target>
+   <demandValue> 9.720740 </demandValue>
+  </demand>
+  <demand id="Regensburg_Saarbruecken">
+   <source>Regensburg</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000009 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Karlsruhe">
+   <source>Nuernberg</source>
+   <target>Karlsruhe</target>
+   <demandValue> 0.492156 </demandValue>
+  </demand>
+  <demand id="Osnabrueck_Oldenburg">
+   <source>Osnabrueck</source>
+   <target>Oldenburg</target>
+   <demandValue> 0.139218 </demandValue>
+  </demand>
+  <demand id="Freiburg_Stuttgart">
+   <source>Freiburg</source>
+   <target>Stuttgart</target>
+   <demandValue> 0.000008 </demandValue>
+  </demand>
+  <demand id="Trier_Erfurt">
+   <source>Trier</source>
+   <target>Erfurt</target>
+   <demandValue> 0.047974 </demandValue>
+  </demand>
+  <demand id="Bremen_Kiel">
+   <source>Bremen</source>
+   <target>Kiel</target>
+   <demandValue> 0.000018 </demandValue>
+  </demand>
+  <demand id="Kassel_Hannover">
+   <source>Kassel</source>
+   <target>Hannover</target>
+   <demandValue> 33.108873 </demandValue>
+  </demand>
+  <demand id="Essen_Osnabrueck">
+   <source>Essen</source>
+   <target>Osnabrueck</target>
+   <demandValue> 0.003846 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Erfurt">
+   <source>Darmstadt</source>
+   <target>Erfurt</target>
+   <demandValue> 1.140586 </demandValue>
+  </demand>
+  <demand id="Muenchen_Hannover">
+   <source>Muenchen</source>
+   <target>Hannover</target>
+   <demandValue> 2.086642 </demandValue>
+  </demand>
+  <demand id="Fulda_Braunschweig">
+   <source>Fulda</source>
+   <target>Braunschweig</target>
+   <demandValue> 0.000051 </demandValue>
+  </demand>
+  <demand id="Essen_Giessen">
+   <source>Essen</source>
+   <target>Giessen</target>
+   <demandValue> 0.000072 </demandValue>
+  </demand>
+  <demand id="Koeln_Stuttgart">
+   <source>Koeln</source>
+   <target>Stuttgart</target>
+   <demandValue> 13.108346 </demandValue>
+  </demand>
+  <demand id="Leipzig_Kaiserslautern">
+   <source>Leipzig</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.082568 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Muenchen">
+   <source>Nuernberg</source>
+   <target>Muenchen</target>
+   <demandValue> 7.027938 </demandValue>
+  </demand>
+  <demand id="Saarbruecken_Kassel">
+   <source>Saarbruecken</source>
+   <target>Kassel</target>
+   <demandValue> 0.000056 </demandValue>
+  </demand>
+  <demand id="Chemnitz_Regensburg">
+   <source>Chemnitz</source>
+   <target>Regensburg</target>
+   <demandValue> 0.000021 </demandValue>
+  </demand>
+  <demand id="Bremen_Schwerin">
+   <source>Bremen</source>
+   <target>Schwerin</target>
+   <demandValue> 0.055013 </demandValue>
+  </demand>
+  <demand id="Darmstadt_Chemnitz">
+   <source>Darmstadt</source>
+   <target>Chemnitz</target>
+   <demandValue> 1.079564 </demandValue>
+  </demand>
+  <demand id="Bremerhaven_Frankfurt">
+   <source>Bremerhaven</source>
+   <target>Frankfurt</target>
+   <demandValue> 2.510141 </demandValue>
+  </demand>
+  <demand id="Erfurt_Hamburg">
+   <source>Erfurt</source>
+   <target>Hamburg</target>
+   <demandValue> 0.000198 </demandValue>
+  </demand>
+  <demand id="Augsburg_Dresden">
+   <source>Augsburg</source>
+   <target>Dresden</target>
+   <demandValue> 0.000016 </demandValue>
+  </demand>
+  <demand id="Stuttgart_Erfurt">
+   <source>Stuttgart</source>
+   <target>Erfurt</target>
+   <demandValue> 8.218301 </demandValue>
+  </demand>
+  <demand id="Frankfurt_Norden">
+   <source>Frankfurt</source>
+   <target>Norden</target>
+   <demandValue> 0.169169 </demandValue>
+  </demand>
+  <demand id="Erfurt_Chemnitz">
+   <source>Erfurt</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.035637 </demandValue>
+  </demand>
+  <demand id="Essen_Berlin">
+   <source>Essen</source>
+   <target>Berlin</target>
+   <demandValue> 0.032832 </demandValue>
+  </demand>
+  <demand id="Duesseldorf_Leipzig">
+   <source>Duesseldorf</source>
+   <target>Leipzig</target>
+   <demandValue> 0.223887 </demandValue>
+  </demand>
+  <demand id="Mannheim_Muenchen">
+   <source>Mannheim</source>
+   <target>Muenchen</target>
+   <demandValue> 0.000606 </demandValue>
+  </demand>
+  <demand id="Oldenburg_Saarbruecken">
+   <source>Oldenburg</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000128 </demandValue>
+  </demand>
+  <demand id="Magdeburg_Bremen">
+   <source>Magdeburg</source>
+   <target>Bremen</target>
+   <demandValue> 0.000019 </demandValue>
+  </demand>
+  <demand id="Hannover_Fulda">
+   <source>Hannover</source>
+   <target>Fulda</target>
+   <demandValue> 0.003316 </demandValue>
+  </demand>
+  <demand id="Hannover_Kaiserslautern">
+   <source>Hannover</source>
+   <target>Kaiserslautern</target>
+   <demandValue> 0.382858 </demandValue>
+  </demand>
+  <demand id="Koeln_Chemnitz">
+   <source>Koeln</source>
+   <target>Chemnitz</target>
+   <demandValue> 0.306087 </demandValue>
+  </demand>
+  <demand id="Nuernberg_Regensburg">
+   <source>Nuernberg</source>
+   <target>Regensburg</target>
+   <demandValue> 0.002222 </demandValue>
+  </demand>
+  <demand id="Berlin_Saarbruecken">
+   <source>Berlin</source>
+   <target>Saarbruecken</target>
+   <demandValue> 0.000502 </demandValue>
+  </demand>
+  <demand id="Passau_Regensburg">
+   <source>Passau</source>
+   <target>Regensburg</target>
+   <demandValue> 0.003933 </demandValue>
+  </demand>
+  <demand id="Muenchen_Wuerzburg">
+   <source>Muenchen</source>
+   <target>Wuerzburg</target>
+   <demandValue> 0.056553 </demandValue>
+  </demand>
+ </demands>
+</network>

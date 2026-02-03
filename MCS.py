@@ -468,8 +468,8 @@ def analyze_tradeoff_sequence(G, h, cand_table, valid_sets):
 
 if __name__ == '__main__':
     alpha=None
-    topo = get_active_topology()
-    G = topo.get_graph()
+    winner_set, failover, G=recovery_path()
+    
     
     if alpha is None:
         config = get_config()
@@ -481,9 +481,6 @@ if __name__ == '__main__':
     cand_table = candidates(G, G.nodes(), h)
     valid_sets = find_minimum_set(cand_table, G.nodes())
     winner_set, winner_watts, _ = best_green_placement(G, h, cand_table, valid_sets, alpha)
-
-
-    recovery_path()
     analyze_tradeoff_sequence(G, h, cand_table, valid_sets)
     check_saturation(G, h, winner_set, failover)
     contribution(G, winner_set, winner_watts)
