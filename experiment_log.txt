@@ -1,67 +1,83 @@
 loading app ryu.py
-loading app ryu.controller.ofp_handler
 loading app ryu.topology.switches
 loading app ryu.controller.ofp_handler
 instantiating app ryu.py of MCS
-[SNDLIB] Initial load: 12 nodes, 15 links.
-[CLEANUP] Pruning 1 leaf nodes (Degree 1)...
-   >>> PRUNED LEAF: ID=1, Name='ATLAM5'
-[SNDLIB] Final Topology: 11 nodes, 14 links.
+[SNDLIB] Initial load: 28 nodes, 41 links.
+[SNDLIB] Final Topology: 28 nodes, 41 links.
 Running MCS with Alpha: 1.0
-Searching for optimal sets (Max size checked: 6)...
-Found 3 valid sets of size 5!
-MAX NUMER OF RULES: 110
+Searching for optimal sets (Max size checked: 9)...
+Found 7 valid sets of size 9!
+MAX NUMER OF RULES: 756
 
---- EVALUATING 3 VALID SETS (Alpha=1.0) ---
-  -> Avg Cost per Failure: 2.89 (Total: 80.98 / Failures: 28)
-Set (3, 4, 5, 8, 12) | Struct: 795.1W | Ctrl: 0.2453W | TOTAL: 795.35W | Score: 80.9801
-  -> Avg Cost per Failure: 1.67 (Total: 46.89 / Failures: 28)
-Set (3, 5, 7, 8, 12) | Struct: 795.1W | Ctrl: 0.2453W | TOTAL: 795.35W | Score: 46.8852
-  -> Avg Cost per Failure: 2.54 (Total: 70.99 / Failures: 28)
-Set (3, 5, 8, 11, 12) | Struct: 795.5W | Ctrl: 0.2453W | TOTAL: 795.72W | Score: 70.9864
-[MCS BRIDGE] Selected Winner for Alpha=1.0: (3, 5, 7, 8, 12)
-[FAILOVER MAP]: Generated 28 assignments.
+--- EVALUATING 7 VALID SETS (Alpha=1.0) ---
+  -> Avg Cost per Failure: 3.80 (Total: 311.72 / Failures: 82)
+Set (1, 3, 5, 6, 8, 11, 12, 19, 26) | Struct: 2415.9W | Ctrl: 1.6859W | TOTAL: 2417.61W | Score: 311.7152
+  -> Avg Cost per Failure: 3.66 (Total: 299.82 / Failures: 82)
+Set (1, 3, 5, 6, 11, 12, 19, 22, 26) | Struct: 2415.9W | Ctrl: 1.6859W | TOTAL: 2417.61W | Score: 299.8222
+  -> Avg Cost per Failure: 3.65 (Total: 299.67 / Failures: 82)
+Set (1, 3, 5, 6, 11, 12, 19, 25, 26) | Struct: 2415.9W | Ctrl: 1.6859W | TOTAL: 2417.61W | Score: 299.6657
+  -> Avg Cost per Failure: 3.41 (Total: 279.86 / Failures: 82)
+Set (1, 3, 5, 6, 12, 13, 19, 22, 26) | Struct: 2416.3W | Ctrl: 1.6859W | TOTAL: 2417.98W | Score: 279.8617
+  -> Avg Cost per Failure: 3.59 (Total: 294.65 / Failures: 82)
+Set (1, 3, 5, 6, 12, 13, 19, 25, 26) | Struct: 2416.3W | Ctrl: 1.6859W | TOTAL: 2417.98W | Score: 294.6529
+  -> Avg Cost per Failure: 3.32 (Total: 272.63 / Failures: 82)
+Set (1, 3, 6, 8, 9, 11, 12, 18, 23) | Struct: 2416.7W | Ctrl: 1.6859W | TOTAL: 2418.35W | Score: 272.6301
+  -> Avg Cost per Failure: 3.28 (Total: 268.75 / Failures: 82)
+Set (1, 3, 6, 8, 9, 12, 13, 18, 23) | Struct: 2417.0W | Ctrl: 1.6859W | TOTAL: 2418.72W | Score: 268.7511
+[MCS BRIDGE] Selected Winner for Alpha=1.0: (1, 3, 6, 8, 9, 12, 13, 18, 23)
+[FAILOVER MAP]: Generated 82 assignments.
 
 --- NAME MAPPING DEBUG ---
 --------------------------
 
-[11:22:47.001] MCS INITIALIZED. Topology: 11 nodes.
-[11:22:47.001] GREEN HEROES SELECTED: ['CHINng', 'HSTNng', 'KSCYng', 'LOSAng', 'WASHng']
-instantiating app ryu.controller.ofp_handler of OFPHandler
+[12:38:04.999] MCS INITIALIZED. Topology: 28 nodes.
+[12:38:04.999] GREEN HEROES SELECTED: ['Amsterdam', 'Barcelona', 'Bordeaux', 'Budapest', 'Copenhagen', 'Glasgow', 'Hamburg', 'Munich', 'Stockholm']
 instantiating app ryu.topology.switches of Switches
-[15:20:39.677] HERO NODE ONLINE: HSTNng is ready to accept tunnels.
-[15:20:39.679] HERO NODE ONLINE: CHINng is ready to accept tunnels.
-[15:20:39.680] HERO NODE ONLINE: LOSAng is ready to accept tunnels.
-[15:20:39.680] HERO NODE ONLINE: WASHng is ready to accept tunnels.
-[15:20:39.704] MCS PROTECTION READY: Link LOSAng->SNVAng protected by HERO HSTNng
-[15:20:41.812] MCS PROTECTION READY: Link IPLSng->CHINng protected by HERO WASHng
-[15:20:41.816] MCS PROTECTION READY: Link ATLAng->WASHng protected by HERO CHINng
-[15:20:42.168] MCS PROTECTION READY: Link CHINng->IPLSng protected by HERO WASHng
-[15:20:42.172] MCS PROTECTION READY: Link WASHng->ATLAng protected by HERO CHINng
-[15:20:47.682] HERO NODE ONLINE: KSCYng is ready to accept tunnels.
-[15:20:48.150] MCS PROTECTION READY: Link KSCYng->HSTNng protected by HERO LOSAng
-[15:20:48.154] MCS PROTECTION READY: Link KSCYng->DNVRng protected by HERO HSTNng
-[15:20:48.155] MCS PROTECTION READY: Link KSCYng->IPLSng protected by HERO HSTNng
-[15:20:48.156] MCS PROTECTION READY: Link IPLSng->KSCYng protected by HERO HSTNng
-[15:20:48.201] MCS PROTECTION READY: Link HSTNng->KSCYng protected by HERO LOSAng
-[15:20:48.405] MCS PROTECTION READY: Link DNVRng->KSCYng protected by HERO LOSAng
-[15:20:50.297] MCS PROTECTION READY: Link DNVRng->STTLng protected by HERO HSTNng
-[15:20:50.600] MCS PROTECTION READY: Link STTLng->SNVAng protected by HERO KSCYng
-[15:20:50.605] MCS PROTECTION READY: Link STTLng->DNVRng protected by HERO LOSAng
-[15:20:51.008] MCS PROTECTION READY: Link SNVAng->STTLng protected by HERO KSCYng
-[15:24:02.715] LINK FAILURE: HSTNng -> ATLAng detected.
-[15:24:02.715] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
-[15:24:02.715]   (Data is being encapsulated with MPLS Label 7 automatically by Switch HSTNng)
-[15:24:02.717] LINK FAILURE: ATLAng -> HSTNng detected.
-[15:24:02.717] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
-[15:24:02.717]   (Data is being encapsulated with MPLS Label 7 automatically by Switch ATLAng)
-[15:24:17.468] MCS PROTECTION READY: Link ATLAng->HSTNng protected by HERO KSCYng
-[15:24:18.131] MCS PROTECTION READY: Link HSTNng->ATLAng protected by HERO KSCYng
-[15:29:35.755] LINK FAILURE: HSTNng -> ATLAng detected.
-[15:29:35.755] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
-[15:29:35.755]   (Data is being encapsulated with MPLS Label 7 automatically by Switch HSTNng)
-[15:29:35.756] LINK FAILURE: ATLAng -> HSTNng detected.
-[15:29:35.756] MCS RECOVERY: Redirecting traffic to HERO KSCYng via Tunnel.
-[15:29:35.756]   (Data is being encapsulated with MPLS Label 7 automatically by Switch ATLAng)
-[15:30:01.636] MCS PROTECTION READY: Link ATLAng->HSTNng protected by HERO KSCYng
-[15:30:01.637] MCS PROTECTION READY: Link HSTNng->ATLAng protected by HERO KSCYng
+instantiating app ryu.controller.ofp_handler of OFPHandler
+[12:38:13.729] HERO NODE ONLINE: Glasgow is ready to accept tunnels.
+[12:38:13.731] HERO NODE ONLINE: Bordeaux is ready to accept tunnels.
+[12:38:13.733] HERO NODE ONLINE: Amsterdam is ready to accept tunnels.
+[12:38:13.734] HERO NODE ONLINE: Copenhagen is ready to accept tunnels.
+[12:38:13.735] HERO NODE ONLINE: Stockholm is ready to accept tunnels.
+[12:38:13.739] HERO NODE ONLINE: Munich is ready to accept tunnels.
+[12:38:13.742] HERO NODE ONLINE: Hamburg is ready to accept tunnels.
+[12:38:13.742] HERO NODE ONLINE: Budapest is ready to accept tunnels.
+[12:38:13.742] HERO NODE ONLINE: Barcelona is ready to accept tunnels.
+[12:38:13.801] MCS PROTECTION READY: Link Oslo->Copenhagen protected by HERO Stockholm
+[12:38:13.807] MCS PROTECTION READY: Link Frankfurt->Brussels protected by HERO Hamburg
+[12:38:13.812] MCS PROTECTION READY: Link Berlin->Munich protected by HERO Hamburg
+[12:38:13.814] MCS PROTECTION READY: Link Frankfurt->Munich protected by HERO Hamburg
+[12:38:13.837] MCS PROTECTION READY: Link Zagreb->Vienna protected by HERO Budapest
+[12:38:13.838] MCS PROTECTION READY: Link Prague->Vienna protected by HERO Munich
+[12:38:13.840] MCS PROTECTION READY: Link Munich->Milan protected by HERO Hamburg
+[12:38:13.840] MCS PROTECTION READY: Link Zurich->Milan protected by HERO Hamburg
+[12:38:13.841] MCS PROTECTION READY: Link Zurich->Strasbourg protected by HERO Munich
+[12:38:13.842] MCS PROTECTION READY: Link Amsterdam->Brussels protected by HERO Hamburg
+[12:38:13.843] MCS PROTECTION READY: Link Paris->Lyon protected by HERO Bordeaux
+[12:38:13.844] MCS PROTECTION READY: Link Zurich->Lyon protected by HERO Bordeaux
+[12:38:13.845] MCS PROTECTION READY: Link Barcelona->Lyon protected by HERO Bordeaux
+[12:38:13.846] MCS PROTECTION READY: Link Zagreb->Rome protected by HERO Munich
+[12:38:13.847] MCS PROTECTION READY: Link Milan->Rome protected by HERO Munich
+[12:38:13.848] MCS PROTECTION READY: Link Athens->Rome protected by HERO Budapest
+[12:38:13.849] MCS PROTECTION READY: Link Budapest->Belgrade protected by HERO Munich
+[12:38:13.851] MCS PROTECTION READY: Link Lyon->Barcelona protected by HERO Bordeaux
+[12:38:13.852] MCS PROTECTION READY: Link Madrid->Barcelona protected by HERO Bordeaux
+[12:38:13.853] MCS PROTECTION READY: Link Belgrade->Zagreb protected by HERO Budapest
+[12:38:13.854] MCS PROTECTION READY: Link Brussels->Amsterdam protected by HERO Munich
+[12:38:13.855] MCS PROTECTION READY: Link Hamburg->Amsterdam protected by HERO Munich
+[12:38:13.856] MCS PROTECTION READY: Link Bordeaux->Paris protected by HERO Barcelona
+[12:38:13.857] MCS PROTECTION READY: Link Strasbourg->Paris protected by HERO Amsterdam
+[12:38:13.857] MCS PROTECTION READY: Link Brussels->Paris protected by HERO Amsterdam
+[12:38:13.858] MCS PROTECTION READY: Link Budapest->Prague protected by HERO Stockholm
+[12:38:13.859] MCS PROTECTION READY: Link Copenhagen->Berlin protected by HERO Stockholm
+[12:38:13.861] MCS PROTECTION READY: Link Prague->Berlin protected by HERO Budapest
+[12:38:13.862] MCS PROTECTION READY: Link Munich->Berlin protected by HERO Hamburg
+[12:38:13.862] MCS PROTECTION READY: Link Warsaw->Berlin protected by HERO Stockholm
+[12:38:13.863] MCS PROTECTION READY: Link Hamburg->Berlin protected by HERO Munich
+[12:38:13.865] MCS PROTECTION READY: Link Bordeaux->Madrid protected by HERO Munich
+[12:38:13.866] MCS PROTECTION READY: Link Barcelona->Madrid protected by HERO Munich
+[12:38:13.869] MCS PROTECTION READY: Link Paris->London protected by HERO Amsterdam
+[12:38:13.871] MCS PROTECTION READY: Link Copenhagen->Oslo protected by HERO Budapest
+[12:38:13.873] MCS PROTECTION READY: Link Stockholm->Oslo protected by HERO Hamburg
+[12:38:13.874] MCS PROTECTION READY: Link Dublin->Glasgow protected by HERO Amsterdam
+[12:38:13.875] MCS PROTECTION READY: Link Amsterdam->Glasgow protected by HERO Bordeaux

@@ -35,10 +35,6 @@ def get_active_topology():
     else:
         print(f"[ERROR] File not found: {xml_filename}")
        
-
-
-
-
 def assign_green_weights(G, candidate_set, alpha):
     """
     LOGICA SIMPLIFICADA:
@@ -201,7 +197,7 @@ def candidates(G,a,h): # a variable a are the nodes h is the failure_dict
         candidate_table[(u,v)]=valid_candidates
     return candidate_table
 
-def find_minimum_set(candidate_table, all_nodes, max_k=6):
+def find_minimum_set(candidate_table, all_nodes, max_k=9):
     # Heurística simple para Set Cover
     num_failures = len(candidate_table)
     node_coverage = {node: set() for node in all_nodes}
@@ -469,8 +465,6 @@ def analyze_tradeoff_sequence(G, h, cand_table, valid_sets):
 if __name__ == '__main__':
     alpha=None
     winner_set, failover, G=recovery_path()
-    
-    
     if alpha is None:
         config = get_config()
         alpha = float(config.get('alpha', 0.5))

@@ -12,54 +12,7 @@ from mininet.link import TCLink
 from MCS import recovery_path  # Tu cerebro
 from traffic_injector import TrafficInjector # Tu parser
 # ==============================================================================
-# HELPER: EJECUTOR DE TRÁFICO
-# ==============================================================================
-def execute_flows(net, flows, duration=30):
-    """
-    Toma la lista de flujos (src, dst, bw) y ejecuta Iperf en Mininet.
-    """
-    if not flows:
-        info(f"   [!] No flows to inject in this interval.\n")
-        return
-    info(f"\n   >>> LAUNCHING {len(flows)} Iperf Flows (UDP) for {duration}s <<<\n")
-    # 1. Levantar Servidores (Solo en destinos necesarios)
-    destinations = set(dst for _, dst, _ in flows)
-    for dst in destinations:
-        h = net.get(f"h_{dst}")
-        if h:
-            h.cmd('killall -9 iperf') 
-            h.cmd('iperf -s -u &')    
-    time.sleep(2) 
-    # 2. Disparar Clientes
-    active_count = 0
-    for src, dst, bw in flows:
-        try:
-            h_src = net.get(f"h_{src}")
-            h_dst = net.get(f"h_{dst}")
-            
-            if h_src and h_dst:
-                # Comando: Cliente -> IP Destino -> UDP -> BW -> Tiempo -> Background
-                cmd = f'iperf -c {h_dst.IP()} -u -b {bw:.2f}M -t {duration} &'
-                h_src.cmd(cmd)
-                active_count += 1
-        except Exception as e:
-            info(f"   [Error] Flow {src}->{dst}: {e}\n")
-
-    info(f"   -> {active_count} streams running...\n")
-    
-    # 3. Barra de progreso
-    for i in range(duration + 2):
-        sys.stdout.write(".")
-        sys.stdout.flush()
-        time.sleep(1)
-    print("\n")
-        
-    # 4. Limpieza
-    info("   -> Cleaning up processes...\n")
-    for h in net.hosts:
-        h.cmd('killall -9 iperf')
-# ==============================================================================
-# CLASE TOPOLOGÍA
+# Topology Class
 # ==============================================================================
 class MyTopology(Topo):
     def __init__(self, G, *args, **params):
@@ -94,6 +47,30 @@ class MyTopology(Topo):
             #self.addLink(self.switches[u], self.switches[v], bw=bw_val, delay=delay_val)
             self.addLink(self.my_sws[u],self.my_sws[v],bw=bw_val,delay=delay_val)
 
+#===============================================================================================================================================================
+# RULES
+#================================================================================================================================================================
+def check_flow_rules(net):
+    info("\n*** OPENFLOW RULES ***\n")
+    print(f"{'Switch':<12} | {'Rules Installed'}")
+    print("-" * 30)
+    
+    total_rules = 0
+    for sw in net.switches:
+        # 1. Ejecutar comando OVS: dump-flows
+        # -O OpenFlow13: Usa protocolo 1.3
+        # grep -c cookie: Cuenta las líneas que tienen 'cookie' (cada flujo tiene una)
+        try:
+            cmd_out = sw.cmd(f'ovs-ofctl dump-flows -O OpenFlow13 {sw.name} | grep -c cookie')
+            count = int(cmd_out.strip())
+            total_rules += count
+            print(f"{sw.name:<12} | {count}")
+        except:
+            print(f"{sw.name:<12} | Error")
+            
+    print("-" * 30)
+    print(f"Total Network Rules: {total_rules}\n")
+
 # ==============================================================================
 # MAIN RUNNER
 # ==============================================================================
@@ -125,36 +102,25 @@ def run_network():
 
     time.sleep(5) # Esperar descubrimiento
     net.pingAll() 
-    
+    check_flow_rules(net)
     # 4. INYECCIÓN DE TRÁFICO (EXTRACCIÓN DINÁMICA)
     print("\n--- READY TO INJECT TRAFFIC ---")
     answer = input("Run traffic from 'TestDataSet'? (y/n): ")
     
     if answer.lower() == 'y':
-        folder_path = 'TestDataSet'
+        folder_path = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene/"
         if os.path.isdir(folder_path):
-            files = sorted([f for f in os.listdir(folder_path) if f.endswith(('.dat', '.xml', '.txt'))])
-            
-            # === EXTRACCIÓN DINÁMICA DE LA LISTA DE CIUDADES ===
-            # Extraemos los nombres del Grafo G en orden de ID (1, 2, 3...)
-            # Esto sirve para parsear matrices CSV antiguas que no tienen cabeceras
-            sorted_nodes = sorted(list(G.nodes()))
-            dynamic_city_list = [G.nodes[n].get('label', str(n)) for n in sorted_nodes]
-            
-            info(f"--- Detected City Order: {dynamic_city_list} ---\n")
-            
-            # Instanciamos el inyector con la lista extraída dinámicamente
-            injector = TrafficInjector(city_order=dynamic_city_list)
+            files = sorted([f for f in os.listdir(folder_path) if f.endswith(('.xml'))])
+            Injector=TrafficInjector(net)
             
             for index, filename in enumerate(files):
                 full_path = os.path.join(folder_path, filename)
                 print(f"\n[Interval {index+1}/{len(files)}] Processing: {filename}")
                 
                 # Parsear (El factor 0.005 es tu ajuste de escala, cámbialo si quieres más carga)
-                flows = injector.parse(full_path, scaling_factor=0.005)
-                
+                flows = Injector.parse(full_path, scaling_factor=0.005)            
                 # Ejecutar
-                execute_flows(net, flows, duration=30)
+                Injector.inject_traffic(flows,duration=10)
                 time.sleep(1) 
         else:
             print(f"[!] Folder '{folder_path}' not found.")

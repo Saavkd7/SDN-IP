@@ -202,7 +202,7 @@ class MCS(app_manager.RyuApp):
                             
                     match = parser.OFPMatch(eth_dst=dst)
                     inst = [parser.OFPInstructionActions(ofproto_v1_3.OFPIT_APPLY_ACTIONS, actions)]
-                    mod = parser.OFPFlowMod(datapath=datapath, priority=1, match=match, instructions=inst)
+                    mod = parser.OFPFlowMod(datapath=datapath, priority=1, match=match, instructions=inst, idle_timeout=0, hard_timeout=0)
                     datapath.send_msg(mod)
                 except Exception:
                     return
@@ -214,6 +214,35 @@ class MCS(app_manager.RyuApp):
         out_actions = [parser.OFPActionSetQueue(0), parser.OFPActionOutput(out_port)]
         out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id, in_port=in_port, actions=out_actions, data=msg.data)
         datapath.send_msg(out)
+    
+    def request_all_flow_stats(self):
+        """Pide el conteo de reglas a todos los switches conectados."""
+        self.log_with_timestamp("AUDIT: Requesting Rule Counts from all switches...")
+        for datapath in self.datapath.values():
+            parser = datapath.ofproto_parser
+            req = parser.OFPFlowStatsRequest(datapath)
+            datapath.send_msg(req)
+    
+    @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
+    def flow_stats_reply_handler(self, ev):
+        """Recibe la respuesta del switch y cuenta las reglas."""
+        dpid = ev.msg.datapath.id
+        body = ev.msg.body
+        name = self.get_name(dpid)
+        
+        # Filtramos reglas 'default' (prioridad 0) para contar solo las operativas si quieres
+        # O contamos todo:
+        rule_count = len(body)
+        
+        self.log_with_timestamp(f"[METRIC] Switch {name} (ID {dpid}) | Active Rules: {rule_count}")
+
+
+
+    
+
+
+
+
 
     @set_ev_cls(event.EventLinkDelete, MAIN_DISPATCHER)
     def link_delete_handler(self, ev):
@@ -223,6 +252,9 @@ class MCS(app_manager.RyuApp):
         try:
             self.net.remove_edge(src, dst)
             self.sfnet = nx.minimum_spanning_tree(self.net.to_undirected())
+
+            src_name = self.get_name(src)
+            dst_name = self.get_name(dst)
             
             # LOGGING
             self.log_with_timestamp(f"LINK FAILURE: {self.get_name(src)} -> {self.get_name(dst)} detected.")
