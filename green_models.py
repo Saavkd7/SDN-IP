@@ -1,50 +1,69 @@
 """
 green_models.py
-Based on Table VII: Switch Power Consumption Parameters.
+Refined Hardware Profiles based on official datasheets and experimental evidence.
+Integrates Power Consumption (W) and Service Capacity (PPS).
 """
 
 class SDNDevice:
     def get_base_power(self): return 0.0
-    def get_port_power(self): return 0.0 # Watts per port
-    def get_rule_cost(self, n=1): return 0.0
-    def get_packet_in_cost(self, n=1): return 0.0
+    def get_port_power(self): return 0.0
+    def get_capacity(self): return 0.0 # MU (Service Rate in PPS)
 
 class ZodiacFX(SDNDevice):
     """
-    Zodiac FX (Light Hardware - Edge)
+    Zodiac FX (Low-Power / IoT Grade)
+    Evidence: 120MHz CPU & 100Mbps ports
     """
-    P_BASE = 15.0          #
-    P_PORT = 0.15          #
-    E_FLOW_MOD = 0.001455  # Watts (1455.13 uW)
-    E_PACKET_IN = 0.000775 # Watts (775.53 uW)
+    P_BASE = 15.0            # Consumo nominal base
+    P_PORT = 0.15            # Estimado por puerto activo
+    
+    # CAPACIDAD FÍSICA (MU)
+    # Límite realista basado en CPU 120MHz para OpenFlow
+    MU = 100000.0            # 100 kpps
+    #MU = 50000.0
+    #MU = 1000000.0
 
-    def __init__(self, node_id): self.node_id = node_id
+    # ENERGÍA DE CONTROL
+    E_FLOW_MOD = 0.001455    # Watts por regla escrita
+    E_PACKET_IN = 0.000775   # Watts por procesamiento de PacketIn
 
+    def __init__(self, node_id=None): self.node_id = node_id
     def get_base_power(self): return self.P_BASE
-    def get_port_power(self): return self.P_PORT
-    def get_rule_cost(self, n=1): return n * self.E_FLOW_MOD
-    def get_packet_in_cost(self, n=1): return n * self.E_PACKET_IN
+    def get_capacity(self): return self.MU
 
 class NEC_PF5240(SDNDevice):
     """
-    NEC PF 5240 (Heavy Hardware - Core/Legacy)
+    NEC PF 5240 (High-Performance / ASIC Grade)
+    Evidence: 131 Mpps Forwarding Rate
     """
-    P_BASE = 118.33        #
-    P_PORT = 0.52          #
-    E_FLOW_MOD = 0.000029  # Watts (29.25 uW)
-    E_PACKET_IN = 0.000711 # Watts (711.30 uW)
-
-    def __init__(self, node_id): self.node_id = node_id
-
-    def get_base_power(self): return self.P_BASE
-    def get_port_power(self): return self.P_PORT
-    def get_rule_cost(self, n=1): return n * self.E_FLOW_MOD
-    def get_packet_in_cost(self, n=1): return n * self.E_PACKET_IN
+    P_BASE = 118.33          # Valor exacto medido
+    P_PORT = 0.5295          # Valor exacto medido por puerto
     
+    # CAPACIDAD FÍSICA (MU)
+    # Wire-speed por Hardware (ASIC Pipeline)
+    MU = 131000000.0         # 131 Mpps
+
+    # ENERGÍA DE CONTROL
+    E_FLOW_MOD = 0.000029    # Muy eficiente por hardware
+    E_PACKET_IN = 0.000711   # Procesamiento de control
+
+    def __init__(self, node_id=None): self.node_id = node_id
+    def get_base_power(self): return self.P_BASE
+    def get_capacity(self): return self.MU
+
+# ==============================================================================
+# HERRAMIENTAS DE NORMALIZACIÓN (SISTEMA DE REFERENCIA)
+# ==============================================================================
+class GreenNormalizer:
     @staticmethod
-    def get_max_theoretical_watts(max_degree):
-        """
-        Retorna el consumo máximo teórico para normalización.
-        Asume un NEC a full carga de puertos.
-        """
+    def get_max_power(max_degree):
+        """El peor consumo posible: Un NEC con todos los puertos activos."""
         return NEC_PF5240.P_BASE + (max_degree * NEC_PF5240.P_PORT)
+
+    @staticmethod
+    def get_worst_delay_threshold():
+        """
+        Umbral de 'Delay Inaceptable' para normalización.
+        Si un paquete tarda más de 100ms (0.1s) en un switch, se considera saturado.
+        """
+        return 0.1

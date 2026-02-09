@@ -4,11 +4,12 @@ import itertools
 # que definimos en la respuesta anterior (donde solo devuelven P_BASE).
 import os
 import json
-from green_models import NEC_PF5240 , ZodiacFX
+from green_models import NEC_PF5240 , ZodiacFX, GreenNormalizer
 import matplotlib.pyplot as plt 
 import numpy as np
 import vis_utils 
 from sndlib_loader import SNDLibXMLParser 
+import glob
 # ===================   ===========================================================
 # 1. UTILS
 # ==============================================================================
@@ -35,105 +36,114 @@ def get_active_topology():
     else:
         print(f"[ERROR] File not found: {xml_filename}")
        
-def assign_green_weights(G, candidate_set, alpha):
+def assign_green_weights(G, candidate_set, alpha, node_traffic_pps):
     """
-    LOGICA SIMPLIFICADA:
-    - Si el nodo es Héroe (está en candidate_set) -> Usamos perfil Zodiac.
-    - Si el nodo NO es Héroe -> Usamos perfil NEC.
-    - P_TOTAL = P_BASE + (Degree * P_PORT)
+    LOGICA DINÁMICA: 
+    - Si es Héroe Y su tráfico < Capacidad Zodiac -> Usa Zodiac (Green).
+    - Si es Héroe Y su tráfico > Capacidad Zodiac -> Usa NEC (Performance Fallback).
+    - Si no es Héroe -> Usa NEC (Legacy).
     """
     
-    # 1. NORMALIZACIÓN (El peor caso siempre es un NEC lleno)
+    # Referencias
     degrees = [d for n, d in G.degree()]
     max_degree = max(degrees) if degrees else 48
-    # Usamos el método estático o calculamos directo: Base NEC + (MaxPorts * PortNEC)
-    MAX_POSSIBLE_WATTS = NEC_PF5240.P_BASE + (max_degree * NEC_PF5240.P_PORT)
+    MAX_POWER = GreenNormalizer.get_max_power(max_degree)
+    MAX_DELAY_THRESHOLD = GreenNormalizer.get_worst_delay_threshold()
     
-    # Normalización de Delay
-    delays = [d.get('weight', 1.0) for u, v, d in G.edges(data=True)]
-    MAX_DELAY = max(delays) if delays else 1.0
-    
-    # 2. ASIGNACIÓN DE PESOS
+    # Capacidad del Zodiac (El límite "Green")
+    ZODIAC_CAPACITY = ZodiacFX.MU 
+
     for u, v in G.edges():
         
-        # --- A. DETERMINAR HARDWARE (SET MEMBERSHIP) ---
-        if v in candidate_set:
-            # ¡Es un Héroe! -> ZODIAC
-            p_base = ZodiacFX.P_BASE
-            p_port = ZodiacFX.P_PORT
-        else:
-            # Tráfico normal / Legacy -> NEC
-            p_base = NEC_PF5240.P_BASE
-            p_port = NEC_PF5240.P_PORT
+        # --- A. SELECCIÓN DE HARDWARE DINÁMICA ---
+        lam = node_traffic_pps.get(v, 0.0) # Tráfico real del nodo destino
+        
+        hw = None
+        p_base = 0.0
+        p_port = 0.0
+        mu = 0.0
 
-        # --- B. CALCULAR PHYSICS (Ecuación 11) ---
-        # Obtenemos cuántos cables tiene conectados realmente este nodo 'v'
+        if v in candidate_set:
+            # Es un candidato a Héroe. ¿Aguanta siendo Zodiac?
+            if lam < (ZODIAC_CAPACITY * 0.95): # Margen seguridad 5%
+                # SÍ: Usamos Hardware Green
+                hw = ZodiacFX()
+            else:
+                # NO: Upgrade forzoso a NEC para no saturar
+                hw = NEC_PF5240()
+        else:
+            # No es Héroe: Hardware Legacy por defecto
+            hw = NEC_PF5240()
+
+        # Extraemos specs del hardware decidido
+        p_base = hw.get_base_power()
+        p_port = hw.P_PORT
+        mu = hw.get_capacity()
+
+        # --- B. MODELADO DE ENERGÍA (Watts) ---
         active_ports = G.degree(v)
+        total_watts = p_base + (active_ports * p_port)
+        norm_energy = total_watts / MAX_POWER
+
+        # --- C. MODELADO DE DELAY (M/M/1) ---
+        d_prop = G[u][v].get('weight', 0.001) 
         
-        # P_config = PuertosActivos * ConsumoPorPuerto
-        p_config = active_ports * p_port
-        
-        # Watts Totales
-        total_node_watts = p_base + p_config
-        
-        # --- C. SCORE FINAL ---
-        norm_energy = total_node_watts / MAX_POSSIBLE_WATTS
-        
-        raw_latency = G[u][v].get('weight', 1.0)
-        norm_delay = raw_latency / MAX_DELAY
-        
+        # Como hicimos el upgrade automático, difícilmente habrá saturación masiva,
+        # pero mantenemos la fórmula M/M/1 por si acaso.
+        if lam >= (mu * 0.99):
+            norm_delay = 1.0 
+        else:
+            d_queue = 1.0 / (mu - lam)
+            total_delay = d_prop + d_queue
+            norm_delay = min(total_delay / MAX_DELAY_THRESHOLD, 1.0)
+
+        # --- D. SCORE HÍBRIDO FINAL ---
         score = (alpha * norm_energy) + ((1 - alpha) * norm_delay)
         
         G[u][v]['score_cost'] = score
         if not G.is_directed():
-            G[v][u]['score_cost'] = score   
+            G[v][u]['score_cost'] = score
+
 def get_path_score(G, u, v, c, affected):
     """
-    Calcula el Green RPL:
-    1. Túnel: Costo de ir de Fuente (u) -> Candidato (c).
-    2. Reparación: Promedio del costo de ir de Candidato (c) -> Destinos (d).
-    
-    Usa el peso 'score_cost' que ya incluye (Alpha * Energía) + ((1-Alpha) * Delay).
+    Calcula el Green RPL (Costo total del camino de recuperación).
+    1. Túnel: Costo (Energía + Delay M/M/1) de ir de Fuente (u) -> Héroe (c).
+    2. Reparación: Costo promedio de ir de Héroe (c) -> Destinos (affected).
     """
-    # 0. Crear grafo temporal sin el enlace fallido (u,v)
+    # Creamos una copia temporal para simular la falla del enlace (u, v)
     G_temp = G.copy()
     if G_temp.has_edge(u, v): 
         G_temp.remove_edge(u, v)
 
-    # --- PARTE A: EL TÚNEL (Source -> Candidate) ---
+    # --- PARTE A: EL TÚNEL (Esfuerzo de Redirección) ---
     tunnel_cost = 0.0
     if u != c:
         try:
-            # Calculamos el camino más barato en términos de 'score_cost'
+            # nx.shortest_path_length usará el 'score_cost' que ya tiene alpha, Watts y M/M/1
             tunnel_cost = nx.shortest_path_length(G_temp, source=u, target=c, weight='score_cost')
         except nx.NetworkXNoPath:
-            return float('inf') # Si no puede llegar al héroe, es inválido.
+            return float('inf') # Inviable si no hay camino físico al héroe
 
-    # --- PARTE B: LA REPARACIÓN (Candidate -> Destinations Average) ---
-    # ESTO ES LO QUE FALTABA
+    # --- PARTE B: LA REPARACIÓN (Esfuerzo de Entrega) ---
     if not affected:
         return tunnel_cost
 
     total_repair_cost = 0.0
-    reachable_destinations = 0
+    reachable_count = 0
 
     for dest in affected:
         try:
-            # Costo desde el Héroe hasta cada destino afectado
+            # Costo acumulado desde el Héroe hasta el destino final
             dist = nx.shortest_path_length(G_temp, source=c, target=dest, weight='score_cost')
             total_repair_cost += dist
-            reachable_destinations += 1
+            reachable_count += 1
         except nx.NetworkXNoPath:
-            # Si un destino no es alcanzable, penalizamos fuertemente
-            return float('inf')
+            return float('inf') # Si un destino queda aislado, la solución es inválida
 
-    # Calcular el promedio
-    avg_repair_cost = total_repair_cost / reachable_destinations if reachable_destinations > 0 else 0
+    avg_repair_cost = total_repair_cost / reachable_count if reachable_count > 0 else 0
 
-    # --- RESULTADO FINAL (RPL Green) ---
-    # Suma del esfuerzo del túnel + el esfuerzo promedio de entrega
+    # Green RPL = Costo del Túnel + Costo Promedio de Reparación
     return tunnel_cost + avg_repair_cost
-
 # ==============================================================================
 # 2. SELECTION LOGIC (Standard Graph Theory)
 # ==============================================================================
@@ -197,285 +207,614 @@ def candidates(G,a,h): # a variable a are the nodes h is the failure_dict
         candidate_table[(u,v)]=valid_candidates
     return candidate_table
 
-def find_minimum_set(candidate_table, all_nodes, max_k=9):
-    # Heurística simple para Set Cover
+def find_minimum_set(candidate_table, all_nodes, node_traffic_pps, max_k=9):
+    """
+    VERSIÓN AMPLIADA: Busca K, K+1 y K+2.
+    Permite que compitan sets pequeños (probablemente NECs) contra sets 
+    más grandes (posiblemente Zodiacs).
+    """
     num_failures = len(candidate_table)
-    node_coverage = {node: set() for node in all_nodes}
     
-    # Pre-procesamiento: Qué fallas cubre cada nodo individualmente
-    for failure_id, (_, valid_heroes) in enumerate(candidate_table.items()):
+    # 1. Pre-procesamiento: Cobertura Lógica
+    node_coverage = {node: set() for node in all_nodes}
+    for failure_id, ((u, v), valid_heroes) in enumerate(candidate_table.items()):
         for hero in valid_heroes:
             node_coverage[hero].add(failure_id)
 
-    print(f"Searching for optimal sets (Max size checked: {max_k})...")
+    print(f"Searching for LOGICAL optimal sets (Max size: {max_k})...")
     
-    # Buscamos el tamaño k más pequeño posible
+    found_solutions = []
+    min_k_found = None
+    patience = 2  # Cuántos tamaños extra miramos después de encontrar el mínimo
+    
+    # 2. Barrido de K
     for k in range(1, len(all_nodes) + 1):
-        if k > max_k: 
-            return None
+        if k > max_k: break
         
-        found_solutions_at_k = [] # <--- Acumulador de soluciones
+        # Si ya encontramos un K mínimo y nos pasamos de la paciencia, paramos.
+        # Ej: Si encontramos sol en K=4, buscamos en 5 y 6, y paramos en 7.
+        if min_k_found is not None and k > (min_k_found + patience):
+            break
+
+        current_k_solutions = []
         
-        # Probamos TODAS las combinaciones de este tamaño k
+        # Combinatoria
+        # OPTIMIZACIÓN: Si el espacio de búsqueda es gigante, itertools puede tardar.
+        # Para K pequeños está bien.
         for candidate_set in itertools.combinations(all_nodes, k):
             total_coverage = set().union(*[node_coverage[node] for node in candidate_set])
             
             if len(total_coverage) == num_failures:
-                found_solutions_at_k.append(candidate_set)
+                current_k_solutions.append(candidate_set)
         
-        # Si encontramos al menos una solución de tamaño k, DEVOLVEMOS TODAS
-        # para que la Fase 2 decida cuál es la mejor "Green".
-        if found_solutions_at_k:
-            print(f"Found {len(found_solutions_at_k)} valid sets of size {k}!")
-            return found_solutions_at_k
+        if current_k_solutions:
+            print(f"  > Found {len(current_k_solutions)} valid sets at size K={k}")
+            
+            # Guardamos el primer K donde encontramos algo
+            if min_k_found is None:
+                min_k_found = k
+            
+            found_solutions.extend(current_k_solutions)
+            
+            # Límite de seguridad para no explotar la RAM con miles de sets
+            if len(found_solutions) > 100:
+                print("  > Candidate limit reached. Stopping search.")
+                break
 
+    if found_solutions:
+        print(f"Total candidate sets found: {len(found_solutions)} (Sizes {min_k_found} to {min_k_found + patience})")
+        return found_solutions
+    
     return None
 # ==============================================================================
 # 3. BEST GREEN PLACEMENT (PHYSICS AWARE)
 # ==============================================================================
-def best_green_placement(G, h, candidate_table, valid_sets, alpha=None):
-    best_score = float('inf')
-    best_config = None
-    best_watts = 0.0 # <--- NUEVO: Variable para guardar los Watts del GANADOR
+def best_green_placement(G, h, candidate_table, valid_sets, alpha, node_traffic_pps):
+    """
+    FASE 2: Selección del Set Ganador con Hardware Dinámico.
+    """
+    best_total_score = float('inf')
+    winner_set = None
+    winner_watts = 0.0
+    
+    # Usamos la capacidad definida en la clase
+    ZODIAC_CAPACITY = ZodiacFX.MU
 
-    # 1. Preparar conteo de reglas (Global para la red)
-    # Cada destino afectado por cada falla requiere una regla en el Héroe.
-    total_network_rules = sum(len(affected) for affected in h.values())
-    print(f"MAX NUMER OF RULES: {total_network_rules}" )
-    print(f"\n--- EVALUATING {len(valid_sets)} VALID SETS (Alpha={alpha}) ---")
+    
+    zodiac_candidates_count = 0
+    mu_limit = ZodiacFX.MU
+    for n, pps in node_traffic_pps.items():
+        if pps < (mu_limit * 0.95):
+            zodiac_candidates_count += 1
+    print(f"[DEBUG] Traffic Analysis: {zodiac_candidates_count}/{len(G.nodes())} nodes are traffic-compatible with Zodiacs.")
+    if zodiac_candidates_count == 0:
+        print("[WARNING] ALL nodes have traffic > Zodiac Capacity. Alpha will have NO effect.")
+    # -------------------------------------
+    
+    
+    
+    
+    
+    print(f"Evaluating {len(valid_sets)} sets with Dynamic Dimensioning...")
 
     for candidate_set in valid_sets:
-        # A. ACTUALIZAR PESOS (Pintamos el grafo con la configuración actual)
-        # Esto pone barato a los Zodiac (Set) y caro a los NEC (Resto)
-        assign_green_weights(G, candidate_set, alpha)
-        
-        # B. CALCULO DE POTENCIA ESTRUCTURAL (Base + Puertos Activos)
-        structural_watts = 0.0
-        for n in G.nodes():
-            degree = G.degree(n)
-            if n in candidate_set:
-                # El nodo es un Héroe (Zodiac)
-                p_node = ZodiacFX.P_BASE + (degree * ZodiacFX.P_PORT)
-            else:
-                # El nodo es Tráfico Normal (NEC)
-                p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-            structural_watts += p_node
+        # 1. ACTUALIZAR PESOS (Esto decide internamente quién es Zodiac y quién NEC)
+        assign_green_weights(G, candidate_set, alpha, node_traffic_pps)
 
-        # C. CALCULO DE POTENCIA DE CONTROL (Reglas + PacketIn)
-        # Asumimos que TODAS las reglas de rescate van a los Héroes (Zodiac).
-        # Costo Unitario = Costo de escribir regla + Costo de procesar paquete control
-        unit_control_cost = ZodiacFX.E_FLOW_MOD + ZodiacFX.E_PACKET_IN
-        control_watts = total_network_rules * unit_control_cost
+        # 2. CÁLCULO REAL DE ENERGÍA (Sumando lo que realmente se instaló)
+        current_network_watts = 0.0
         
-        # Potencia Total (Physics)
-        total_watts = structural_watts + control_watts
-        # D. CALCULO DE DELAY (Métrica de Rutas)
-        total_path_metric = 0.0
+        for node in G.nodes():
+            # Lógica idéntica a assign_weights para ser coherentes
+            lam = node_traffic_pps.get(node, 0.0)
+            
+            if node in candidate_set:
+                # Intento de ser Green
+                if lam < (ZODIAC_CAPACITY * 0.95):
+                    # El tráfico permite ser Zodiac (20W)
+                    hw_base = ZodiacFX.P_BASE
+                    hw_port = ZodiacFX.P_PORT
+                else:
+                    # El tráfico obliga a ser NEC (118W)
+                    hw_base = NEC_PF5240.P_BASE
+                    hw_port = NEC_PF5240.P_PORT
+            else:
+                # No es Héroe -> NEC
+                hw_base = NEC_PF5240.P_BASE
+                hw_port = NEC_PF5240.P_PORT
+            
+            current_network_watts += hw_base + (G.degree(node) * hw_port)
+
+        # 3. CÁLCULO DE RESILIENCIA GLOBAL
+        total_recovery_score = 0.0
         for (u, v), affected in h.items():
-            if not affected: continue
+            valid_heroes_in_set = [c for c in candidate_table[(u, v)] if c in candidate_set]
             
-            # Buscamos cual de los héroes de este set sirve para esta falla
-            # (Usamos la candidate_table para filtrar)
-            valid_heroes_for_failure = [hero for hero in candidate_set if hero in candidate_table[(u,v)]]
+            if not valid_heroes_in_set:
+                total_recovery_score = float('inf')
+                break
             
-            if valid_heroes_for_failure:
-                # Elige el héroe que tenga el menor costo (Score Cost ya tiene Alpha integrado)
-                best_fail_score = min([get_path_score(G, u, v, hero, affected) for hero in valid_heroes_for_failure])
-                total_path_metric += best_fail_score
-            else:
-                total_path_metric += 1000.0 # Penalización (Safety)
+            best_hero_score = min([
+                get_path_score(G, u, v, c, affected) for c in valid_heroes_in_set
+            ])
+            total_recovery_score += best_hero_score
 
-        # E. SCORE FINAL
-        # Nota: total_path_metric ya es una suma de 'score_cost' que incluye (Alpha*Energy + (1-Alpha)*Delay)
-        # por lo que es la métrica directa de comparación.
-        final_score = total_path_metric
-        # CÁLCULO DEL PROMEDIO
-        num_failures_active = sum(1 for affected in h.values() if affected)
-        avg_cost = final_score / num_failures_active if num_failures_active > 0 else 0
-        
-        print(f"  -> Avg Cost per Failure: {avg_cost:.2f} (Total: {final_score:.2f} / Failures: {num_failures_active})")
+        # 4. SELECCIÓN
+        if total_recovery_score < best_total_score:
+            best_total_score = total_recovery_score
+            winner_set = candidate_set
+            winner_watts = current_network_watts
 
-        print(f"Set {candidate_set} | Struct: {structural_watts:.1f}W | Ctrl: {control_watts:.4f}W | TOTAL: {total_watts:.2f}W | Score: {final_score:.4f}")
-
-        if final_score < best_score:
-            best_score = final_score
-            best_config = candidate_set
-            best_watts = total_watts # <--- CAPTURA: Guardamos los watts de ESTE ganador
-    return best_config, best_watts, best_score
-    
+    return winner_set, winner_watts, best_total_score
 # ==============================================================================
 # 4. CONTRIBUTION
 # ==============================================================================
-def contribution(G, winner_set, total_watts_winner):
-    # 1. BASELINE: ¿Cuánto gastaría esta configuración si usáramos solo NECs (Lo estándar)?
-    # Recalculamos asumiendo que TODOS los nodos del set ganador son NEC_PF5240
-    baseline_watts = 0.0
-    for n in G.nodes():
-        degree = G.degree(n)
-        # En el Baseline, NO discriminamos, asumimos hardware potente/caro en el core
-        # O si prefieres, compara contra el winner_set siendo NECs:
-        if n in winner_set:
-            # Si hubiéramos puesto un NEC aquí en lugar de un Zodiac
-            p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-        else:
-            # El resto sigue siendo NEC
-            p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-        baseline_watts += p_node
+# def contribution(G, winner_set, total_watts_winner):
+#     # 1. BASELINE: ¿Cuánto gastaría esta configuración si usáramos solo NECs (Lo estándar)?
+#     # Recalculamos asumiendo que TODOS los nodos del set ganador son NEC_PF5240
+#     baseline_watts = 0.0
+#     for n in G.nodes():
+#         degree = G.degree(n)
+#         # En el Baseline, NO discriminamos, asumimos hardware potente/caro en el core
+#         # O si prefieres, compara contra el winner_set siendo NECs:
+#         if n in winner_set:
+#             # Si hubiéramos puesto un NEC aquí en lugar de un Zodiac
+#             p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
+#         else:
+#             # El resto sigue siendo NEC
+#             p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
+#         baseline_watts += p_node
 
-    # # 2. CÁLCULO DEL APORTE (GAP)
-    # energy_saved = baseline_watts - total_watts_winner
-    # percentage_saved = (energy_saved / baseline_watts) * 100
+#     # # 2. CÁLCULO DEL APORTE (GAP)
+#     # energy_saved = baseline_watts - total_watts_winner
+#     # percentage_saved = (energy_saved / baseline_watts) * 100
 
-    baseline_watts = 0.0
-    for n in G.nodes():
-        degree = G.degree(n)
-        # Asumiendo baseline puro NEC
-        p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-        baseline_watts += p_node
+#     baseline_watts = 0.0
+#     for n in G.nodes():
+#         degree = G.degree(n)
+#         # Asumiendo baseline puro NEC
+#         p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
+#         baseline_watts += p_node
 
-    # ... (Tus prints de reporte siguen igual) ...
+#     # ... (Tus prints de reporte siguen igual) ...
 
-    # LLAMADA LIMPIA A LA GRÁFICA B
-    print("[GRAPHIC] Generating Graph B (Savings)...")
-    vis_utils.plot_graph_b_savings(baseline_watts, total_watts_winner)
-    # print(f"\n=== SCIENTIFIC CONTRIBUTION REPORT ===")
-    # print(f"Standard Approach (All-NEC): {baseline_watts:.2f} W")
-    # print(f"Green MCS Approach (Hybrid): {total_watts_winner:.2f} W")
-    # print(f"--------------------------------------")
-    # print(f"NET ENERGY SAVING: {energy_saved:.2f} W")
-    # print(f"EFFICIENCY GAIN:   {percentage_saved:.1f} %")
-    # print(f"======================================\n")
+#     # LLAMADA LIMPIA A LA GRÁFICA B
+#     print("[GRAPHIC] Generating Graph B (Savings)...")
+#     vis_utils.plot_graph_b_savings(baseline_watts, total_watts_winner)
+#     # print(f"\n=== SCIENTIFIC CONTRIBUTION REPORT ===")
+#     # print(f"Standard Approach (All-NEC): {baseline_watts:.2f} W")
+#     # print(f"Green MCS Approach (Hybrid): {total_watts_winner:.2f} W")
+#     # print(f"--------------------------------------")
+#     # print(f"NET ENERGY SAVING: {energy_saved:.2f} W")
+#     # print(f"EFFICIENCY GAIN:   {percentage_saved:.1f} %")
+#     # print(f"======================================\n")
     
 # ==============================================================================
 # 5. Recovery PATH
 # ==============================================================================
 
 def recovery_path(alpha=None):
-    topo = get_active_topology()
-    G = topo.get_graph()
+    """
+    Orquestador Principal del Algoritmo Green-MCS.
+    1. Carga Topología y Tráfico.
+    2. Ejecuta Fase 1 (Búsqueda de Sets Físicamente Viables).
+    3. Ejecuta Fase 2 (Selección del Ganador por Energía/Delay).
+    4. Ejecuta Fase 3 (Generación de Mapa de Failover Detallado).
+    """
+    # 1. CARGA DE DATOS Y CONFIGURACIÓN
+    # ---------------------------------------------------------
+    topo_loader = get_active_topology() # Instancia del Parser
+    G = topo_loader.get_graph()
+    
+    # ¡CRÍTICO! Extraemos la carga real para el modelo M/M/1
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
+    
+    if os.path.isdir(dataset_folder):
+        # Esta función escanea todo y devuelve solo los valores máximos
+        node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)
+    else:
+        print(f"[ERROR] Folder not found. Using topology default.")
+        node_traffic_pps = topo_loader.get_traffic_load()
     
     if alpha is None:
-        config = get_config()
+        config = get_config() # Asumo que tienes esta función de utilidad
         alpha = float(config.get('alpha', 0.5))
     
-    print(f"Running MCS with Alpha: {alpha}")
+    print(f"\n[MCS] Running Recovery Logic | Alpha: {alpha}")
     
     h = failure_dict(G)
     cand_table = candidates(G, G.nodes(), h)
     
-    # Fase 1: Encontrar Sets Válidos (Matemática - Set Cover)
-    valid_sets = find_minimum_set(cand_table, G.nodes())
+    # 2. FASE 1: ENCONTRAR SETS VIABLES (FÍSICA + LÓGICA)
+    # ---------------------------------------------------------
+    # Ahora pasamos node_traffic_pps para filtrar Zodiacs saturados
+    valid_sets = find_minimum_set(cand_table, G.nodes(), node_traffic_pps)
     
     if not valid_sets:
-        print("No solution found.")
-        return None, None
+        print("[MCS] CRITICAL: No physically viable solution found (Network Saturated).")
+        return None, None, G
 
-    # Fase 2: Elegir el MEJOR Set basado en Energía/Delay (Física)
-    winner_set, _ , _ = best_green_placement(G, h, cand_table, valid_sets, alpha)
-    print(f"[MCS BRIDGE] Selected Winner for Alpha={alpha}: {winner_set}")
-    # Fase 3: Construir el Diccionario Failover (Tu lógica original)
-    # Asignamos el mejor héroe DENTRO del winner_set para cada falla
+    # 3. FASE 2: ELEGIR EL MEJOR SET (OPTIMIZACIÓN)
+    # ---------------------------------------------------------
+    # Seleccionamos el set que minimiza la suma de Energía y Delay Global
+    winner_set, winner_watts, total_score = best_green_placement(
+        G, h, cand_table, valid_sets, alpha, node_traffic_pps
+    )
+    
+    print(f"[MCS] Winner Set Selected: {list(winner_set)}")
+    print(f"[MCS] Est. Power: {winner_watts:.2f}W | Score: {total_score:.4f}")
+
+    # 4. FASE 3: CONSTRUIR DICCIONARIO FAILOVER (MAPEO FINAL)
+    # ---------------------------------------------------------
+    # Aquí decidimos qué héroe específico del winner_set atiende cada falla.
     failover = {}
     
-    # Importante: Aseguramos que el grafo tenga los pesos del ganador para el cálculo final
-    assign_green_weights(G, winner_set, alpha)
+    # A. "Pintamos" el grafo final con los pesos del ganador para ruteo preciso
+    assign_green_weights(G, winner_set, alpha, node_traffic_pps)
+    
+    # B. Asignación granular
     for (u, v), affected in h.items():
-        if not affected: continue # Si no hay destinos afectados, no hay regla
+        if not affected: continue 
         
-        best_failure = float('inf')
-        f = None # El héroe seleccionado
+        best_fail_score = float('inf')
+        chosen_hero = None 
         
-        # Solo miramos candidatos que estén DENTRO del set ganador
-        for p in winner_set:
-            if p in cand_table[(u, v)]:
-                # Calculamos el costo (RPL/Score) usando la función actual
-                # Nota: get_path_score es el equivalente a tu 'rpl_fail' antiguo
-                ar = get_path_score(G, u, v, p, affected)
-                
-                if ar < best_failure:
-                    best_failure = ar
-                    f = p
+        # Solo miramos candidatos que pertenezcan al WINNER SET
+        potential_heroes = [node for node in winner_set if node in cand_table[(u, v)]]
         
-        if f is not None:
-            failover[(u, v)] = f
+        for hero in potential_heroes:
+            # Calculamos el Green RPL (Túnel + Reparación)
+            # Ya incluye M/M/1 y penalizaciones por saturación
+            path_score = get_path_score(G, u, v, hero, affected)
+            
+            if path_score < best_fail_score:
+                best_fail_score = path_score
+                chosen_hero = hero
+        
+        if chosen_hero is not None:
+            failover[(u, v)] = chosen_hero
         else:
-            print(f"WARNING: Winner set {winner_set} cannot cover failure {(u,v)} logically.")
+            # Esto solo pasaría si la topología se fragmenta drásticamente
+            print(f"[MCS] WARNING: Winner set cannot cover failure {(u,v)} logically based on current weights.")
 
-    print(f"[FAILOVER MAP]: Generated {len(failover)} assignments.")
-
+    print(f"[MCS] Failover Map Generated: {len(failover)} rules.")
+    
+    # Retornamos G actualizado con los pesos finales ('score_cost') para visualización
     return winner_set, failover, G
 #============================================================================================================================================================
 
 # 6. SATURACION RULES 
 
 #============================================================================================================================================================
-def check_saturation(G, h, winner_set, failover_map):
-    # Capacidad Hipotética de un Zodiac (Green) vs NEC (Standard)
-    ZODIAC_MAX_RULES = 20  # Poca memoria
-    NEC_MAX_RULES = 10000   # Mucha memoria
+# def check_saturation(G, h, winner_set, failover_map):
+#     # Capacidad Hipotética de un Zodiac (Green) vs NEC (Standard)
+#     ZODIAC_MAX_RULES = 20  # Poca memoria
+#     NEC_MAX_RULES = 10000   # Mucha memoria
 
-    # Contamos cuántas reglas le tocan a cada Héroe en este escenario
-    hero_load = {hero: 0 for hero in winner_set}
+#     # Contamos cuántas reglas le tocan a cada Héroe en este escenario
+#     hero_load = {hero: 0 for hero in winner_set}
     
-    for (u, v), assigned_hero in failover_map.items():
-        # Cuantos destinos se ven afectados por esta falla específica
-        num_reglas = len(h[(u, v)]) 
-        if assigned_hero in hero_load:
-            # Ese héroe debe cargar con todas estas reglas si ese enlace falla
-            # OJO: En el peor caso (Worst Case Scenario), el héroe debe tener espacio 
-            # para la falla más grande que le toque cubrir, NO la suma de todas (porque no fallan todas a la vez).
-            # PERO, para simplificar "Reserva de Recursos", a veces se suma. 
-            # Vamos a usar el criterio: "Max Single Failure Load" (El pico de carga)
-            hero_load[assigned_hero] = max(hero_load[assigned_hero], num_reglas)
+#     for (u, v), assigned_hero in failover_map.items():
+#         # Cuantos destinos se ven afectados por esta falla específica
+#         num_reglas = len(h[(u, v)]) 
+#         if assigned_hero in hero_load:
+#             # Ese héroe debe cargar con todas estas reglas si ese enlace falla
+#             # OJO: En el peor caso (Worst Case Scenario), el héroe debe tener espacio 
+#             # para la falla más grande que le toque cubrir, NO la suma de todas (porque no fallan todas a la vez).
+#             # PERO, para simplificar "Reserva de Recursos", a veces se suma. 
+#             # Vamos a usar el criterio: "Max Single Failure Load" (El pico de carga)
+#             hero_load[assigned_hero] = max(hero_load[assigned_hero], num_reglas)
 
-    print("\n--- SATURATION ANALYSIS ---")
-    status = "VIABLE"
-    for hero, load in hero_load.items():
-        print(f"  Hero {hero} Max Load: {load} flows/rules")
-        if load > ZODIAC_MAX_RULES:
-            print(f"  [CRITICAL] Hero {hero} OVERSATURATED! (Needs {load} > Cap {ZODIAC_MAX_RULES})")
-            status = "COLLAPSED"
+#     print("\n--- SATURATION ANALYSIS ---")
+#     status = "VIABLE"
+#     for hero, load in hero_load.items():
+#         print(f"  Hero {hero} Max Load: {load} flows/rules")
+#         if load > ZODIAC_MAX_RULES:
+#             print(f"  [CRITICAL] Hero {hero} OVERSATURATED! (Needs {load} > Cap {ZODIAC_MAX_RULES})")
+#             status = "COLLAPSED"
     
-    return status
+#     return status
 
 
 #=============================================================================================================================================================
 
 # 7. GRAPHICS
 
-#==============================================================================================================================================================
-def analyze_tradeoff_sequence(G, h, cand_table, valid_sets):
-    print("\n--- COLLECTING DATA FOR GRAPH A ---")
+# #==============================================================================================================================================================
+# def analyze_tradeoff_sequence(G, h, cand_table, valid_sets):
+#     print("\n--- COLLECTING DATA FOR GRAPH A ---")
     
-    alphas = np.linspace(0, 1, 11) 
-    results_watts = []
-    results_score = []
+#     alphas = np.linspace(0, 1, 11) 
+#     results_watts = []
+#     results_score = []
 
-    for a in alphas:
-        # Solo calculamos, no imprimimos todo el log para no ensuciar
-        _, w_watts, w_score = best_green_placement(G, h, cand_table, valid_sets, alpha=a)
-        results_watts.append(w_watts)
-        results_score.append(w_score)
-    vis_utils.plot_graph_a_tradeoff(alphas, results_watts, results_score)
-
-
+#     for a in alphas:
+#         # Solo calculamos, no imprimimos todo el log para no ensuciar
+#         _, w_watts, w_score = best_green_placement(G, h, cand_table, valid_sets, alpha=a)
+#         results_watts.append(w_watts)
+#         results_score.append(w_score)
+#     vis_utils.plot_graph_a_tradeoff(alphas, results_watts, results_score)
 
 
+def plot_alpha_sensitivity(G, h, candidate_table, valid_sets, node_traffic_pps):
+    """
+    Genera una gráfica de sensibilidad variando Alpha.
+    Etiqueta los nodos como (Z)odiac o (N)EC según su tráfico real.
+    """
+    print("\n--- Running Alpha Sensitivity Analysis ---")
+    
+    alphas = np.linspace(0.0, 1.0, 11) 
+    k_values = []
+    winners_history = []
+    
+    # Capacidad para clasificar (debe coincidir con assign_green_weights)
+    ZODIAC_LIMIT = ZodiacFX.MU * 0.95 
 
+    for alpha in alphas:
+        # Ejecutamos Fase 2
+        winner_set, _, _ = best_green_placement(
+            G, h, candidate_table, valid_sets, alpha, node_traffic_pps
+        )
+        
+        k = len(winner_set) if winner_set else 0
+        k_values.append(k)
+        
+        # --- NUEVA LÓGICA DE ETIQUETADO ---
+        if winner_set:
+            sorted_nodes = sorted(list(winner_set))
+            labeled_nodes = []
+            for node in sorted_nodes:
+                traf = node_traffic_pps.get(node, 0.0)
+                if traf < ZODIAC_LIMIT:
+                    labeled_nodes.append(f"{node}(Z)") # (Z) = Zodiac (Green)
+                else:
+                    labeled_nodes.append(f"{node}(N)") # (N) = NEC (Legacy)
+            
+            # Guardamos la lista bonita: "[1(N), 5(Z), ...]"
+            winners_history.append(str(labeled_nodes).replace("'",""))
+        else:
+            winners_history.append("[]")
+
+    # --- PLOTTING ---
+    fig, ax = plt.subplots(figsize=(12, 7)) # Un poco más grande para que quepan las etiquetas
+    
+    # 1. Gráfica de Línea
+    ax.step(alphas, k_values, where='mid', label='Set Size (K)', color='#2ca02c', linewidth=2)
+    
+    # 2. Anotaciones Inteligentes
+    last_set_str = ""
+    for i, alpha in enumerate(alphas):
+        current_set_str = winners_history[i]
+        
+        # Solo anotamos si cambia la composición
+        if current_set_str != last_set_str:
+            # Formato de etiqueta con salto de línea si es muy larga
+            label_text = f"α={alpha:.1f}\n{current_set_str}"
+            
+            # Ajuste dinámico de posición para que no se encimen
+            offset_y = 30 + (i % 3) * 25 
+            
+            ax.annotate(label_text, 
+                        xy=(alpha, k_values[i]), 
+                        xytext=(0, offset_y), 
+                        textcoords='offset points',
+                        arrowprops=dict(arrowstyle="->", color='gray'),
+                        bbox=dict(boxstyle="round,pad=0.3", fc="#f0f0f0", ec="black", alpha=0.9),
+                        fontsize=8, ha='center') # Fuente más pequeña para que quepa
+            
+            last_set_str = current_set_str
+
+    # Configuración del Eje
+    ax.set_title("Sensitivity Analysis: Hero Set Composition & Hardware Roles", fontsize=14)
+    ax.set_xlabel(r"Alpha ($\alpha$): 0=Delay Focused $\leftrightarrow$ 1=Energy Focused", fontsize=12)
+    ax.set_ylabel("Set Size (K)", fontsize=12)
+    
+    # Leyenda explicativa en la gráfica
+    ax.text(0.02, 0.95, "Legend:\n(Z) = Zodiac Node (Low Power)\n(N) = NEC Node (High Perf)", 
+            transform=ax.transAxes, fontsize=10, bbox=dict(facecolor='white', alpha=0.8))
+
+    ax.set_ylim(bottom=0, top=max(k_values)+2)
+    ax.set_xlim(0, 1)
+    ax.grid(True, linestyle='--', alpha=0.6)
+    
+    plt.tight_layout()
+    plt.show()
+    print("Sensitivity Graph Generated with Role Labels.")
+
+def analyze_tradeoffs(G, h, candidate_table, valid_sets, node_traffic_pps):
+    """
+    Genera gráficas de impacto:
+    1. Alpha vs. Potencia (Watts) -> Muestra el Ahorro.
+    2. Alpha vs. Costo de Red (Score) -> Muestra el impacto en el rendimiento.
+    """
+    print("\n--- Running Trade-off Analysis (Power vs. Performance) ---")
+    
+    alphas = np.linspace(0.0, 1.0, 11)
+    power_history = []
+    score_history = []
+    
+    # 1. CÁLCULO DE LA LÍNEA BASE (WORST CASE - Todo NEC)
+    # Asumimos que si no hiciéramos nada, todos los nodos serían NEC PF5240
+    baseline_watts = 0.0
+    for n in G.nodes():
+        # P_BASE + (Puertos * P_PORT)
+        baseline_watts += NEC_PF5240.P_BASE + (G.degree(n) * NEC_PF5240.P_PORT)
+    
+    baseline_list = [baseline_watts] * len(alphas)
+
+    # 2. SIMULACIÓN
+    for alpha in alphas:
+        # Obtenemos los datos del ganador para este Alpha
+        winner_set, winner_watts, total_score = best_green_placement(
+            G, h, candidate_table, valid_sets, alpha, node_traffic_pps
+        )
+        
+        power_history.append(winner_watts)
+        score_history.append(total_score)
+
+    # 3. GRAFICACIÓN
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 10), sharex=True)
+    
+    # --- SUBPLOT 1: AHORRO DE ENERGÍA ---
+    # Línea Roja: Lo que gasta una red tradicional
+    ax1.plot(alphas, baseline_list, 'r--', label='Baseline (All-NEC Legacy)', linewidth=2, alpha=0.6)
+    
+    # Línea Verde: Tu solución
+    ax1.plot(alphas, power_history, 'g-o', label='Green-MCS Solution', linewidth=3)
+    
+    # Rellenar el área de ahorro
+    ax1.fill_between(alphas, power_history, baseline_list, color='green', alpha=0.1, label='Energy Savings')
+    
+    # Etiquetas y Estilo
+    ax1.set_ylabel("Network Power Consumption (Watts)", fontsize=12)
+    ax1.set_title("Energy Efficiency Analysis", fontsize=14)
+    ax1.legend(loc='best')
+    ax1.grid(True, linestyle=':', alpha=0.6)
+    
+    # Anotación del máximo ahorro (en Alpha=1.0)
+    max_savings = baseline_watts - power_history[-1]
+    percent_savings = (max_savings / baseline_watts) * 100
+    ax1.annotate(f"Max Savings: {percent_savings:.1f}%", 
+                 xy=(1.0, power_history[-1]), 
+                 xytext=(0.7, power_history[-1] + (baseline_watts-power_history[-1])/2),
+                 arrowprops=dict(arrowstyle="->", color='black'))
+
+    # --- SUBPLOT 2: COSTO DE RENDIMIENTO (DELAY/RPL) ---
+    # El Score representa el "costo" de mover los paquetes. Menos es mejor.
+    # Si sube, significa que estamos sacrificando rutas óptimas.
+    ax2.plot(alphas, score_history, 'b-s', label='Network Cost (Green RPL)', linewidth=2)
+    
+    ax2.set_ylabel("Routing Cost (Normalized Score)", fontsize=12)
+    ax2.set_xlabel(r"Alpha ($\alpha$): 0=Performance $\leftrightarrow$ 1=Energy", fontsize=12)
+    ax2.set_title("Performance Impact Analysis", fontsize=14)
+    ax2.legend(loc='best')
+    ax2.grid(True, linestyle=':', alpha=0.6)
+
+    plt.tight_layout()
+    plt.show()
+    print(f"Trade-off Graphs Generated. Max Savings Potential: {percent_savings:.2f}%")
+def analyze_three_metrics(G, h, candidate_table, valid_sets, node_traffic_pps):
+    """
+    Genera 3 gráficas verticales:
+    1. Alpha vs. Ahorro de Energía (%)
+    2. Alpha vs. Delay Puro (Score Normalizado de Latencia)
+    3. Alpha vs. Función Objetivo (Score Combinado)
+    """
+    print("\n--- Running Multi-Metric Analysis (Savings, Delay, Score) ---")
+    
+    alphas = np.linspace(0.0, 1.0, 11)
+    
+    # Listas para guardar los ejes Y
+    savings_history = []
+    delay_history = []
+    score_history = []
+    
+    # 1. BASELINE (Consumo Máximo - Todo NEC)
+    baseline_watts = 0.0
+    for n in G.nodes():
+        baseline_watts += NEC_PF5240.P_BASE + (G.degree(n) * NEC_PF5240.P_PORT)
+    
+    # 2. BUCLE DE SIMULACIÓN
+    for alpha in alphas:
+        # A. Encontrar al Ganador con el Alpha actual
+        winner_set, winner_watts, total_score = best_green_placement(
+            G, h, candidate_table, valid_sets, alpha, node_traffic_pps
+        )
+        
+        # --- METRICA 1: AHORRO (%) ---
+        savings_pct = ((baseline_watts - winner_watts) / baseline_watts) * 100
+        savings_history.append(savings_pct)
+        
+        # --- METRICA 3: SCORE (Directo) ---
+        score_history.append(total_score)
+        
+        # --- METRICA 2: DELAY PURO (Truco Matemático) ---
+        # Recalculamos el costo de este MISMO set ganador, pero como si Alpha fuera 0.0
+        # Esto nos da solo la parte del Delay de la ecuación.
+        assign_green_weights(G, winner_set, 0.0, node_traffic_pps) # Alpha 0 = Solo Delay
+        
+        pure_delay_score = 0.0
+        for (u, v), affected in h.items():
+            valid_heroes = [c for c in candidate_table[(u, v)] if c in winner_set]
+            if not valid_heroes:
+                pure_delay_score = float('inf')
+                break
+            # Calculamos ruta con pesos de solo delay
+            best_h = min([get_path_score(G, u, v, c, affected) for c in valid_heroes])
+            pure_delay_score += best_h
+            
+        delay_history.append(pure_delay_score)
+
+    # 3. PLOTTING (3 Subplots)
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
+    
+    # --- GRÁFICA 1: ENERGY SAVINGS ---
+    ax1.plot(alphas, savings_history, 'g-o', linewidth=2.5)
+    ax1.fill_between(alphas, savings_history, 0, color='green', alpha=0.1)
+    ax1.set_ylabel("% Energy Savings")
+    ax1.set_title("1. Energy Savings vs. Baseline (Higher is Better)", fontsize=12)
+    ax1.grid(True, linestyle='--', alpha=0.6)
+    
+    # Anotar el máximo ahorro
+    max_sav = max(savings_history)
+    ax1.annotate(f"Max: {max_sav:.1f}%", xy=(1.0, max_sav), xytext=(0.8, max_sav-5),
+                 arrowprops=dict(facecolor='black', arrowstyle='->'))
+
+    # --- GRÁFICA 2: PURE DELAY ---
+    ax2.plot(alphas, delay_history, 'r-s', linewidth=2.5)
+    ax2.set_ylabel("Network Delay Cost (Norm)")
+    ax2.set_title("2. Impact on Latency/Delay (Lower is Better)", fontsize=12)
+    ax2.grid(True, linestyle='--', alpha=0.6)
+    
+    # --- GRÁFICA 3: OBJECTIVE SCORE ---
+    ax3.plot(alphas, score_history, 'b-^', linewidth=2.5)
+    ax3.set_ylabel("Objective Function (Min)")
+    ax3.set_xlabel(r"Alpha ($\alpha$): 0=Performance $\leftrightarrow$ 1=Energy")
+    ax3.set_title("3. Algorithm Objective Score (Optimization Goal)", fontsize=12)
+    ax3.grid(True, linestyle='--', alpha=0.6)
+
+    plt.tight_layout()
+    plt.show()
+    print("Multi-Metric Analysis Generated.")
 if __name__ == '__main__':
-    alpha=None
-    winner_set, failover, G=recovery_path()
-    if alpha is None:
-        config = get_config()
-        alpha = float(config.get('alpha', 0.5))
+    # 1. Configuración
+    config = get_config()
+    alpha = float(config.get('alpha', 0.5))
     
-    print(f"Running MCS with Alpha: {alpha}")
+    # 2. Carga de Topología
+    topo_loader = get_active_topology()
+    G = topo_loader.get_graph()
     
+    # 3. EXTRACCIÓN DEL "WORST CASE" (Pico Histórico)
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/abilene"
+    if os.path.isdir(dataset_folder):
+        # Esta función escanea todo y devuelve solo los valores máximos
+        node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)
+    else:
+        print(f"[ERROR] Folder not found. Using topology default.")
+        node_traffic_pps = topo_loader.get_traffic_load()
+
+    print(f"Running Green-MCS on PEAK TRAFFIC | Alpha: {alpha}")
+    
+    # 4. Ejecución Estándar (Una sola vez, con los datos máximos)
     h = failure_dict(G)
     cand_table = candidates(G, G.nodes(), h)
-    valid_sets = find_minimum_set(cand_table, G.nodes())
-    winner_set, winner_watts, _ = best_green_placement(G, h, cand_table, valid_sets, alpha)
-    analyze_tradeoff_sequence(G, h, cand_table, valid_sets)
-    check_saturation(G, h, winner_set, failover)
-    contribution(G, winner_set, winner_watts)
+    
+    valid_sets = find_minimum_set(cand_table, G.nodes(), node_traffic_pps, max_k=len(G.nodes()))
+    
+    if valid_sets:
+        winner_set, winner_watts, total_score = best_green_placement(G, h, cand_table, valid_sets, alpha, node_traffic_pps)
+        print(f"\n[RESULT] Winner Set for Peak Traffic: {list(winner_set)}")
+        print(f"[RESULT] Power Consumption at Peak: {winner_watts:.2f} W")
+        
+        # Gráfica de sensibilidad
+        #plot_alpha_sensitivity(G, h, cand_table, valid_sets, node_traffic_pps)
+        #analyze_tradeoffs(G, h, cand_table, valid_sets, node_traffic_pps)
+        analyze_three_metrics(G, h, cand_table, valid_sets, node_traffic_pps)
+    else:
+        print("\n[CRITICAL ERROR] Even with upgraded hardware, the Peak Traffic is too high.")
 
+
+    
