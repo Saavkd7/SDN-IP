@@ -1,89 +1,333 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import networkx as nx
 import os
+import math  # <--- CRÍTICO PARA FÍSICA
+from green_models import NEC_PF5240, ZodiacFX
 
-def plot_graph_a_tradeoff(alphas, watts_history, score_history, filename="graph_a_tradeoff.png"):
-    """
-    Genera la Gráfica A: Trade-off entre Energía (Watts) y Función Objetivo (Score).
-    Eje Izquierdo (Verde): Consumo en Watts.
-    Eje Derecho (Azul): Score de Optimización (Costo acumulado de rutas).
-    """
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+# Directorio de salida
+OUTPUT_DIR = "img_results"
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
 
-    # --- EJE Y 1: POTENCIA (WATTS) ---
-    color_watts = 'tab:green'
-    ax1.set_xlabel('Alpha (0 = Prioridad Velocidad, 1 = Prioridad Energía)', fontsize=12)
-    ax1.set_ylabel('Total Network Power (Watts)', color=color_watts, fontsize=12, fontweight='bold')
-    # Graficamos con marcadores sólidos para ver los puntos exactos
-    ax1.plot(alphas, watts_history, color=color_watts, marker='o', linewidth=2, label='Power (W)')
-    ax1.tick_params(axis='y', labelcolor=color_watts)
-    ax1.grid(True, linestyle='--', alpha=0.5)
-
-    # --- EJE Y 2: SCORE (METRIC) ---
-    ax2 = ax1.twinx()  # Instancia un segundo eje que comparte el mismo eje X
-    color_score = 'tab:blue'
-    ax2.set_ylabel('Optimization Cost Metric (Lower is Better)', color=color_score, fontsize=12, fontweight='bold')
-    # Usamos línea punteada para diferenciar
-    ax2.plot(alphas, score_history, color=color_score, marker='x', linestyle='--', linewidth=2, label='Path Cost Metric')
-    ax2.tick_params(axis='y', labelcolor=color_score)
-
-    # TÍTULO Y GUARDADO
-    plt.title('GRAPH A: Energy vs. Performance Trade-off Analysis', fontsize=14)
-    fig.tight_layout()  # Ajusta para que no se corten las etiquetas
-    
-    if os.path.exists(filename):
-        os.remove(filename)
-    plt.savefig(filename, dpi=300) # 300 DPI es calidad de impresión/tesis
-    print(f"[GRAPHIC] Graph A saved successfully as '{filename}'")
+def save_plot(filename):
+    path = os.path.join(OUTPUT_DIR, filename)
+    plt.savefig(path, dpi=300, bbox_inches='tight')
     plt.close()
+    print(f"[VIS] Saved graphic to: {path}")
 
-
-def plot_graph_b_savings(baseline_watts, green_watts, filename="graph_b_savings.png"):
-    """
-    Genera la Gráfica B: Comparativa de Impacto (Baseline vs Green).
-    Gráfico de Barras con anotaciones de porcentaje.
-    """
-    labels = ['Standard Approach\n(All-NEC)', 'Green MCS Approach\n(Hybrid)']
-    values = [baseline_watts, green_watts]
-    colors = ['#d62728', '#2ca02c'] # Rojo (Malo/Alto) y Verde (Bueno/Bajo)
-
-    fig, ax = plt.subplots(figsize=(8, 6))
+# ==========================================
+# MOTOR DE FÍSICA (Scientific Calculation)
+# ==========================================
+def haversine_distance(coord1, coord2):
+    """Calcula distancia en Km entre dos puntos (lon, lat)"""
+    R = 6371  # Radio Tierra km
+    lon1, lat1 = coord1
+    lon2, lat2 = coord2
     
-    # Crear las barras
-    bars = ax.bar(labels, values, color=colors, width=0.5)
-
-    # Títulos y Etiquetas
-    ax.set_ylabel('Power Consumption (Watts)', fontsize=12)
-    ax.set_title('GRAPH B: Energy Efficiency Impact Analysis', fontsize=14)
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
     
-    # Calcular ahorro
-    saved = baseline_watts - green_watts
-    percent = (saved / baseline_watts) * 100
+    a = math.sin(dphi/2)**2 + math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
 
-    # --- ANOTACIONES AUTOMÁTICAS ENCIMA DE LAS BARRAS ---
-    # Barra 1 (Standard)
-    ax.text(bars[0].get_x() + bars[0].get_width()/2., baseline_watts + 10,
-            f'{baseline_watts:.1f} W', 
-            ha='center', va='bottom', fontsize=11, fontweight='bold')
+def get_real_path_latency(G, path):
+    """
+    Calcula la latencia acumulada de un camino (lista de nodos)
+    usando la velocidad de la luz en fibra (200,000 km/s).
+    """
+    total_ms = 0.0
+    SPEED_FIBER = 200.0 # km/ms
+    
+    for i in range(len(path) - 1):
+        u, v = path[i], path[i+1]
+        
+        # 1. Intentar usar peso pre-calculado si es confiable
+        # edge_w = G[u][v].get('weight', 0)
+        # if edge_w > 0: 
+        #     total_ms += edge_w
+        #     continue
+            
+        # 2. Si no, calcular desde coordenadas (PLAN B ROBUSTO)
+        try:
+            # SNDLib a veces guarda en 'pos' (tupla) o atributos x, y
+            u_node = G.nodes[u]
+            v_node = G.nodes[v]
+            
+            # Extracción robusta de coordenadas
+            c1 = u_node.get('pos')
+            if not c1: c1 = (u_node.get('x', 0), u_node.get('y', 0))
+            
+            c2 = v_node.get('pos')
+            if not c2: c2 = (v_node.get('x', 0), v_node.get('y', 0))
+            
+            dist = haversine_distance(c1, c2)
+            delay = (dist / SPEED_FIBER) + 0.05 # +0.05ms switching overhead
+            total_ms += delay
+        except:
+            total_ms += 1.0 # Fallback 1ms si falla la física
+            
+    return total_ms
 
-    # Barra 2 (Green)
-    ax.text(bars[1].get_x() + bars[1].get_width()/2., green_watts + 10,
-            f'{green_watts:.1f} W', 
-            ha='center', va='bottom', fontsize=11, fontweight='bold')
+# --- ESTADÍSTICAS GLOBALES ---
+def calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps):
+    """Retorna (Watts Reales, Latencia Promedio ms)"""
+    total_watts = 0.0
+    ZODIAC_CAP = ZodiacFX.MU * 0.95
+    
+    # 1. Energía Real (Lógica Green-First)
+    for n in G.nodes():
+        # YA NO preguntamos "if n in winner_set". 
+        # Si el tráfico lo permite, CUALQUIERA puede ser Green.
+        if node_traffic_pps.get(n, 0) < ZODIAC_CAP:
+            hw_base = ZodiacFX.P_BASE # 20W
+            hw_port = ZodiacFX.P_PORT
+        else:
+            hw_base = NEC_PF5240.P_BASE # 118W
+            hw_port = NEC_PF5240.P_PORT
+            
+        total_watts += hw_base + (G.degree(n) * hw_port)
 
-    # Flecha y Texto de Ahorro en el centro
-    mid_point = (baseline_watts + green_watts) / 2
-    ax.annotate(f'SAVING\n-{percent:.1f}%', 
-                xy=(0.5, mid_point), xycoords='axes fraction', # Posición relativa
-                ha='center', fontsize=12, fontweight='bold', color='green',
-                bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="green", lw=2))
+    # 2. Latencia Real (ms) con Física
+    total_latency = 0.0
+    count = 0
+    
+    # Pre-calcular capacidades para M/M/1
+    caps = {n: (ZodiacFX.MU if (n in winner_set and node_traffic_pps.get(n,0) < ZODIAC_CAP) else NEC_PF5240.MU) for n in G.nodes()}
 
-    # Limite Y un poco más alto para que quepa el texto
-    ax.set_ylim(0, max(values) * 1.15)
-    ax.grid(axis='y', linestyle='--', alpha=0.5)
+    for (u, v), hero in failover_map.items():
+        affected = h.get((u, v), [])
+        if not affected: continue
+        
+        # Cola
+        mu = caps.get(hero, NEC_PF5240.MU)
+        lam = node_traffic_pps.get(hero, 0.0)
+        q_ms = (0.1 if lam >= mu*0.99 else 1.0/(mu - lam)) * 1000 # a ms
+        
+        try:
+            # Caminos usando Dijkstra simple para obtener la secuencia de nodos
+            path_tun = nx.shortest_path(G, u, hero, weight='weight')
+            lat_tun = get_real_path_latency(G, path_tun)
+            
+            lat_rep_accum = 0
+            for d in affected:
+                path_rep = nx.shortest_path(G, hero, d, weight='weight')
+                lat_rep_accum += get_real_path_latency(G, path_rep)
+            
+            avg_rep = lat_rep_accum / len(affected)
+            
+            total_latency += (lat_tun + avg_rep + q_ms)
+            count += 1
+        except:
+            pass
 
-    if os.path.exists(filename):
-        os.remove(filename)
-    plt.savefig(filename, dpi=300)
-    print(f"[GRAPHIC] Graph B saved successfully as '{filename}'")
-    plt.close()
+    avg_ms = (total_latency / count) if count > 0 else 0.0
+    return total_watts, avg_ms
+
+# ==========================================
+# GRÁFICAS
+# ==========================================
+
+def plot_alpha_sensitivity(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func):
+    print("\n[VIS] 1. Generating Alpha Sensitivity...")
+    alphas = np.linspace(0.0, 1.0, 11)
+    k_vals = []
+    labels = []
+    Z_CAP = ZodiacFX.MU * 0.95
+
+    for a in alphas:
+        w_set, _, _ = solver_func(G, h, candidate_table, valid_sets, a, node_traffic_pps)
+        k_vals.append(len(w_set) if w_set else 0)
+        
+        if w_set:
+            l = []
+            for n in sorted(list(w_set)):
+                tag = "(Z)" if node_traffic_pps.get(n,0) < Z_CAP else "(N)"
+                l.append(f"{n}{tag}")
+            labels.append(str(l).replace("'",""))
+        else:
+            labels.append("[]")
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.step(alphas, k_vals, where='mid', color='green', linewidth=2)
+    
+    last = ""
+    for i, txt in enumerate(labels):
+        if txt != last:
+            ax.annotate(f"a={alphas[i]:.1f}\n{txt}", xy=(alphas[i], k_vals[i]), 
+                        xytext=(0, 20 + (i%2)*20), textcoords='offset points',
+                        bbox=dict(boxstyle="round", fc="white", alpha=0.9), fontsize=8, ha='center',
+                        arrowprops=dict(arrowstyle="->"))
+            last = txt
+            
+    ax.set_title("1. Sensitivity Analysis: Hardware Roles", fontsize=14)
+    ax.set_xlabel("Alpha")
+    ax.set_ylabel("Set Size (K)")
+    ax.grid(True, linestyle=':')
+    save_plot("1_alpha_sensitivity.png")
+
+def analyze_tradeoffs(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func):
+    print("\n[VIS] 2. Generating Trade-off Analysis (Real Physics)...")
+    alphas = np.linspace(0.0, 1.0, 11)
+    watts_list = []
+    delay_list = []
+    
+    base_watts = sum([NEC_PF5240.P_BASE + (G.degree(n)*NEC_PF5240.P_PORT) for n in G.nodes()])
+    
+    for a in alphas:
+        w_set, _, _ = solver_func(G, h, candidate_table, valid_sets, a, node_traffic_pps)
+        
+        temp_fail = {}
+        for k_fail, v_cands in candidate_table.items():
+            valid = [x for x in v_cands if x in w_set]
+            if valid: temp_fail[k_fail] = valid[0] 
+            
+        real_w, real_ms = calculate_real_physics(G, h, w_set, temp_fail, node_traffic_pps)
+        watts_list.append(real_w)
+        delay_list.append(real_ms)
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 10), sharex=True)
+    
+    # Watts
+    ax1.plot(alphas, [base_watts]*11, 'r--', label='Legacy (All-NEC)')
+    ax1.plot(alphas, watts_list, 'g-o', label='Green-MCS', linewidth=2)
+    ax1.fill_between(alphas, watts_list, base_watts, color='green', alpha=0.1)
+    ax1.set_ylabel("Power Consumption (W)")
+    ax1.set_title("Energy Efficiency Trade-off", fontsize=14)
+    ax1.legend()
+    ax1.grid(True, alpha=0.5)
+    
+    # Delay
+    ax2.plot(alphas, delay_list, 'b-s', linewidth=2)
+    ax2.set_ylabel("Avg Recovery Latency (ms)")
+    ax2.set_xlabel("Alpha Preference")
+    ax2.set_title("QoS Impact (Physics-based)", fontsize=14)
+    ax2.grid(True, alpha=0.5)
+    
+    save_plot("2_tradeoff_analysis.png")
+
+def analyze_three_metrics(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func, weight_func, score_func):
+    print("\n[VIS] 3. Generating Multi-Metric Analysis...")
+    alphas = np.linspace(0.0, 1.0, 11)
+    sav_pct = []
+    lat_ms = []
+    obj_scores = []
+    
+    base_watts = sum([NEC_PF5240.P_BASE + (G.degree(n)*NEC_PF5240.P_PORT) for n in G.nodes()])
+
+    for a in alphas:
+        w_set, _, w_score = solver_func(G, h, candidate_table, valid_sets, a, node_traffic_pps)
+        
+        temp_fail = {}
+        for k, v in candidate_table.items():
+            inter = [x for x in v if x in w_set]
+            if inter: temp_fail[k] = inter[0]
+            
+        real_w, real_ms = calculate_real_physics(G, h, w_set, temp_fail, node_traffic_pps)
+        
+        sav_pct.append(((base_watts - real_w)/base_watts)*100)
+        lat_ms.append(real_ms)
+        obj_scores.append(w_score)
+
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
+    ax1.plot(alphas, sav_pct, 'g-o'); ax1.set_ylabel("% Savings"); ax1.grid(True)
+    ax2.plot(alphas, lat_ms, 'r-s'); ax2.set_ylabel("Latency (ms)"); ax2.grid(True)
+    ax3.plot(alphas, obj_scores, 'b-^'); ax3.set_ylabel("Objective Score"); ax3.grid(True)
+    ax3.set_xlabel("Alpha")
+    
+    save_plot("3_multimetric_analysis.png")
+
+def plot_hero_load_distribution(failover_map, winner_set):
+    print("\n[VIS] 4. Generating Load Distribution...")
+    load = {h:0 for h in winner_set}
+    for _, h in failover_map.items():
+        if h in load: load[h] += 1
+        
+    names = [str(x) for x in load.keys()]
+    vals = list(load.values())
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars = ax.bar(names, vals, color='skyblue', edgecolor='black')
+    ax.bar_label(bars)
+    ax.set_title("Control Plane Load Balancing")
+    ax.set_ylabel("Protected Links")
+    save_plot("4_hero_load_distribution.png")
+
+def plot_recovery_delay_cdf(G, h, failover_map, score_func):
+    print("\n[VIS] 5. Generating Delay CDF (Real Physics)...")
+    delays = []
+    
+    for (u,v), hero in failover_map.items():
+        aff = h.get((u,v), [])
+        if not aff: continue
+        try:
+            # Usamos get_real_path_latency para obtener ms reales
+            path_1 = nx.shortest_path(G, u, hero, weight='weight')
+            ms_1 = get_real_path_latency(G, path_1)
+            
+            ms_2_accum = 0
+            for d in aff: 
+                path_2 = nx.shortest_path(G, hero, d, weight='weight')
+                ms_2_accum += get_real_path_latency(G, path_2)
+            
+            delays.append(ms_1 + (ms_2_accum/len(aff)))
+        except: pass
+        
+    if not delays: return
+    
+    srt = np.sort(delays)
+    p = 1. * np.arange(len(srt)) / (len(srt) - 1)
+    
+    fig, ax = plt.subplots(figsize=(10,6))
+    ax.plot(srt, p, 'r-', linewidth=3)
+    ax.set_title("CDF of Recovery Latency (Physics: Fiber Speed)")
+    ax.set_xlabel("Latency (ms)") # AHORA SÍ SON MS
+    ax.set_ylabel("Probability")
+    ax.grid(True)
+    
+    # SLA
+    if len(p) > 0:
+        idx = (np.abs(p - 0.9)).argmin()
+        val = srt[idx]
+        ax.axvline(val, color='k', linestyle=':')
+        ax.text(val, 0.5, f" 90% < {val:.1f}ms", rotation=90)
+        
+    save_plot("5_recovery_delay_cdf.png")
+
+def plot_k_size_impact(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func, alpha=1.0):
+    print("\n[VIS] 6. Generating K-Size Impact...")
+    best_per_k = {}
+    
+    for s in valid_sets:
+        k = len(s)
+        _, _, score = solver_func(G, h, candidate_table, [s], alpha, node_traffic_pps)
+        
+        # Watts reales para la gráfica
+        z_cap = ZodiacFX.MU * 0.95
+        real_watts = 0
+        for n in G.nodes():
+            hw_b, hw_p = (NEC_PF5240.P_BASE, NEC_PF5240.P_PORT)
+            if n in s and node_traffic_pps.get(n,0) < z_cap:
+                hw_b, hw_p = (ZodiacFX.P_BASE, ZodiacFX.P_PORT)
+            real_watts += hw_b + (G.degree(n)*hw_p)
+
+        if k not in best_per_k or score < best_per_k[k]['score']:
+            best_per_k[k] = {'watts': real_watts, 'score': score}
+
+    ks = sorted(best_per_k.keys())
+    ws = [best_per_k[k]['watts'] for k in ks]
+    sc = [best_per_k[k]['score'] for k in ks]
+    
+    fig, ax1 = plt.subplots(figsize=(10,6))
+    ax1.bar(ks, ws, color='green', alpha=0.6)
+    ax1.set_ylabel("Total Power (W)", color='green')
+    ax1.set_xlabel("Set Size (K)")
+    
+    ax2 = ax1.twinx()
+    ax2.plot(ks, sc, 'b-o', linewidth=2)
+    ax2.set_ylabel("Optimization Score", color='blue')
+    
+    ax1.set_title(f"Size vs Efficiency (Alpha={alpha})")
+    save_plot("6_k_size_impact.png")

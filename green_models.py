@@ -19,9 +19,8 @@ class ZodiacFX(SDNDevice):
     
     # CAPACIDAD FÍSICA (MU)
     # Límite realista basado en CPU 120MHz para OpenFlow
-    MU = 100000.0            # 100 kpps
-    #MU = 50000.0
-    #MU = 1000000.0
+    MU = 100000.0            # 100 kpps ZODIAC FX
+    #MU = 1000000.0 #1 Mpps  ZODIAC NG QUALCOSA
 
     # ENERGÍA DE CONTROL
     E_FLOW_MOD = 0.001455    # Watts por regla escrita
