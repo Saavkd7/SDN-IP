@@ -72,42 +72,75 @@ def get_real_path_latency(G, path):
     return total_ms
 
 # --- ESTADÍSTICAS GLOBALES ---
-def calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps):
-    """Retorna (Watts Reales, Latencia Promedio ms)"""
+# --- ESTADÍSTICAS GLOBALES ---
+def calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type=None):
+    """
+    Retorna (Watts Reales, Latencia Promedio ms).
+    Admite 'force_type' para escenarios de Benchmark (ALL_NEC, ALL_ZODIAC).
+    Implementa política 'Green-First' por defecto.
+    """
     total_watts = 0.0
     ZODIAC_CAP = ZodiacFX.MU * 0.95
+    SATURATION_PENALTY_MS = 2000.0 # 2 segundos si colapsa (para gráfica)
     
-    # 1. Energía Real (Lógica Green-First)
+    # Diccionario para guardar qué capacidad tiene cada nodo según el escenario
+    node_caps = {}
+
+    # 1. Energía Real y Configuración de Hardware
     for n in G.nodes():
-        # YA NO preguntamos "if n in winner_set". 
-        # Si el tráfico lo permite, CUALQUIERA puede ser Green.
-        if node_traffic_pps.get(n, 0) < ZODIAC_CAP:
-            hw_base = ZodiacFX.P_BASE # 20W
-            hw_port = ZodiacFX.P_PORT
-        else:
-            hw_base = NEC_PF5240.P_BASE # 118W
+        lam = node_traffic_pps.get(n, 0.0)
+        
+        # --- LÓGICA DE SELECCIÓN DE HARDWARE ---
+        if force_type == 'ALL_NEC':
+            # Escenario Base: Todo Legacy
+            hw_base = NEC_PF5240.P_BASE
             hw_port = NEC_PF5240.P_PORT
+            mu = NEC_PF5240.MU
             
+        elif force_type == 'ALL_ZODIAC':
+            # Escenario Riesgoso: Todo Green (aunque sature)
+            hw_base = ZodiacFX.P_BASE
+            hw_port = ZodiacFX.P_PORT
+            mu = ZodiacFX.MU
+            
+        else:
+            # Escenario Green-MCS (Green-First Policy)
+            # Si el tráfico es bajo, se vuelve Zodiac. Si es alto, NEC.
+            # NO depende de si es Winner o no, solo del tráfico.
+            if lam < ZODIAC_CAP:
+                hw_base = ZodiacFX.P_BASE
+                hw_port = ZodiacFX.P_PORT
+                mu = ZodiacFX.MU
+            else:
+                hw_base = NEC_PF5240.P_BASE
+                hw_port = NEC_PF5240.P_PORT
+                mu = NEC_PF5240.MU
+        
+        # Guardamos capacidad para cálculo de latencia
+        node_caps[n] = mu
+        # Sumamos Watts
         total_watts += hw_base + (G.degree(n) * hw_port)
 
-    # 2. Latencia Real (ms) con Física
+    # 2. Latencia Real (ms) con Física y Colas
     total_latency = 0.0
     count = 0
     
-    # Pre-calcular capacidades para M/M/1
-    caps = {n: (ZodiacFX.MU if (n in winner_set and node_traffic_pps.get(n,0) < ZODIAC_CAP) else NEC_PF5240.MU) for n in G.nodes()}
-
     for (u, v), hero in failover_map.items():
         affected = h.get((u, v), [])
         if not affected: continue
         
-        # Cola
-        mu = caps.get(hero, NEC_PF5240.MU)
+        # Recuperamos la capacidad del héroe asignado en este escenario
+        mu = node_caps.get(hero, NEC_PF5240.MU)
         lam = node_traffic_pps.get(hero, 0.0)
-        q_ms = (0.1 if lam >= mu*0.99 else 1.0/(mu - lam)) * 1000 # a ms
+        
+        # M/M/1 Queue Delay con detección de Saturación
+        if lam >= mu * 0.99:
+            q_ms = SATURATION_PENALTY_MS # ¡Buffer Lleno!
+        else:
+            q_ms = (1.0 / (mu - lam)) * 1000.0 # ms
         
         try:
-            # Caminos usando Dijkstra simple para obtener la secuencia de nodos
+            # Caminos físicos
             path_tun = nx.shortest_path(G, u, hero, weight='weight')
             lat_tun = get_real_path_latency(G, path_tun)
             
@@ -331,3 +364,62 @@ def plot_k_size_impact(G, h, candidate_table, valid_sets, node_traffic_pps, solv
     
     ax1.set_title(f"Size vs Efficiency (Alpha={alpha})")
     save_plot("6_k_size_impact.png")
+
+# ==========================================
+# 7. NUEVA GRÁFICA: EXTREME SCENARIOS
+# ==========================================
+def plot_extreme_scenarios_comparison(G, h, winner_set, failover_map, node_traffic_pps):
+    """
+    Compara 3 Escenarios:
+    1. All-NEC (Máximo Rendimiento, Máximo Consumo)
+    2. Green-MCS (Híbrido Óptimo)
+    3. All-Zodiac (Mínimo Consumo, Riesgo de Colapso)
+    """
+    print("\n[VIS] 7. Generating Extreme Scenarios Benchmark...")
+    
+    scenarios = ['All-NEC (Legacy)', 'Green-MCS (Ours)', 'All-Zodiac (Risky)']
+    watts_vals = []
+    delay_vals = []
+    
+    # 1. Calcular All-NEC
+    w1, d1 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type='ALL_NEC')
+    watts_vals.append(w1)
+    delay_vals.append(d1)
+    
+    # 2. Calcular Green-MCS (Usamos el winner_set actual)
+    w2, d2 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type=None)
+    watts_vals.append(w2)
+    delay_vals.append(d2)
+    
+    # 3. Calcular All-Zodiac (Forzamos todo a Zodiac y vemos si explota)
+    w3, d3 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type='ALL_ZODIAC')
+    watts_vals.append(w3)
+    delay_vals.append(d3)
+
+    # --- PLOTTING ---
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    
+    # Gráfica de Potencia
+    colors = ['#e74c3c', '#2ecc71', '#f1c40f'] # Rojo, Verde, Amarillo
+    bars1 = ax1.bar(scenarios, watts_vals, color=colors, alpha=0.8, edgecolor='black')
+    ax1.set_ylabel('Total Power Consumption (Watts)', fontsize=12)
+    ax1.set_title('Energy Benchmark', fontsize=14)
+    ax1.grid(axis='y', linestyle='--', alpha=0.5)
+    ax1.bar_label(bars1, fmt='%.0f W')
+    
+    # Gráfica de Latencia
+    bars2 = ax2.bar(scenarios, delay_vals, color=colors, alpha=0.8, edgecolor='black')
+    ax2.set_ylabel('Avg Recovery Latency (ms)', fontsize=12)
+    ax2.set_title('QoS Benchmark (Latency)', fontsize=14)
+    ax2.grid(axis='y', linestyle='--', alpha=0.5)
+    
+    # Anotación de Saturación si ocurre
+    if delay_vals[2] >= 1000: # Si All-Zodiac saturó
+        ax2.text(2, delay_vals[2], "SATURATION\n(Queue Full)", ha='center', va='bottom', 
+                 color='red', fontweight='bold')
+    else:
+        ax2.bar_label(bars2, fmt='%.1f ms')
+
+    plt.suptitle("Why Green-MCS? The Sweet Spot Analysis", fontsize=16)
+    plt.tight_layout()
+    save_plot("7_extreme_scenarios.png")

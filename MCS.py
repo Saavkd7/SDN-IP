@@ -266,75 +266,117 @@ def find_minimum_set(candidate_table, all_nodes, node_traffic_pps, max_k=9):
         return found_solutions
     
     return None
-# ==============================================================================
-# 3. BEST GREEN PLACEMENT (PHYSICS AWARE)
-# ==============================================================================
-def best_green_placement(G, h, candidate_table, valid_sets, alpha, node_traffic_pps):
+## --- PEGAR ESTO EN MCS.py ---
+
+def get_network_latency_score(G, placement_set, node_traffic_pps, node_caps):
     """
-    FASE 2: Selección del Set Ganador con Hardware Dinámico.
+    Calcula el delay promedio considerando propagación + colas M/M/1.
+    Usamos una heurística rápida: Distancia al controlador más cercano + Delay de Cola de ese controlador.
     """
-    best_total_score = float('inf')
+    total_latency = 0.0
+    
+    # Pre-calcular distancias desde todos los nodos a los controladores del set
+    for n in G.nodes():
+        # 1. Encontrar controlador más cercano (Latencia de Propagación)
+        # (En la realidad MCS hace esto via Shortest Path)
+        min_prop_delay = float('inf')
+        nearest_ctrl = None
+        
+        for ctrl in placement_set:
+            try:
+                # Usamos el peso 'weight' que ya tiene latencia en ms
+                dist = nx.shortest_path_length(G, source=n, target=ctrl, weight='weight')
+                if dist < min_prop_delay:
+                    min_prop_delay = dist
+                    nearest_ctrl = ctrl
+            except:
+                pass
+        
+        if nearest_ctrl is None: continue # Nodo desconectado (raro)
+
+        # 2. Calcular Delay de Cola en el Controlador (M/M/1)
+        # Asumimos que el tráfico de este nodo va a ese controlador
+        # Nota: Para optimización rápida, usamos la carga del propio controlador como proxy de congestión
+        lam = node_traffic_pps.get(nearest_ctrl, 0) 
+        mu = node_caps.get(nearest_ctrl, NEC_PF5240.MU)
+        
+        # Fórmula de Colas
+        if lam >= mu * 0.99:
+            queue_delay = 1000.0 # Castigo: 1 segundo
+        else:
+            queue_delay = (1.0 / (mu - lam)) * 1000.0 # ms
+            
+        total_latency += (min_prop_delay + queue_delay)
+
+    return total_latency / len(G.nodes())
+
+def best_green_placement(G, h, cand_table, valid_sets, alpha, node_traffic_pps):
+    """
+    Busca la configuración óptima (Winner Set) balanceando Energía vs Delay.
+    Aplica Auto-Scaling basado en tráfico real (PPS).
+    """
+    best_score = float('inf')
     winner_set = None
     winner_watts = 0.0
     
-    # Usamos la capacidad definida en la clase
-    ZODIAC_CAPACITY = ZodiacFX.MU
-
+    # Constantes de Normalización (Para que Alpha funcione bien)
+    # Peor caso Energía: Todos son NECs
+    MAX_E = len(G.nodes()) * (NEC_PF5240.P_BASE + (48 * NEC_PF5240.P_PORT)) 
+    # Peor caso Delay: 100ms promedio
+    MAX_D = 100.0 
     
-    zodiac_candidates_count = 0
-    mu_limit = ZodiacFX.MU
-    for n, pps in node_traffic_pps.items():
-        if pps < (mu_limit * 0.95):
-            zodiac_candidates_count += 1
-    print(f"[DEBUG] Traffic Analysis: {zodiac_candidates_count}/{len(G.nodes())} nodes are traffic-compatible with Zodiacs.")
-    if zodiac_candidates_count == 0:
-        print("[WARNING] ALL nodes have traffic > Zodiac Capacity. Alpha will have NO effect.")
-    # -------------------------------------
-    print(f"Evaluating {len(valid_sets)} sets with Dynamic Dimensioning...")
+    ZODIAC_CAP = ZodiacFX.MU * 0.95 # Margen de seguridad 5%
 
-    for candidate_set in valid_sets:
-        # 1. ACTUALIZAR PESOS (Esto decide internamente quién es Zodiac y quién NEC)
-        assign_green_weights(G, candidate_set, alpha, node_traffic_pps)
-
-        # 2. CÁLCULO REAL DE ENERGÍA (Green-First Policy)
-        current_network_watts = 0.0
+    for s in valid_sets:
+        current_watts = 0.0
+        node_caps = {} # Guardamos la capacidad decidida para cada nodo
         
-        for node in G.nodes():
-            lam = node_traffic_pps.get(node, 0.0)
+        # 1. Calcular Energía Real del Set (Auto-Scaling)
+        for node in s:
+            traffic = node_traffic_pps.get(node, 0.0)
+            degree = G.degree(node)
             
-            # Lógica corregida: Todo el que pueda ser Green, ES Green.
-            if lam < (ZODIAC_CAPACITY * 0.95):
-                # Es eficiente (Zodiac)
-                hw_base = ZodiacFX.P_BASE
-                hw_port = ZodiacFX.P_PORT
+            # DECISIÓN INTELIGENTE (El Core del Paper)
+            if traffic > ZODIAC_CAP:
+                # Tráfico alto -> NEC obligatorio
+                p_base = NEC_PF5240.P_BASE
+                p_port = NEC_PF5240.P_PORT
+                cap = NEC_PF5240.MU
             else:
-                # Está saturado (NEC)
-                hw_base = NEC_PF5240.P_BASE
-                hw_port = NEC_PF5240.P_PORT
+                # Tráfico bajo -> Zodiac permitido
+                p_base = ZodiacFX.P_BASE
+                p_port = ZodiacFX.P_PORT
+                cap = ZodiacFX.MU
+                
+            current_watts += p_base + (degree * p_port)
+            node_caps[node] = cap
             
-            current_network_watts += hw_base + (G.degree(node) * hw_port)
+        # Sumar consumo base de los switches que NO son controladores (siempre activos como legacy o zodiac?)
+        # Asumimos que el resto de la red sigue operando. Para comparar "Placement", 
+        # nos enfocamos en el delta de los controladores, o sumamos toda la red.
+        # Para el paper, sumamos TODO para ver el impacto total.
+        for n in G.nodes():
+            if n not in s:
+                # Los nodos que no son controladores actúan como switches normales
+                # Asumimos NEC legacy para el resto de la red (Baseline) o Zodiacs?
+                # Usemos NEC para ser conservadores en el ahorro
+                current_watts += NEC_PF5240.P_BASE + (G.degree(n) * NEC_PF5240.P_PORT)
 
-        # 3. CÁLCULO DE RESILIENCIA GLOBAL
-        total_recovery_score = 0.0
-        for (u, v), affected in h.items():
-            valid_heroes_in_set = [c for c in candidate_table[(u, v)] if c in candidate_set]
+        # 2. Calcular Delay (Propagación + Colas)
+        avg_delay = get_network_latency_score(G, s, node_traffic_pps, node_caps)
+        
+        # 3. Función Objetivo Normalizada
+        norm_e = current_watts / MAX_E
+        norm_d = avg_delay / MAX_D
+        
+        score = (alpha * norm_e) + ((1 - alpha) * norm_d)
+        
+        if score < best_score:
+            best_score = score
+            winner_set = s
+            winner_watts = current_watts
             
-            if not valid_heroes_in_set:
-                total_recovery_score = float('inf')
-                break
-            
-            best_hero_score = min([
-                get_path_score(G, u, v, c, affected) for c in valid_heroes_in_set
-            ])
-            total_recovery_score += best_hero_score
-
-        # 4. SELECCIÓN
-        if total_recovery_score < best_total_score:
-            best_total_score = total_recovery_score
-            winner_set = candidate_set
-            winner_watts = current_network_watts
-
-    return winner_set, winner_watts, best_total_score
+    return winner_set, winner_watts, best_score
 # ==============================================================================
 # 4. CONTRIBUTION
 # ==============================================================================

@@ -50,6 +50,8 @@ if valid_sets:
     vis_utils.plot_recovery_delay_cdf(G, h, final_failover, get_path_score)
     # 6
     vis_utils.plot_k_size_impact(G, h, cand_table, valid_sets, node_traffic_pps, best_green_placement, alpha)
-    
+    #7
+    vis_utils.plot_extreme_scenarios_comparison(G, h, winner_set, final_failover, node_traffic_pps)
+
     print("\n[INFO] All graphs saved in 'img_results' folder.")
 
