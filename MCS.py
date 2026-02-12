@@ -524,9 +524,9 @@ if __name__ == '__main__':
     G = topo_loader.get_graph()
     
     # 3. EXTRACCIÓN DEL "WORST CASE" (Pico Histórico)
-    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
     #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
     if os.path.isdir(dataset_folder):
         # Esta función escanea todo y devuelve solo los valores máximos
         node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)

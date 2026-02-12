@@ -8,7 +8,6 @@ BASE_DIR = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSe
 PATHS = {
     "Abilene": os.path.join(BASE_DIR, "Abilene"),        # A mayúscula
     "Nobel-Germany": os.path.join(BASE_DIR, "Nobel-Germany")
-    "Germany50": os.path.join(BASE_DIR,"Germany50")
 }
 
 def run_audit():
