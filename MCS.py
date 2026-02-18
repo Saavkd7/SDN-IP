@@ -377,78 +377,38 @@ def best_green_placement(G, h, cand_table, valid_sets, alpha, node_traffic_pps):
             winner_watts = current_watts
             
     return winner_set, winner_watts, best_score
-# ==============================================================================
-# 4. CONTRIBUTION
-# ==============================================================================
-# def contribution(G, winner_set, total_watts_winner):
-#     # 1. BASELINE: ¿Cuánto gastaría esta configuración si usáramos solo NECs (Lo estándar)?
-#     # Recalculamos asumiendo que TODOS los nodos del set ganador son NEC_PF5240
-#     baseline_watts = 0.0
-#     for n in G.nodes():
-#         degree = G.degree(n)
-#         # En el Baseline, NO discriminamos, asumimos hardware potente/caro en el core
-#         # O si prefieres, compara contra el winner_set siendo NECs:
-#         if n in winner_set:
-#             # Si hubiéramos puesto un NEC aquí en lugar de un Zodiac
-#             p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-#         else:
-#             # El resto sigue siendo NEC
-#             p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-#         baseline_watts += p_node
 
-#     # # 2. CÁLCULO DEL APORTE (GAP)
-#     # energy_saved = baseline_watts - total_watts_winner
-#     # percentage_saved = (energy_saved / baseline_watts) * 100
-
-#     baseline_watts = 0.0
-#     for n in G.nodes():
-#         degree = G.degree(n)
-#         # Asumiendo baseline puro NEC
-#         p_node = NEC_PF5240.P_BASE + (degree * NEC_PF5240.P_PORT)
-#         baseline_watts += p_node
-
-#     # ... (Tus prints de reporte siguen igual) ...
-
-#     # LLAMADA LIMPIA A LA GRÁFICA B
-#     print("[GRAPHIC] Generating Graph B (Savings)...")
-#     vis_utils.plot_graph_b_savings(baseline_watts, total_watts_winner)
-#     # print(f"\n=== SCIENTIFIC CONTRIBUTION REPORT ===")
-#     # print(f"Standard Approach (All-NEC): {baseline_watts:.2f} W")
-#     # print(f"Green MCS Approach (Hybrid): {total_watts_winner:.2f} W")
-#     # print(f"--------------------------------------")
-#     # print(f"NET ENERGY SAVING: {energy_saved:.2f} W")
-#     # print(f"EFFICIENCY GAIN:   {percentage_saved:.1f} %")
-#     # print(f"======================================\n")
-    
 # ==============================================================================
 # 5. Recovery PATH
 # ==============================================================================
+# --- REEMPLAZAR LA FUNCIÓN recovery_path ENTERA EN MCS.py ---
+# --- REEMPLAZAR LA FUNCIÓN recovery_path ENTERA EN MCS.py ---
 
-def recovery_path(alpha=None):
+def recovery_path(alpha=None, node_traffic_pps=None): # <--- CAMBIO CRÍTICO: Añadir este argumento
     """
     Orquestador Principal del Algoritmo Green-MCS.
-    1. Carga Topología y Tráfico.
-    2. Ejecuta Fase 1 (Búsqueda de Sets Físicamente Viables).
-    3. Ejecuta Fase 2 (Selección del Ganador por Energía/Delay).
-    4. Ejecuta Fase 3 (Generación de Mapa de Failover Detallado).
     """
     # 1. CARGA DE DATOS Y CONFIGURACIÓN
-    # ---------------------------------------------------------
-    topo_loader = get_active_topology() # Instancia del Parser
+    topo_loader = get_active_topology()
     G = topo_loader.get_graph()
-    
-    # ¡CRÍTICO! Extraemos la carga real para el modelo M/M/1
-    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
-    
-    if os.path.isdir(dataset_folder):
-        # Esta función escanea todo y devuelve solo los valores máximos
-        node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)
-    else:
-        print(f"[ERROR] Folder not found. Using topology default.")
-        node_traffic_pps = topo_loader.get_traffic_load()
+
+    # --- LÓGICA DE PROTECCIÓN: Usar tráfico externo si existe ---
+    if node_traffic_pps is None:
+        print("[MCS] WARNING: No external traffic provided. Loading from disk...")
+        # Intenta cargar el dataset Nobel-Germany explícitamente
+        #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
+        #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+        dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
+
+        if os.path.isdir(dataset_folder):
+            node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)
+        else:
+            print("[MCS] ERROR: Dataset folder not found in MCS. Using topology default (Low Traffic).")
+            node_traffic_pps = topo_loader.get_traffic_load()
+    # ------------------------------------------------------------
     
     if alpha is None:
-        config = get_config() # Asumo que tienes esta función de utilidad
+        config = get_config()
         alpha = float(config.get('alpha', 0.5))
     
     print(f"\n[MCS] Running Recovery Logic | Alpha: {alpha}")
@@ -456,62 +416,45 @@ def recovery_path(alpha=None):
     h = failure_dict(G)
     cand_table = candidates(G, G.nodes(), h)
     
-    # 2. FASE 1: ENCONTRAR SETS VIABLES (FÍSICA + LÓGICA)
-    # ---------------------------------------------------------
-    # Ahora pasamos node_traffic_pps para filtrar Zodiacs saturados
+    # 2. FASE 1: SETS VIABLES
     valid_sets = find_minimum_set(cand_table, G.nodes(), node_traffic_pps)
     
     if not valid_sets:
-        print("[MCS] CRITICAL: No physically viable solution found (Network Saturated).")
+        print("[MCS] CRITICAL: No physically viable solution found.")
         return None, None, G
 
-    # 3. FASE 2: ELEGIR EL MEJOR SET (OPTIMIZACIÓN)
-    # ---------------------------------------------------------
-    # Seleccionamos el set que minimiza la suma de Energía y Delay Global
+    # 3. FASE 2: ELEGIR GANADOR
     winner_set, winner_watts, total_score = best_green_placement(
         G, h, cand_table, valid_sets, alpha, node_traffic_pps
     )
     
     print(f"[MCS] Winner Set Selected: {list(winner_set)}")
-    print(f"[MCS] Est. Power: {winner_watts:.2f}W | Score: {total_score:.4f}")
+    print(f"[MCS] Est. Power: {winner_watts:.2f}W")
 
-    # 4. FASE 3: CONSTRUIR DICCIONARIO FAILOVER (MAPEO FINAL)
-    # ---------------------------------------------------------
-    # Aquí decidimos qué héroe específico del winner_set atiende cada falla.
+    # 4. FASE 3: FAILOVER MAP
     failover = {}
-    
-    # A. "Pintamos" el grafo final con los pesos del ganador para ruteo preciso
     assign_green_weights(G, winner_set, alpha, node_traffic_pps)
     
-    # B. Asignación granular
     for (u, v), affected in h.items():
         if not affected: continue 
         
         best_fail_score = float('inf')
         chosen_hero = None 
-        
-        # Solo miramos candidatos que pertenezcan al WINNER SET
         potential_heroes = [node for node in winner_set if node in cand_table[(u, v)]]
         
         for hero in potential_heroes:
-            # Calculamos el Green RPL (Túnel + Reparación)
-            # Ya incluye M/M/1 y penalizaciones por saturación
             path_score = get_path_score(G, u, v, hero, affected)
-            
             if path_score < best_fail_score:
                 best_fail_score = path_score
                 chosen_hero = hero
         
         if chosen_hero is not None:
             failover[(u, v)] = chosen_hero
-        else:
-            # Esto solo pasaría si la topología se fragmenta drásticamente
-            print(f"[MCS] WARNING: Winner set cannot cover failure {(u,v)} logically based on current weights.")
 
     print(f"[MCS] Failover Map Generated: {len(failover)} rules.")
-    
-    # Retornamos G actualizado con los pesos finales ('score_cost') para visualización
     return winner_set, failover, G
+
+
 
 
 if __name__ == '__main__':
@@ -524,9 +467,9 @@ if __name__ == '__main__':
     G = topo_loader.get_graph()
     
     # 3. EXTRACCIÓN DEL "WORST CASE" (Pico Histórico)
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
     #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
-    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
     if os.path.isdir(dataset_folder):
         # Esta función escanea todo y devuelve solo los valores máximos
         node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)

@@ -1,111 +1,117 @@
 import os
-import glob
-from sndlib_loader import SNDLibXMLParser
-from green_models import ZodiacFX, NEC_PF5240
+from MCS import get_active_topology, get_config, failure_dict, find_minimum_set, best_green_placement, candidates, get_path_score, assign_green_weights, recovery_path
+import vis_utils
 
-# --- CONFIGURACIÓN CORREGIDA (Mayúsculas importan) ---
-BASE_DIR = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet"
-PATHS = {
-    "Abilene": os.path.join(BASE_DIR, "Abilene"),        # A mayúscula
-    "Nobel-Germany": os.path.join(BASE_DIR, "Nobel-Germany")
-}
+# 1. Configuración
+config = get_config()
+alpha = float(config.get('alpha', 0.5))
 
-def run_audit():
-    print("==================================================")
-    print("AUDITORÍA DE FÍSICA: ¿EL ZODIAC AGUANTA EL TRÁFICO CRUDO?")
-    print("==================================================")
-    
-    # 1. Instanciar Modelos Físicos
-    zodiac = ZodiacFX()
-    nec = NEC_PF5240()
-    
-    print(f"CAPACIDAD FÍSICA ZODIAC: {zodiac.MU:,.0f} PPS")
-    print(f"CAPACIDAD FÍSICA NEC:    {nec.MU:,.0f} PPS")
-    
-    # 2. Analizar cada topología
-    for topo_name, folder_path in PATHS.items():
-        print(f"\n--- Analizando: {topo_name} ---")
-        
-        if not os.path.isdir(folder_path):
-            print(f"[SKIP] No existe la carpeta: {folder_path}")
-            continue
-            
-        # --- FIX: ENCONTRAR UN XML REAL PARA INICIALIZAR ---
-        xml_files = glob.glob(os.path.join(folder_path, "*.xml"))
-        if not xml_files:
-            print("[ERROR] Carpeta vacía (sin XMLs).")
-            continue
-            
-        first_xml = xml_files[0] # Usamos el primero para aprender la topología
-        
-        # Inicializamos con un archivo real
-        loader = SNDLibXMLParser(first_xml) 
-        
-        # --- FIX CRÍTICO: CARGAR EL GRAFO PRIMERO ---
-        # Esto llena self.str_to_int para que el loader sepa quiénes son los nodos
-        try:
-            loader.get_graph() 
-        except Exception as e:
-            print(f"[ERROR] Falló al cargar topología base: {e}")
-            continue
-        
-        # Ahora sí extraemos el tráfico PICO (Worst Case)
-        peak_traffic = loader.get_peak_traffic_from_folder(folder_path, avg_packet_size_bytes=800)
-        
-        if not peak_traffic:
-            print("[ERROR] No se pudo leer tráfico (Diccionario vacío).")
-            continue
-            
-        # 3. Estadísticas
-        vals = list(peak_traffic.values())
-        if not vals: 
-            print("[ALERTA] Se leyeron archivos pero no se encontró tráfico válido.")
-            continue
+# 2. Carga de Topología
+topo_loader = get_active_topology()
+G = topo_loader.get_graph()
 
-        max_pps = max(vals)
+# 3. EXTRACCIÓN DEL "WORST CASE" (Pico Histórico)
+#dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
+#dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/abilene"
+
+if os.path.isdir(dataset_folder):
+    # Esta función escanea todo y devuelve solo los valores máximos
+    node_traffic_pps = topo_loader.get_peak_traffic_from_folder(dataset_folder)
+else:
+    print(f"[ERROR] Folder not found. Using topology default.")
+    node_traffic_pps = topo_loader.get_traffic_load()
+
+print(f"Running Green-MCS on PEAK TRAFFIC | Alpha: {alpha}")
+
+# 4. Ejecución Estándar (Una sola vez, con los datos máximos)
+h = failure_dict(G)
+cand_table = candidates(G, G.nodes(), h)
+
+valid_sets = find_minimum_set(cand_table, G.nodes(), node_traffic_pps, max_k=len(G.nodes()))
+if valid_sets:
+    winner_set, winner_watts, total_score = best_green_placement(G, h, cand_table, valid_sets, alpha, node_traffic_pps)
+    print(f"\n[RESULT] Winner Set: {list(winner_set)}")
+    print(f"[RESULT] Power: {winner_watts:.2f} W")
+    
+    # 1 (Baseline sigma=0)
+    vis_utils.plot_alpha_sensitivity(G, h, cand_table, valid_sets, node_traffic_pps, best_green_placement)
+    # 2 (Baseline sigma=0)
+    vis_utils.analyze_tradeoffs(G, h, cand_table, valid_sets, node_traffic_pps, best_green_placement)
+    # 3
+    vis_utils.analyze_three_metrics(G, h, cand_table, valid_sets, node_traffic_pps, best_green_placement, assign_green_weights, get_path_score)
+    
+    # --- Generar mapa final para gráficas 4 y 5 ---
+    _, final_failover, _ = recovery_path(alpha, node_traffic_pps=node_traffic_pps)
+    
+    # 4
+    vis_utils.plot_hero_load_distribution(final_failover, winner_set)
+    # 5
+    vis_utils.plot_recovery_delay_cdf(G, h, final_failover, get_path_score)
+    # 6
+    vis_utils.plot_k_size_impact(G, h, cand_table, valid_sets, node_traffic_pps, best_green_placement, alpha)
+    # 7
+    vis_utils.plot_extreme_scenarios_comparison(
+        G, h, winner_set, final_failover, node_traffic_pps, 
+        precalculated_green_watts=winner_watts
+    )
+
+    print("\n[INFO] Base graphs saved in 'img_results' folder.")
+# =================================================================
+    # NUEVO: ANÁLISIS ESTOCÁSTICO DE VARIANZA (Petición Prof. Mauro)
+    # =================================================================
+    print("\n" + "="*50)
+    print("RUNNING STOCHASTIC VARIANCE ANALYSIS (Prof. Mauro Request)")
+    print("="*50)
+    
+    sigmas_to_test = [0.0, 200.0, 400.0]
+    stochastic_watts = []
+    stochastic_delays = []
+
+    # --- THE SCIENTIFIC TWEAK: TRAFFIC PROJECTION ---
+    # Obtenemos el tráfico base para ver cuán lejos estamos del límite (100k)
+    baseline_traffic = topo_loader.get_peak_traffic_from_folder(dataset_folder) if os.path.isdir(dataset_folder) else topo_loader.get_traffic_load()
+    max_baseline_pps = max(baseline_traffic.values()) if baseline_traffic else 1
+    
+    # Proyectamos el tráfico para que el nodo más cargado esté al 85% de la capacidad de un Zodiac.
+    # Así, con Sigma=0 (paquetes grandes) será seguro (Zodiac).
+    # Con Sigma=400 (paquetes pequeños), el PPS subirá de 85k a >100k y forzará un NEC.
+    projection_factor = 85000.0 / max_baseline_pps
+    print(f"[SCIENCE] Applying Traffic Projection Factor: {projection_factor:.2f}x to reach Critical Threshold.")
+
+    for s_val in sigmas_to_test:
+        print(f"\n---> Testing Variance: Sigma = {s_val} Bytes")
         
-        killed_nodes = 0
-        risky_nodes = 0
-        safe_nodes = 0
-        
-        print(f"{'Node ID':<10} | {'Load (PPS)':<15} | {'Estado Zodiac'}")
-        print("-" * 45)
-        
-        # Imprimir resultados
-        for node_id, load in peak_traffic.items():
-            # Recuperar nombre real del nodo si es posible (solo para print)
-            node_label = f"N{node_id}" 
-            
-            status = "✅ OK"
-            if load > zodiac.MU:
-                status = "💀 MUERTE"
-                killed_nodes += 1
-            elif load > (zodiac.MU * 0.9):
-                status = "⚠️ RIESGO"
-                risky_nodes += 1
-            else:
-                safe_nodes += 1
-                
-            # Mostramos todos los que mueren o los primeros 5
-            if status != "✅ OK" or killed_nodes < 3:
-                print(f"{node_label:<10} | {load:,.0f}        | {status}")
-                
-        print("-" * 45)
-        print(f"Resumen {topo_name}:")
-        print(f" > Máximo Flujo: {max_pps:,.0f} PPS")
-        print(f" > Zodiac Colapsa en: {killed_nodes}/{len(vals)} nodos")
-        
-        # 4. VEREDICTO AUTOMÁTICO
-        if killed_nodes == len(vals):
-            print("\n🚨 [VEREDICTO] EL TRÁFICO CRUDO ES DEMASIADO GRANDE.")
-            print("   -> NECESITAS APLICAR SCALING FACTOR EN 'sndlib_loader.py'.")
-            print(f"   -> Sugerencia: SCALING_FACTOR = {zodiac.MU / max_pps:.4f}")
-        elif killed_nodes == 0 and max_pps < (zodiac.MU * 0.2):
-             print("\n⚠️ [VEREDICTO] EL TRÁFICO CRUDO ES DEMASIADO PEQUEÑO.")
-             print("   -> El Zodiac nunca se saturará. Gráfica plana.")
+        # 1. Extraer tráfico con varianza
+        if os.path.isdir(dataset_folder):
+            raw_stoch = topo_loader.get_peak_traffic_from_folder(dataset_folder, sigma=s_val)
         else:
-             print("\n✅ [VEREDICTO] EXCELENTE. ZONA RICITOS DE ORO.")
-             print("   -> Tienes heterogeneidad natural. ¡Puedes correr la simulación!")
-
-if __name__ == "__main__":
-    run_audit()
+            raw_stoch = topo_loader.get_traffic_load(sigma=s_val)
+            
+        # 2. Aplicar la proyección de estrés al tráfico estocástico extraído
+        traffic_stoch = {k: v * projection_factor for k, v in raw_stoch.items()}
+            
+        # -----------------------------------------------------------
+        # Generar las Gráficas 1 y 2 para CADA valor de Sigma
+        # -----------------------------------------------------------
+        vis_utils.plot_alpha_sensitivity(G, h, cand_table, valid_sets, traffic_stoch, best_green_placement, sigma=s_val)
+        vis_utils.analyze_tradeoffs(G, h, cand_table, valid_sets, traffic_stoch, best_green_placement, sigma=s_val)
+            
+        # 3. Correr la lógica de recuperación
+        print(f"[MCS] Running offline optimization for stochastic traffic (Sigma={s_val})...")
+        w_set, f_map, _ = recovery_path(alpha, node_traffic_pps=traffic_stoch)
+        
+        if w_set and f_map:
+            # Calcular físicas
+            real_w, real_ms = vis_utils.calculate_real_physics(G, h, w_set, f_map, traffic_stoch)
+            stochastic_watts.append(real_w)
+            stochastic_delays.append(real_ms)
+            print(f"     Result: {real_w:.2f} W | {real_ms:.2f} ms")
+        else:
+            print(f"     [CRITICAL] No viable solution for Sigma={s_val}.")
+            stochastic_watts.append(0)
+            stochastic_delays.append(2000.0) 
+            
+    # 4. Generar la Gráfica 8
+    vis_utils.plot_stochastic_variance_analysis(sigmas_to_test, stochastic_watts, stochastic_delays)
+    print("\n[INFO] Stochastic Analysis Graphs successfully saved in 'img_results' folder.")

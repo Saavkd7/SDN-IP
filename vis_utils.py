@@ -163,8 +163,8 @@ def calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, for
 # GRÁFICAS
 # ==========================================
 
-def plot_alpha_sensitivity(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func):
-    print("\n[VIS] 1. Generating Alpha Sensitivity...")
+def plot_alpha_sensitivity(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func, sigma=0):
+    print(f"\n[VIS] 1. Generating Alpha Sensitivity (Sigma={sigma})...")
     alphas = np.linspace(0.0, 1.0, 11)
     k_vals = []
     labels = []
@@ -195,14 +195,15 @@ def plot_alpha_sensitivity(G, h, candidate_table, valid_sets, node_traffic_pps, 
                         arrowprops=dict(arrowstyle="->"))
             last = txt
             
-    ax.set_title("1. Sensitivity Analysis: Hardware Roles", fontsize=14)
+    # --- CAMBIO AQUÍ: Título y nombre de archivo dinámicos ---
+    ax.set_title(f"1. Sensitivity Analysis: Hardware Roles (Sigma={int(sigma)}B)", fontsize=14)
     ax.set_xlabel("Alpha")
     ax.set_ylabel("Set Size (K)")
     ax.grid(True, linestyle=':')
-    save_plot("1_alpha_sensitivity.png")
+    save_plot(f"1_alpha_sensitivity_sigma_{int(sigma)}.png")
 
-def analyze_tradeoffs(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func):
-    print("\n[VIS] 2. Generating Trade-off Analysis (Real Physics)...")
+def analyze_tradeoffs(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func, sigma=0):
+    print(f"\n[VIS] 2. Generating Trade-off Analysis (Real Physics, Sigma={sigma})...")
     alphas = np.linspace(0.0, 1.0, 11)
     watts_list = []
     delay_list = []
@@ -228,7 +229,7 @@ def analyze_tradeoffs(G, h, candidate_table, valid_sets, node_traffic_pps, solve
     ax1.plot(alphas, watts_list, 'g-o', label='Green-MCS', linewidth=2)
     ax1.fill_between(alphas, watts_list, base_watts, color='green', alpha=0.1)
     ax1.set_ylabel("Power Consumption (W)")
-    ax1.set_title("Energy Efficiency Trade-off", fontsize=14)
+    ax1.set_title(f"Energy Efficiency Trade-off (Sigma={int(sigma)}B)", fontsize=14) # <-- CAMBIO
     ax1.legend()
     ax1.grid(True, alpha=0.5)
     
@@ -239,7 +240,8 @@ def analyze_tradeoffs(G, h, candidate_table, valid_sets, node_traffic_pps, solve
     ax2.set_title("QoS Impact (Physics-based)", fontsize=14)
     ax2.grid(True, alpha=0.5)
     
-    save_plot("2_tradeoff_analysis.png")
+    # --- CAMBIO AQUÍ: Nombre de archivo dinámico ---
+    save_plot(f"2_tradeoff_analysis_sigma_{int(sigma)}.png")
 
 def analyze_three_metrics(G, h, candidate_table, valid_sets, node_traffic_pps, solver_func, weight_func, score_func):
     print("\n[VIS] 3. Generating Multi-Metric Analysis...")
@@ -368,12 +370,16 @@ def plot_k_size_impact(G, h, candidate_table, valid_sets, node_traffic_pps, solv
 # ==========================================
 # 7. NUEVA GRÁFICA: EXTREME SCENARIOS
 # ==========================================
-def plot_extreme_scenarios_comparison(G, h, winner_set, failover_map, node_traffic_pps):
+# --- MODIFICACIÓN EN vis_utils.py ---
+
+def plot_extreme_scenarios_comparison(G, h, winner_set, failover_map, node_traffic_pps, precalculated_green_watts=None):
     """
     Compara 3 Escenarios:
     1. All-NEC (Máximo Rendimiento, Máximo Consumo)
     2. Green-MCS (Híbrido Óptimo)
     3. All-Zodiac (Mínimo Consumo, Riesgo de Colapso)
+    
+    precalculated_green_watts: Valor exacto de potencia calculado por el optimizador (para consistencia).
     """
     print("\n[VIS] 7. Generating Extreme Scenarios Benchmark...")
     
@@ -386,12 +392,19 @@ def plot_extreme_scenarios_comparison(G, h, winner_set, failover_map, node_traff
     watts_vals.append(w1)
     delay_vals.append(d1)
     
-    # 2. Calcular Green-MCS (Usamos el winner_set actual)
-    w2, d2 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type=None)
+    # 2. Calcular Green-MCS
+    # USAR EL VALOR PRE-CALCULADO SI EXISTE (SOLUCIÓN AL BUG)
+    if precalculated_green_watts is not None:
+        w2 = precalculated_green_watts
+        # Recalculamos solo el delay para asegurar coherencia física
+        _, d2 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type=None)
+    else:
+        w2, d2 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type=None)
+        
     watts_vals.append(w2)
     delay_vals.append(d2)
     
-    # 3. Calcular All-Zodiac (Forzamos todo a Zodiac y vemos si explota)
+    # 3. Calcular All-Zodiac
     w3, d3 = calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, force_type='ALL_ZODIAC')
     watts_vals.append(w3)
     delay_vals.append(d3)
@@ -413,8 +426,8 @@ def plot_extreme_scenarios_comparison(G, h, winner_set, failover_map, node_traff
     ax2.set_title('QoS Benchmark (Latency)', fontsize=14)
     ax2.grid(axis='y', linestyle='--', alpha=0.5)
     
-    # Anotación de Saturación si ocurre
-    if delay_vals[2] >= 1000: # Si All-Zodiac saturó
+    # Anotación de Saturación
+    if delay_vals[2] >= 1000: 
         ax2.text(2, delay_vals[2], "SATURATION\n(Queue Full)", ha='center', va='bottom', 
                  color='red', fontweight='bold')
     else:
@@ -423,3 +436,39 @@ def plot_extreme_scenarios_comparison(G, h, winner_set, failover_map, node_traff
     plt.suptitle("Why Green-MCS? The Sweet Spot Analysis", fontsize=16)
     plt.tight_layout()
     save_plot("7_extreme_scenarios.png")
+
+# ==========================================
+# 8. NUEVA GRÁFICA: STOCHASTIC VARIANCE (PROF. MAURO)
+# ==========================================
+def plot_stochastic_variance_analysis(sigmas, watts_vals, delay_vals):
+    print("\n[VIS] 8. Generating Stochastic Variance Analysis (Packet Size)...")
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    
+    labels = [f"Sigma={int(s)}B" for s in sigmas]
+    # Colores: Azul (Estable), Morado (Varianza Media), Rojo (Varianza Alta/IoT Burst)
+    colors = ['#3498db', '#9b59b6', '#e74c3c'] 
+    
+    # --- Gráfica de Potencia (Watts) ---
+    bars1 = ax1.bar(labels, watts_vals, color=colors, alpha=0.8, edgecolor='black')
+    ax1.set_ylabel('Total Power Consumption (Watts)', fontsize=12)
+    ax1.set_title('Energy Impact of Packet Variance', fontsize=14)
+    ax1.grid(axis='y', linestyle='--', alpha=0.5)
+    ax1.bar_label(bars1, fmt='%.0f W', padding=3)
+    
+    # --- Gráfica de Latencia (QoS) ---
+    bars2 = ax2.bar(labels, delay_vals, color=colors, alpha=0.8, edgecolor='black')
+    ax2.set_ylabel('Avg Recovery Latency (ms)', fontsize=12)
+    ax2.set_title('QoS Resilience under Burst Traffic', fontsize=14)
+    ax2.grid(axis='y', linestyle='--', alpha=0.5)
+    
+    # Manejar saturación visualmente si ocurre
+    for i, delay in enumerate(delay_vals):
+        if delay >= 1000:
+            ax2.text(i, delay, "SATURATION\n(Queue Full)", ha='center', va='bottom', color='red', fontweight='bold')
+        else:
+            ax2.text(i, delay + (max(delay_vals)*0.01), f"{delay:.1f} ms", ha='center', va='bottom')
+
+    plt.suptitle("Stochastic Packet Size Sensitivity Analysis (Mean=800B)", fontsize=16, fontweight='bold')
+    plt.tight_layout()
+    save_plot("8_stochastic_variance_analysis.png")

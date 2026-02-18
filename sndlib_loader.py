@@ -3,6 +3,8 @@ import networkx as nx
 import math
 import os
 import glob
+import random  # <--- NUEVO: Necesario para la distribución Gaussiana
+
 class SNDLibXMLParser:
     def __init__(self, xml_file):
         self.xml_file = xml_file
@@ -17,11 +19,13 @@ class SNDLibXMLParser:
         dist_deg = math.sqrt(dx**2 + dy**2)
         return dist_deg * 111.0
 
-    def get_traffic_load(self, traffic_file_path=None, avg_packet_size_bytes=800):
+    # --- NUEVO PARÁMETRO: sigma=0.0 ---
+    def get_traffic_load(self, traffic_file_path=None, avg_packet_size_bytes=800, sigma=0.0):
         """
         Extrae <demand> y convierte Mbps a PPS (Lambda).
         Si traffic_file_path es None, usa el archivo de topología original.
         Si se pasa una ruta, lee las demandas de ese archivo externo.
+        Ahora incluye 'sigma' para simular varianza estocástica en el tamaño de paquete.
         """
         # 1. Decidir qué archivo abrir
         target_file = traffic_file_path if traffic_file_path else self.xml_file
@@ -30,7 +34,7 @@ class SNDLibXMLParser:
             print(f"[ERROR] Traffic file not found: {target_file}")
             return {}
 
-        print(f"[LOADER] Extracting traffic from: {os.path.basename(target_file)}")
+        print(f"[LOADER] Extracting traffic from: {os.path.basename(target_file)} | Mean: {avg_packet_size_bytes}B | Sigma: {sigma}")
         
         try:
             tree = ET.parse(target_file)
@@ -46,7 +50,6 @@ class SNDLibXMLParser:
         # Buscar todas las demandas en el XML (namespace incluido)
         demands = root.findall('.//snd:demand', self.ns)
         
-        bits_per_packet = avg_packet_size_bytes * 8
         total_mbs = 0
 
         for demand in demands:
@@ -57,6 +60,19 @@ class SNDLibXMLParser:
             
             if src_str in self.str_to_int:
                 src_id = self.str_to_int[src_str]
+                
+                # --- NUEVA LÓGICA ESTOCÁSTICA (M/M/1 Varianza) ---
+                if sigma > 0:
+                    # Generar tamaño con Distribución Normal
+                    pkt_size = random.gauss(avg_packet_size_bytes, sigma)
+                    # Truncar límites físicos de la red (Ethernet Min: 64B, MTU Max: 1500B)
+                    pkt_size = max(64.0, min(1500.0, pkt_size))
+                else:
+                    pkt_size = avg_packet_size_bytes
+                # ------------------------------------------------
+
+                bits_per_packet = pkt_size * 8
+                
                 # Conversión a PPS (Paquetes por Segundo)
                 pps = (mbps * 1_000_000) / bits_per_packet
                 node_lambda[src_id] += pps
@@ -113,10 +129,12 @@ class SNDLibXMLParser:
 
         return G
 
-    def get_peak_traffic_from_folder(self, folder_path, avg_packet_size_bytes=800):
+    # --- NUEVO PARÁMETRO: sigma=0.0 ---
+    def get_peak_traffic_from_folder(self, folder_path, avg_packet_size_bytes=800, sigma=0.0):
         """
         Escanea TODOS los XMLs de una carpeta.
         Devuelve un diccionario con el TRÁFICO MÁXIMO (Peak) registrado para cada nodo.
+        Ahora incluye 'sigma' para simular varianza estocástica en el tamaño de paquete.
         """
         # 1. Preparar diccionario de máximos en 0
         peak_node_lambda = {id_int: 0.0 for id_int in self.str_to_int.values()}
@@ -129,9 +147,7 @@ class SNDLibXMLParser:
             print(f"[ERROR] No XML files found in {folder_path}")
             return peak_node_lambda
 
-        print(f"[LOADER] Scanning {len(files)} files for Peak Traffic Analysis...")
-        
-        bits_per_packet = avg_packet_size_bytes * 8
+        print(f"[LOADER] Scanning {len(files)} files for Peak Traffic Analysis | Mean: {avg_packet_size_bytes}B | Sigma: {sigma}")
         
         # 3. Iterar y actualizar el máximo ("High Score")
         for i, file_path in enumerate(files):
@@ -152,6 +168,18 @@ class SNDLibXMLParser:
                     
                     if src_str in self.str_to_int:
                         src_id = self.str_to_int[src_str]
+
+                        # --- NUEVA LÓGICA ESTOCÁSTICA (M/M/1 Varianza) ---
+                        if sigma > 0:
+                            # Generar tamaño con Distribución Normal
+                            pkt_size = random.gauss(avg_packet_size_bytes, sigma)
+                            # Truncar límites físicos de la red
+                            pkt_size = max(64.0, min(1500.0, pkt_size))
+                        else:
+                            pkt_size = avg_packet_size_bytes
+                        # ------------------------------------------------
+
+                        bits_per_packet = pkt_size * 8
                         pps = (mbps * 1_000_000) / bits_per_packet
                         current_snapshot_lambda[src_id] += pps
                 
