@@ -5,29 +5,27 @@ Integrates Power Consumption (W) and Service Capacity (PPS).
 """
 
 class SDNDevice:
-    def get_base_power(self): return 0.0
-    def get_port_power(self): return 0.0
-    def get_capacity(self): return 0.0 # MU (Service Rate in PPS)
+    def get_base_power(self): raise NotImplementedError
+    def get_port_power(self): raise NotImplementedError
+    def get_capacity(self): raise NotImplementedError # (Service Rate in PPS)
 
 class ZodiacFX(SDNDevice):
     """
     Zodiac FX (Low-Power / IoT Grade)
     Evidence: 120MHz CPU & 100Mbps ports
     """
-    P_BASE = 15.0            # Consumo nominal base
-    P_PORT = 0.15            # Estimado por puerto activo
-    
-    # CAPACIDAD FÍSICA (MU)
-    # Límite realista basado en CPU 120MHz para OpenFlow
+    P_BASE = 15.0            # Nominal Cosumption
+    P_PORT = 0.15            # Estimated for active ports
+    # PHY CAPACITY (MU)
+    # Baed on Realistic CPU 120MHz para OpenFlow
     MU = 100000.0            # 100 kpps ZODIAC FX
-    #MU = 1000000.0 #1 Mpps  ZODIAC NG QUALCOSA
-
-    # ENERGÍA DE CONTROL
+    #MU = 1000000.0 #1 Mpps  ZODIAC NG for testing other models
+    # CONTROL ENERGY
     E_FLOW_MOD = 0.001455    # Watts por regla escrita
     E_PACKET_IN = 0.000775   # Watts por procesamiento de PacketIn
-
     def __init__(self, node_id=None): self.node_id = node_id
     def get_base_power(self): return self.P_BASE
+    def get_port_power(self): return self.P_PORT
     def get_capacity(self): return self.MU
 
 class NEC_PF5240(SDNDevice):
@@ -48,6 +46,7 @@ class NEC_PF5240(SDNDevice):
 
     def __init__(self, node_id=None): self.node_id = node_id
     def get_base_power(self): return self.P_BASE
+    def get_port_power(self): return self.P_PORT
     def get_capacity(self): return self.MU
 
 # ==============================================================================
@@ -57,7 +56,7 @@ class GreenNormalizer:
     @staticmethod
     def get_max_power(max_degree):
         """El peor consumo posible: Un NEC con todos los puertos activos."""
-        return NEC_PF5240.P_BASE + (max_degree * NEC_PF5240.P_PORT)
+        return NEC_PF5240.P_BASE + (max_degree * NEC_PF5240.P_PORT) 
 
     @staticmethod
     def get_worst_delay_threshold():

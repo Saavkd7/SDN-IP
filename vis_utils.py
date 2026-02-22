@@ -105,13 +105,15 @@ def calculate_real_physics(G, h, winner_set, failover_map, node_traffic_pps, for
             
         else:
             # Escenario Green-MCS (Green-First Policy)
-            # Si el tráfico es bajo, se vuelve Zodiac. Si es alto, NEC.
-            # NO depende de si es Winner o no, solo del tráfico.
-            if lam < ZODIAC_CAP:
+            # CORRECCIÓN: Solo los miembros del 'winner_set' tienen permiso de ser Green.
+            # El resto de la red (Backbone) se mantiene como NEC por seguridad.
+            
+            if n in winner_set and lam < ZODIAC_CAP:
                 hw_base = ZodiacFX.P_BASE
                 hw_port = ZodiacFX.P_PORT
                 mu = ZodiacFX.MU
             else:
+                # Si no es Héroe, o si es Héroe pero está saturado -> NEC
                 hw_base = NEC_PF5240.P_BASE
                 hw_port = NEC_PF5240.P_PORT
                 mu = NEC_PF5240.MU
