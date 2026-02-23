@@ -50,7 +50,14 @@ class SNDLibXMLParser:
             if not node_id_str:
                 logging.warning("Removing a node because it doesn't contain an 'ID'")
                 continue
-                
+            
+            # NUEVO: Intentar extraer un nombre explícito si existe, si no, usar el ID.
+            # Esto blinda tu código si el XML usa <node id="1"><name>Atlanta</name></node>
+            name_elem = node.find('snd:name', self.ns)
+            real_name = name_elem.text if name_elem is not None else node_id_str
+
+
+
             # Heurística de Fallback con Telemetría Explícita
             x, y = 0.0, 0.0
             coords = node.find('snd:coordinates', self.ns)
@@ -70,6 +77,7 @@ class SNDLibXMLParser:
             self.str_to_int[node_id_str] = i 
             node_coords[node_id_str] = (x, y)
             G.add_node(i, label=node_id_str, pos=(x, y))
+            G.add_node(i, name=real_name, label=node_id_str, pos=(x, y))
 
         # 3. Parsear Enlaces y Calcular Pesos Físicos
         links_xml = root.findall('.//snd:link', self.ns)

@@ -45,7 +45,7 @@ def assign_green_weights(G, alpha, peak_node_traffic_pps):
             hw = ZodiacFX()
         else:
             hw = NEC_PF5240()
-            
+        G.nodes[n]['hardware'] = hw.__class__.__name__    
         watts = hw.get_base_power() + (G.degree(n) * hw.get_port_power())
         mu = hw.get_capacity()
         
@@ -319,7 +319,7 @@ def recovery_path(alpha=None, node_traffic_pps=None):
         
     if node_traffic_pps is None:
         #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
-        dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+        #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
         if os.path.isdir(dataset_folder):
             node_traffic_pps = loader.get_peak_traffic_from_folder(folder_path=dataset_folder, G=G)
         else:
@@ -373,23 +373,34 @@ def get_traffic_profile(loader, G, dataset_folder=None, burst_multiplier=1.0,avg
     return adjusted_traffic
 
 
-def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_table):
+
+import csv
+from green_models import NEC_PF5240, ZodiacFX # Asegúrate de que esto esté importado
+
+def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_table, BURST, AVG):
     """
-    Ejecuta un barrido masivo de Alpha y Sigma blindado contra errores de posición.
+    Ejecuta el barrido y exporta de forma segregada tanto los conteos (para graficar)
+    como las identidades textuales (para auditoría) de los Héroes NEC y Zodiac.
     """
     results_file = "simulation_results.csv"
-    # Sugerencia: Usa Sigmas más pequeños para ver la transición Zodiac -> NEC
-    sigmas = [0, 50, 100, 200, 400] 
-    alphas = [0.0, 0.25, 0.5, 0.75, 1.0]
-    BURST = 10
-    AVG_PKT = 800 # Tamaño promedio real
+    sigmas = [0, 100, 200, 400, 700] 
+    alphas = [0, 0.20, 0.4, 0.6, 0.8, 1] 
+    AVG_PKT = AVG 
+    
+    Z_CAP = ZodiacFX.MU * 0.95 
     
     with open(results_file, mode='w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['Sigma', 'Alpha', 'WinnerSet', 'NEC_Heros', 'NEC_Passive', 'Watts_Total', 'Delay_ms', 'Score'])
+        # 1. CABECERAS NORMALIZADAS: Cuantitativo vs Cualitativo
+        writer.writerow([
+            'Sigma', 'Alpha', 'WinnerSet_Names', 
+            'NEC_Heros_Count', 'NEC_Hero_Names',       # <-- Separación estricta
+            'Zodiac_Heros_Count', 'Zodiac_Hero_Names', # <-- Separación estricta
+            'NEC_Passive_Count', 'Zodiac_Passive_Count', 
+            'Watts_Total', 'Delay_ms', 'Score'
+        ])
 
         for s_factor in sigmas:
-            # ✅ FIX CRÍTICO: Uso de argumentos NOMBRADOS para evitar ZeroDivisionError
             traffic = get_traffic_profile(
                 loader, 
                 G, 
@@ -398,8 +409,6 @@ def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_tab
                 avg_packet=AVG_PKT, 
                 sigma=s_factor
             )
-            
-            Z_CAP = ZodiacFX.MU * 0.95
 
             for a_val in alphas:
                 print(f"[RUNNING] Sigma: {s_factor} | Alpha: {a_val}")
@@ -408,27 +417,52 @@ def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_tab
                     G, valid_sets, a_val, traffic, h_dict, cand_table
                 )
                 
-                h_nec = sum(1 for n in w_set if traffic.get(n, 0.0) > Z_CAP)
+                named_w_set = [G.nodes[n].get('name', str(n)) for n in w_set]
                 
+                # 2. EXTRACCIÓN CUALITATIVA (Los Quiénes)
+                nec_hero_nodes = [n for n in w_set if traffic.get(n, 0.0) > Z_CAP]
+                zodiac_hero_nodes = [n for n in w_set if traffic.get(n, 0.0) <= Z_CAP]
+                
+                # Traducción a Nombres
+                nec_hero_names = [G.nodes[n].get('name', str(n)) for n in nec_hero_nodes]
+                zodiac_hero_names = [G.nodes[n].get('name', str(n)) for n in zodiac_hero_nodes]
+                
+                # 3. EXTRACCIÓN CUANTITATIVA (Los Cuántos)
+                nec_heros_count = len(nec_hero_nodes)
+                zodiac_heros_count = len(zodiac_hero_nodes)
+                
+                # 4. CONTEO DE PASIVOS
+                nec_passive_count = 0
+                zodiac_passive_count = 0
                 passive_p = 0.0
-                p_nec = 0
+                
                 for n in G.nodes():
                     if n not in w_set:
                         t = traffic.get(n, 0.0)
-                        hw = NEC_PF5240 if t > Z_CAP else ZodiacFX
-                        if t > Z_CAP: p_nec += 1
-                        passive_p += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+                        if t > Z_CAP:
+                            hw_obj = NEC_PF5240
+                            nec_passive_count += 1
+                        else:
+                            hw_obj = ZodiacFX
+                            zodiac_passive_count += 1
+                            
+                        passive_p += hw_obj.P_BASE + (G.degree(n) * hw_obj.P_PORT)
                 
+                # 5. EXPORTACIÓN ORDENADA
                 writer.writerow([
-                    s_factor, a_val, list(w_set), h_nec, p_nec, 
+                    s_factor, a_val, named_w_set, 
+                    nec_heros_count, nec_hero_names, 
+                    zodiac_heros_count, zodiac_hero_names, 
+                    nec_passive_count, zodiac_passive_count, 
                     round(w_watts + passive_p, 2), round(w_delay, 2), round(b_score, 4)
                 ])
                 
     print(f"\n[DONE] Results exported to {results_file}")
-
+    return G
 # ==============================================================================
 # MAIN EXECUTION
 # ==============================================================================
+import pandas as pd
 if __name__ == '__main__':
     # Configurar el Logger
     logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -439,7 +473,7 @@ if __name__ == '__main__':
     
     # Parámetros de Estrés (Puedes moverlos al config.json si prefieres)
     BURST_MULTIPLIER = 1   # PAR
-    SIGMA_FACTOR = 400       # Escala del tráfico
+    SIGMA_FACTOR = 0.0      # Escala del tráfico
     AVG_PACKET_SIZE=800
 
     
@@ -448,9 +482,9 @@ if __name__ == '__main__':
     Z_CAP = ZodiacFX.MU * 0.95
     
     # 2. CAPTURA DE TRÁFICO (Respetando el Dataset seleccionado)
-    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
     #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
     
     if os.path.isdir(dataset_folder):
         print(f"\n[INFO] Scanning real traffic patterns from: {os.path.basename(dataset_folder)}")
@@ -465,43 +499,90 @@ if __name__ == '__main__':
     # 3. PIPELINE DE EJECUCIÓN
     h_dict = build_failure_dict(G)
     cand_table = get_valid_candidates(G, G.nodes(), h_dict)
-    valid_sets = find_minimum_set(cand_table, G.nodes())
-    
-    # EL TRIBUNAL: Ahora usa el 'alpha' que vino del JSON
-    w_set, w_watts, w_delay, b_score, raw_results = best_green_placement(
-        G, valid_sets, alpha, node_traffic_pps, h_dict, cand_table
-    )
-    
-    # 4. INVENTARIO DE HARDWARE (Cálculo de consumo total)
-    h_nec, h_zodiac, p_nec, p_zodiac, passive_power = 0, 0, 0, 0, 0.0
-    for node in w_set:
-        if node_traffic_pps.get(node, 0.0) > Z_CAP: h_nec += 1
-        else: h_zodiac += 1
 
-    for n in G.nodes():
-        if n not in w_set:
-            traffic = node_traffic_pps.get(n, 0.0)
-            if traffic > Z_CAP: 
-                hw, p_nec = NEC_PF5240, p_nec + 1
-            else: 
-                hw, p_zodiac = ZodiacFX, p_zodiac + 1
-            passive_power += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+    matrix_data = []
     
-    total_network_power = w_watts + passive_power
+    for link, candidates_list in cand_table.items():
+        u, v = link
+        affected = h_dict[link]
+        # Estructura base de la fila
+        row = {
+            'Link_Index': f"({u}, {v})",
+            'Affected_Destinations': str(affected)
+        }
+        
+        # Proyección binaria: 1 si es candidato, 0 si no lo es
+        for node in G.nodes():
+            # Usamos el nombre de la columna dinámicamente, ej: 'Node_1'
+            col_name = str(node) 
+            row[col_name] = 1 if node in candidates_list else 0
+            
+        matrix_data.append(row)
+
+    # 4. RENDERIZADO DEL DATAFRAME
+    df_candidate_table = pd.DataFrame(matrix_data)
+    
+    print("\n--- SDN Candidate Table (T) ---")
+    # Imprimimos la tabla en formato amigable para la terminal
+    print(df_candidate_table.to_string(index=False))
+    
+    # 5. EXPORTACIÓN AUTOMATIZADA
+    output_file = "SDN_Candidate_Table.csv"
+    df_candidate_table.to_csv(output_file, index=False)
+    print(f"\n[SUCCESS] Tabla binaria exportada a {output_file} lista para ser tabulada en tu paper.")
+
+
+
+
+
+    
+    
+    # valid_sets = find_minimum_set(cand_table, G.nodes())
+    
+    # # EL TRIBUNAL: Ahora usa el 'alpha' que vino del JSON
+    # w_set, w_watts, w_delay, b_score, raw_results = best_green_placement(
+    #     G, valid_sets, alpha, node_traffic_pps, h_dict, cand_table
+    # )
+    
+    # # 4. INVENTARIO DE HARDWARE (Cálculo de consumo total)
+    # h_nec, h_zodiac, p_nec, p_zodiac, passive_power = 0, 0, 0, 0, 0.0
+    # for node in w_set:
+    #     if node_traffic_pps.get(node, 0.0) > Z_CAP: h_nec += 1
+    #     else: h_zodiac += 1
+
+    # for n in G.nodes():
+    #     if n not in w_set:
+    #         traffic = node_traffic_pps.get(n, 0.0)
+    #         if traffic > Z_CAP: 
+    #             hw, p_nec = NEC_PF5240, p_nec + 1
+    #         else: 
+    #             hw, p_zodiac = ZodiacFX, p_zodiac + 1
+    #         passive_power += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+    
+    # total_network_power = w_watts + passive_power
     # Lanzamos el barrido
-    #run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_table)
-    # 5. OUTPUT FINAL (Consistente y Profesional)
-    print("\n" + "="*60)
-    print(f"   FINAL SIMULATION: PAR={BURST_MULTIPLIER}x | SIGMA={SIGMA_FACTOR} | AVG PACKET SIZE=800 BYTES")
-    print("="*60)
-    print(f" [★] WINNER HERO SET  : {list(w_set)}")
-    print(f" [🛠] HERO HW MIX     : {h_nec} NEC, {h_zodiac} Zodiac")
-    print(f" [📡] PASSIVE HW MIX  : {p_nec} NEC, {p_zodiac} Zodiac")
-    print(f" [⚡] CONTROLLER POWER : {w_watts:.2f} Watts")
-    print(f" [🏢] PASSIVE NETWORK  : {passive_power:.2f} Watts")
-    print(f" [🌍] TOTAL NET POWER  : {total_network_power:.2f} Watts")
-    print(f" [⏱] AVG RESP. DELAY  : {w_delay:.2f} ms")
-    print(f" [⚖] ALPHA SCORE      : {b_score:.4f} (Alpha={alpha})")
-    print("="*60 + "\n")
+    # run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_table,BURST_MULTIPLIER,AVG_PACKET_SIZE)
+   # 5. OUTPUT FINAL (Consistente y Profesional)
+#     print("\n" + "="*60)
+#     print(f"   FINAL SIMULATION: PAR={BURST_MULTIPLIER}x | SIGMA={SIGMA_FACTOR} | AVG PACKET SIZE={AVG_PACKET_SIZE} BYTES")
+#     print("="*60)
+#     print(f" [★] WINNER HERO SET  : {list(w_set)}")
+#     print(f" [🛠] HERO HW MIX     : {h_nec} NEC, {h_zodiac} Zodiac")
+#     print(f" [📡] PASSIVE HW MIX  : {p_nec} NEC, {p_zodiac} Zodiac")
+#     print(f" [⚡] CONTROLLER POWER : {w_watts:.2f} Watts")
+#     print(f" [🏢] PASSIVE NETWORK  : {passive_power:.2f} Watts")
+#     print(f" [🌍] TOTAL NET POWER  : {total_network_power:.2f} Watts")
+#     print(f" [⏱] AVG RESP. DELAY  : {w_delay:.2f} ms")
+#     print(f" [⚖] ALPHA SCORE      : {b_score:.4f} (Alpha={alpha})")
+#     print("="*60 + "\n")
 
- 
+#    # --- THE FIX: Uso de la Verdad Absoluta estática ---
+#     assign_green_weights(G, alpha, node_traffic_pps)
+    
+#     # Extracción elegante y directa de los NOMBRES usando el diccionario de atributos (attr)
+#     zodiac_node_names = [attr.get('name', str(n)) for n, attr in G.nodes(data=True) if attr.get('hardware') == 'ZodiacFX']
+#     nec_node_names = [attr.get('name', str(n)) for n, attr in G.nodes(data=True) if attr.get('hardware') == 'NEC_PF5240']
+    
+#     # Telemetría legible para humanos
+#     print(f"[Hardware Map] ZodiacFX Nodes (Green) : {zodiac_node_names}")
+#     print(f"[Hardware Map] NEC PF5240 Nodes (Legacy): {nec_node_names}")
