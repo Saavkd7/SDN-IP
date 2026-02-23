@@ -41,7 +41,7 @@ loader = get_active_topology() # Ajusta esta llamada a como inicialices tu parse
 G_topology = loader.get_graph()
 
 # 2. Leemos el CSV pre-existente
-results_file = "./Nobel-Germany/simulation_results.csv"
+results_file = "./Germany50/simulation_results.csv"
 
 # 3. Lanzamos la visualización
 generate_q1_visuals(results_file, G_topology)

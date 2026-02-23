@@ -482,9 +482,9 @@ if __name__ == '__main__':
     Z_CAP = ZodiacFX.MU * 0.95
     
     # 2. CAPTURA DE TRÁFICO (Respetando el Dataset seleccionado)
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
     #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
-    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
     
     if os.path.isdir(dataset_folder):
         print(f"\n[INFO] Scanning real traffic patterns from: {os.path.basename(dataset_folder)}")
