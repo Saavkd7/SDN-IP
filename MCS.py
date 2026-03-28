@@ -96,7 +96,6 @@ def assign_green_weights(G, alpha, peak_node_traffic_pps):
         
         # SCORE HÍBRIDO FINAL
         score = (alpha * edge_norm_energy) + ((1.0 - alpha) * edge_norm_delay)
-        
         # Almacenamos todo para observabilidad en el paper
         G[u][v]['score'] = score
         G[u][v]['link_energy_norm'] = edge_norm_energy
@@ -383,8 +382,8 @@ def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_tab
     como las identidades textuales (para auditoría) de los Héroes NEC y Zodiac.
     """
     results_file = "simulation_results.csv"
-    sigmas = [0, 100, 200, 400, 700] 
-    alphas = [0, 0.20, 0.4, 0.6, 0.8, 1] 
+    sigmas = [0, 50, 100, 150, 200, 300,  400 , 500, 600, 700] 
+    alphas = [0, 0.1, 0.20, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] 
     AVG_PKT = AVG 
     
     Z_CAP = ZodiacFX.MU * 0.95 
@@ -459,35 +458,77 @@ def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_tab
                 
     print(f"\n[DONE] Results exported to {results_file}")
     return G
+
+def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, h_dict, cand_table):
+    """
+    Simulación de Pre-Vuelo: Detecta matemáticamente el punto de inflexión
+    (Knee-Point) de la Frontera de Pareto para la topología actual.
+    """
+    import math
+    print("\n[ANALYSIS] Calculating analytical Pareto Knee-Point (Optimal Alpha)...")
+    alphas_to_test = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    raw_results = []
+    
+    # 1. Ejecutar simulación rápida para todos los alphas
+    for a in alphas_to_test:
+        _, w_watts, w_delay, _, _ = best_green_placement(
+            G, valid_sets, a, node_traffic_pps, h_dict, cand_table
+        )
+        raw_results.append({'alpha': a, 'watts': w_watts, 'delay': w_delay})
+        
+    e_vals = [r['watts'] for r in raw_results]
+    d_vals = [r['delay'] for r in raw_results]
+    
+    e_min, e_max = min(e_vals), max(e_vals)
+    d_min, d_max = min(d_vals), max(d_vals)
+    
+    e_range = (e_max - e_min) if (e_max - e_min) > 0 else 1.0
+    d_range = (d_max - d_min) if (d_max - d_min) > 0 else 1.0
+
+    # Inicialización Científicamente Rigurosa (Sin sesgo humano)
+    best_alpha = None
+    max_distance = -1.0
+    
+    # 2. Calcular distancias ortogonales a la cuerda de Pareto
+    for r in raw_results:
+        e_norm = (r['watts'] - e_min) / e_range
+        d_norm = (r['delay'] - d_min) / d_range
+        
+        # d = |x + y - 1| / sqrt(2)
+        distance = abs(e_norm + d_norm - 1.0) / math.sqrt(2)
+        
+        if distance > max_distance:
+            max_distance = distance
+            best_alpha = r['alpha']
+            
+    # 3. La Guillotina Científica (Fail-Fast)
+    if best_alpha is None:
+        raise ValueError("[CRITICAL] Pareto Optimization Failed: Objective space collapsed. Topology might be mathematically unfeasible under current M/M/1 constraints.")
+            
+    print(f"[WINNER] Optimal Knee-Point Alpha analytically locked at: {best_alpha}")
+    return best_alpha
+
+
+
+
 # ==============================================================================
 # MAIN EXECUTION
 # ==============================================================================
 if __name__ == '__main__':
-    # Configurar el Logger
     logging.basicConfig(level=logging.INFO, format='%(message)s')
-
-    # 1. CARGA DE CONFIGURACIÓN (La Fuente de Verdad)
-    config = get_config()
-    alpha = config.get('alpha', 0.5)
-    
-    # Parámetros de Estrés (Puedes moverlos al config.json si prefieres)
-    BURST_MULTIPLIER = 1   # PAR
-    SIGMA_FACTOR = 0.0      # Escala del tráfico
-    AVG_PACKET_SIZE=800
-
+    BURST_MULTIPLIER = 1   
+    SIGMA_FACTOR = 700      
+    AVG_PACKET_SIZE = 800
     
     loader = get_active_topology()
     G = loader.get_graph() 
     Z_CAP = ZodiacFX.MU * 0.95
     
-    # 2. CAPTURA DE TRÁFICO (Respetando el Dataset seleccionado)
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
+    # 2. CAPTURA DE TRÁFICO
     dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
     
     if os.path.isdir(dataset_folder):
         print(f"\n[INFO] Scanning real traffic patterns from: {os.path.basename(dataset_folder)}")
-        # Usamos la función perfiladora para aplicar Sigma y PAR
         node_traffic_pps = get_traffic_profile(
             loader, G, dataset_folder, BURST_MULTIPLIER, AVG_PACKET_SIZE, SIGMA_FACTOR
         )
@@ -495,93 +536,57 @@ if __name__ == '__main__':
         print("[WARNING] Traffic folder not found. Falling back to default.")
         node_traffic_pps = loader.calculate_full_network_load(G=G)
 
-    # 3. PIPELINE DE EJECUCIÓN
+    # 3. PIPELINE TOPOLÓGICO (Fase Estática)
     h_dict = build_failure_dict(G)
     cand_table = get_valid_candidates(G, G.nodes(), h_dict)
+    valid_sets = find_minimum_set(cand_table, G.nodes())
 
-    matrix_data = []
-    
-    for link, candidates_list in cand_table.items():
-        u, v = link
-        affected = h_dict[link]
-        # Estructura base de la fila
-        row = {
-            'Link_Index': f"({u}, {v})",
-            'Affected_Destinations': str(affected)
-        }
-        
-        # Proyección binaria: 1 si es candidato, 0 si no lo es
-        for node in G.nodes():
-            # Usamos el nombre de la columna dinámicamente, ej: 'Node_1'
-            col_name = str(node) 
-            row[col_name] = 1 if node in candidates_list else 0
-            
-        matrix_data.append(row)
+    # ==========================================================================
+    # 4. LA MAGIA: DESCUBRIMIENTO DINÁMICO DEL ALPHA (Knee-Point)
+    # ==========================================================================
+    optimal_alpha = calculate_optimal_alpha(G, valid_sets, node_traffic_pps, h_dict, cand_table)
 
-    # 4. RENDERIZADO DEL DATAFRAME
-    df_candidate_table = pd.DataFrame(matrix_data)
+    # ==========================================================================
+    # 5. EL TRIBUNAL: Ejecución final con el Alpha matemáticamente perfecto
+    # ==========================================================================
+    w_set, w_watts, w_delay, b_score, raw_results = best_green_placement(
+        G, valid_sets, optimal_alpha, node_traffic_pps, h_dict, cand_table
+    )
     
-    print("\n--- SDN Candidate Table (T) ---")
-    # Imprimimos la tabla en formato amigable para la terminal
-    print(df_candidate_table.to_string(index=False))
-    
-    # 5. EXPORTACIÓN AUTOMATIZADA
-    output_file = "SDN_Candidate_Table.csv"
-    df_candidate_table.to_csv(output_file, index=False)
-    print(f"\n[SUCCESS] Tabla binaria exportada a {output_file} lista para ser tabulada en tu paper.")
+    # 6. INVENTARIO DE HARDWARE Y MÉTRICAS
+    h_nec, h_zodiac, p_nec, p_zodiac, passive_power = 0, 0, 0, 0, 0.0
+    for node in w_set:
+        if node_traffic_pps.get(node, 0.0) > Z_CAP: h_nec += 1
+        else: h_zodiac += 1
 
+    for n in G.nodes():
+        if n not in w_set:
+            traffic = node_traffic_pps.get(n, 0.0)
+            if traffic > Z_CAP: 
+                hw, p_nec = NEC_PF5240, p_nec + 1
+            else: 
+                hw, p_zodiac = ZodiacFX, p_zodiac + 1
+            passive_power += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+    
+    total_network_power = w_watts + passive_power
 
+   # --- TRADUCCIÓN DE IDs A NOMBRES ---
+    hero_names = [G.nodes[n].get('name', str(n)) for n in w_set]
 
+    # 7. OUTPUT FINAL PARA EL PAPER
+    print("\n" + "="*60)
+    print(f"   FINAL SIMULATION: PAR={BURST_MULTIPLIER}x | SIGMA={SIGMA_FACTOR}")
+    print("="*60)
+    print(f" [★] OPTIMAL ALPHA    : {optimal_alpha} (Pareto Knee-Point)")
+    print(f" [★] WINNER HERO SET  : {hero_names}") # <-- CAMBIO APLICADO AQUÍ
+    print(f" [🛠] HERO HW MIX     : {h_nec} NEC, {h_zodiac} Zodiac")
+    print(f" [📡] PASSIVE HW MIX  : {p_nec} NEC, {p_zodiac} Zodiac")
+    print(f" [⚡] HERO POWER       : {w_watts:.2f} Watts")
+    print(f" [🏢] PASSIVE NETWORK  : {passive_power:.2f} Watts")
+    print(f" [🌍] TOTAL NET POWER  : {total_network_power:.2f} Watts")
+    print(f" [⏱] AVG RESP. DELAY  : {w_delay:.2f} ms")
+    print(f" [⚖] ALPHA SCORE      : {b_score:.4f}")
+    print("="*60 + "\n")
 
-
-    
-    
-    # valid_sets = find_minimum_set(cand_table, G.nodes())
-    
-    # # EL TRIBUNAL: Ahora usa el 'alpha' que vino del JSON
-    # w_set, w_watts, w_delay, b_score, raw_results = best_green_placement(
-    #     G, valid_sets, alpha, node_traffic_pps, h_dict, cand_table
-    # )
-    
-    # # 4. INVENTARIO DE HARDWARE (Cálculo de consumo total)
-    # h_nec, h_zodiac, p_nec, p_zodiac, passive_power = 0, 0, 0, 0, 0.0
-    # for node in w_set:
-    #     if node_traffic_pps.get(node, 0.0) > Z_CAP: h_nec += 1
-    #     else: h_zodiac += 1
-
-    # for n in G.nodes():
-    #     if n not in w_set:
-    #         traffic = node_traffic_pps.get(n, 0.0)
-    #         if traffic > Z_CAP: 
-    #             hw, p_nec = NEC_PF5240, p_nec + 1
-    #         else: 
-    #             hw, p_zodiac = ZodiacFX, p_zodiac + 1
-    #         passive_power += hw.P_BASE + (G.degree(n) * hw.P_PORT)
-    
-    # total_network_power = w_watts + passive_power
-    # Lanzamos el barrido
-    # run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_table,BURST_MULTIPLIER,AVG_PACKET_SIZE)
-   # 5. OUTPUT FINAL (Consistente y Profesional)
-#     print("\n" + "="*60)
-#     print(f"   FINAL SIMULATION: PAR={BURST_MULTIPLIER}x | SIGMA={SIGMA_FACTOR} | AVG PACKET SIZE={AVG_PACKET_SIZE} BYTES")
-#     print("="*60)
-#     print(f" [★] WINNER HERO SET  : {list(w_set)}")
-#     print(f" [🛠] HERO HW MIX     : {h_nec} NEC, {h_zodiac} Zodiac")
-#     print(f" [📡] PASSIVE HW MIX  : {p_nec} NEC, {p_zodiac} Zodiac")
-#     print(f" [⚡] CONTROLLER POWER : {w_watts:.2f} Watts")
-#     print(f" [🏢] PASSIVE NETWORK  : {passive_power:.2f} Watts")
-#     print(f" [🌍] TOTAL NET POWER  : {total_network_power:.2f} Watts")
-#     print(f" [⏱] AVG RESP. DELAY  : {w_delay:.2f} ms")
-#     print(f" [⚖] ALPHA SCORE      : {b_score:.4f} (Alpha={alpha})")
-#     print("="*60 + "\n")
-
-#    # --- THE FIX: Uso de la Verdad Absoluta estática ---
-#     assign_green_weights(G, alpha, node_traffic_pps)
-    
-#     # Extracción elegante y directa de los NOMBRES usando el diccionario de atributos (attr)
-#     zodiac_node_names = [attr.get('name', str(n)) for n, attr in G.nodes(data=True) if attr.get('hardware') == 'ZodiacFX']
-#     nec_node_names = [attr.get('name', str(n)) for n, attr in G.nodes(data=True) if attr.get('hardware') == 'NEC_PF5240']
-    
-#     # Telemetría legible para humanos
-#     print(f"[Hardware Map] ZodiacFX Nodes (Green) : {zodiac_node_names}")
-#     print(f"[Hardware Map] NEC PF5240 Nodes (Legacy): {nec_node_names}")
+    # Mapeo final en el Grafo
+    assign_green_weights(G, optimal_alpha, node_traffic_pps)
