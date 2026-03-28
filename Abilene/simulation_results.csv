@@ -1,0 +1,31 @@
+Sigma,Alpha,WinnerSet_Names,NEC_Heros_Count,NEC_Hero_Names,Zodiac_Heros_Count,Zodiac_Hero_Names,NEC_Passive_Count,Zodiac_Passive_Count,Watts_Total,Delay_ms,Score
+0,0,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",3,"['ATLAng', 'CHINng', 'DNVRng']",1,['SNVAng'],6,1,1107.9,17.18,0.0
+0,0.2,"['ATLAng', 'CHINng', 'SNVAng', 'STTLng']",2,"['ATLAng', 'CHINng']",2,"['SNVAng', 'STTLng']",7,0,1107.9,17.57,0.1023
+0,0.4,"['ATLAng', 'CHINng', 'SNVAng', 'STTLng']",2,"['ATLAng', 'CHINng']",2,"['SNVAng', 'STTLng']",7,0,1107.9,17.57,0.1088
+0,0.6,"['ATLAng', 'CHINng', 'SNVAng', 'STTLng']",2,"['ATLAng', 'CHINng']",2,"['SNVAng', 'STTLng']",7,0,1107.9,17.57,0.1152
+0,0.8,"['ATLAng', 'CHINng', 'SNVAng']",2,"['ATLAng', 'CHINng']",1,['SNVAng'],7,1,1107.9,18.41,0.1115
+0,1,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],7,2,1107.9,21.29,0.0
+100,0,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",3,"['ATLAng', 'CHINng', 'DNVRng']",1,['SNVAng'],6,1,1107.9,17.19,0.0
+100,0.2,"['ATLAng', 'CHINng', 'SNVAng', 'STTLng']",2,"['ATLAng', 'CHINng']",2,"['SNVAng', 'STTLng']",7,0,1107.9,17.58,0.1031
+100,0.4,"['ATLAng', 'CHINng', 'SNVAng', 'STTLng']",2,"['ATLAng', 'CHINng']",2,"['SNVAng', 'STTLng']",7,0,1107.9,17.58,0.1094
+100,0.6,"['ATLAng', 'CHINng', 'SNVAng', 'STTLng']",2,"['ATLAng', 'CHINng']",2,"['SNVAng', 'STTLng']",7,0,1107.9,17.58,0.1157
+100,0.8,"['ATLAng', 'CHINng', 'SNVAng']",2,"['ATLAng', 'CHINng']",1,['SNVAng'],7,1,1107.9,18.43,0.1119
+100,1,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],7,2,1107.9,21.29,0.0
+200,0,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",4,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",0,[],6,1,1212.37,17.16,0.0
+200,0.2,"['ATLAng', 'CHINng', 'DNVRng', 'STTLng']",3,"['ATLAng', 'CHINng', 'DNVRng']",1,['STTLng'],7,0,1212.37,17.48,0.174
+200,0.4,"['ATLAng', 'CHINng', 'DNVRng', 'STTLng']",3,"['ATLAng', 'CHINng', 'DNVRng']",1,['STTLng'],7,0,1212.37,17.48,0.2715
+200,0.6,"['ATLAng', 'CHINng', 'STTLng']",2,"['ATLAng', 'CHINng']",1,['STTLng'],8,0,1212.37,19.13,0.2289
+200,0.8,"['ATLAng', 'CHINng', 'STTLng']",2,"['ATLAng', 'CHINng']",1,['STTLng'],8,0,1212.37,19.13,0.1464
+200,1,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],8,1,1212.37,21.29,0.0
+400,0,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",4,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",0,[],7,0,1316.46,17.16,0.0
+400,0.2,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",4,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",0,[],7,0,1316.46,17.16,0.2
+400,0.4,"['ATLAng', 'CHINng', 'SNVAng']",3,"['ATLAng', 'CHINng', 'SNVAng']",0,[],8,0,1316.46,18.39,0.3778
+400,0.6,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],9,0,1316.46,21.29,0.4
+400,0.8,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],9,0,1316.46,21.29,0.2
+400,1,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],9,0,1316.46,21.29,0.0
+700,0,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",4,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",0,[],7,0,1316.46,17.16,0.0
+700,0.2,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",4,"['ATLAng', 'CHINng', 'DNVRng', 'SNVAng']",0,[],7,0,1316.46,17.16,0.2
+700,0.4,"['ATLAng', 'CHINng', 'SNVAng']",3,"['ATLAng', 'CHINng', 'SNVAng']",0,[],8,0,1316.46,18.39,0.3778
+700,0.6,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],9,0,1316.46,21.29,0.4
+700,0.8,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],9,0,1316.46,21.29,0.2
+700,1,"['ATLAng', 'CHINng']",2,"['ATLAng', 'CHINng']",0,[],9,0,1316.46,21.29,0.0

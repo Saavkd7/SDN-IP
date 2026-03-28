@@ -1,0 +1,31 @@
+Sigma,Alpha,WinnerSet_Names,NEC_Heros_Count,NEC_Hero_Names,Zodiac_Heros_Count,Zodiac_Hero_Names,NEC_Passive_Count,Zodiac_Passive_Count,Watts_Total,Delay_ms,Score
+0,0,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.0
+0,0.2,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.0253
+0,0.4,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.0507
+0,0.6,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.076
+0,0.8,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.1014
+0,1,"['Hannover', 'Norden']",1,['Hannover'],1,['Norden'],5,10,892.27,3.26,0.0
+100,0,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.0
+100,0.2,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.0253
+100,0.4,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.0507
+100,0.6,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.076
+100,0.8,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.39,0.1014
+100,1,"['Hannover', 'Norden']",1,['Hannover'],1,['Norden'],5,10,892.27,3.26,0.0
+200,0,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.4,0.0
+200,0.2,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.4,0.0253
+200,0.4,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.4,0.0507
+200,0.6,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.4,0.076
+200,0.8,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Karlsruhe', 'Duesseldorf']",5,8,892.27,2.4,0.1014
+200,1,"['Hannover', 'Norden']",1,['Hannover'],1,['Norden'],5,10,892.27,3.26,0.0
+400,0,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",2,"['Hannover', 'Karlsruhe']",2,"['Norden', 'Duesseldorf']",11,2,1622.79,2.39,0.0
+400,0.2,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",2,"['Hannover', 'Karlsruhe']",2,"['Norden', 'Duesseldorf']",11,2,1622.79,2.39,0.1116
+400,0.4,"['Hannover', 'Norden', 'Ulm', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Ulm', 'Duesseldorf']",12,1,1622.79,2.5,0.1289
+400,0.6,"['Hannover', 'Norden', 'Ulm', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Ulm', 'Duesseldorf']",12,1,1622.79,2.5,0.1282
+400,0.8,"['Hannover', 'Norden', 'Ulm', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Ulm', 'Duesseldorf']",12,1,1622.79,2.5,0.1275
+400,1,"['Hannover', 'Norden']",1,['Hannover'],1,['Norden'],12,3,1622.79,3.26,0.0
+700,0,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",2,"['Hannover', 'Karlsruhe']",2,"['Norden', 'Duesseldorf']",11,2,1622.79,2.39,0.0
+700,0.2,"['Hannover', 'Norden', 'Karlsruhe', 'Duesseldorf']",2,"['Hannover', 'Karlsruhe']",2,"['Norden', 'Duesseldorf']",11,2,1622.79,2.39,0.1116
+700,0.4,"['Hannover', 'Norden', 'Ulm', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Ulm', 'Duesseldorf']",12,1,1622.79,2.5,0.129
+700,0.6,"['Hannover', 'Norden', 'Ulm', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Ulm', 'Duesseldorf']",12,1,1622.79,2.5,0.1282
+700,0.8,"['Hannover', 'Norden', 'Ulm', 'Duesseldorf']",1,['Hannover'],3,"['Norden', 'Ulm', 'Duesseldorf']",12,1,1622.79,2.5,0.1275
+700,1,"['Hannover', 'Norden']",1,['Hannover'],1,['Norden'],12,3,1622.79,3.27,0.0

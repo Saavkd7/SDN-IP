@@ -17,36 +17,45 @@ from ryu.lib.packet import packet, ethernet, arp, ipv4
 
 # 5. Topology Discovery
 from ryu.topology import event
-from MCS import get_best_set, plot_network, recovery_path
-from abilene_topo import Abilene
+from MCS import  recovery_path
 
 class MCS(app_manager.RyuApp):
+    OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
     def __init__(self, *args, **kwargs):
         super(MCS, self).__init__(*args, **kwargs)
         self.net = nx.DiGraph()
         self.sfnet = nx.Graph()
-        self.top = Abilene()
-        self.heroes = get_best_set()
-              
-        self.failover = recovery_path()
-        self.mac_port = {}
-        self.datapath = {}
-        self.names = {1: 'ATLA', 2: 'CHIN', 3: 'DNVR', 4: 'HSTN', 5: 'IPLS',
-                      6: 'KSCY', 7: 'LOSA', 8: 'NYCM', 9: 'SNVA', 10: 'STTL',
-                      11: 'WASH'}
-        hero_names = [self.get_name(h) for h in self.heroes]
-        
-        # Log initialization
-        self.log_with_timestamp(f"The heroes will be Nodes: {hero_names}")
+        self.heroes, self.failover,self.topo_graph  = recovery_path()
+        # --- ID MAPPINGS ---
+        self.names = {}
+        print("\n--- NAME MAPPING DEBUG ---")
+        for n in self.topo_graph.nodes():
+            # Intentamos buscar 'label', luego 'name', y al final fallback a str(n)
+            node_data = self.topo_graph.nodes[n]
+            label = node_data.get('label', node_data.get('name', str(n)))
+            self.names[n] = label
+            # DEBUG: Imprimimos para ver qué está cargando realmente
+            # print(f"  ID {n} maps to '{label}'") 
+        print("--------------------------\n")
 
+
+
+
+        self.mac_port={}
+        self.datapath={}
+        # Log de confirmación
+        hero_names = [self.get_name(h) for h in self.heroes]
+        self.log_with_timestamp(f"MCS INITIALIZED. Topology: {len(self.names)} nodes.")
+        self.log_with_timestamp(f"GREEN HEROES SELECTED: {hero_names}")
+    
     def get_name(self, dpid):
+        """Obtiene el nombre real desde el mapa generado por el XML."""
         return self.names.get(dpid, f"Switch-{dpid}")
 
-    # --- NEW HELPER METHOD FOR LOGGING ---
     def log_with_timestamp(self, message):
-        # Format time as HH:MM:SS.ms
         timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
         print(f"[{timestamp}] {message}", flush=True)
+
 
     @set_ev_cls(event.EventLinkAdd, MAIN_DISPATCHER)
     def get_topology_data(self, ev):
@@ -193,7 +202,7 @@ class MCS(app_manager.RyuApp):
                             
                     match = parser.OFPMatch(eth_dst=dst)
                     inst = [parser.OFPInstructionActions(ofproto_v1_3.OFPIT_APPLY_ACTIONS, actions)]
-                    mod = parser.OFPFlowMod(datapath=datapath, priority=1, match=match, instructions=inst)
+                    mod = parser.OFPFlowMod(datapath=datapath, priority=1, match=match, instructions=inst, idle_timeout=0, hard_timeout=0)
                     datapath.send_msg(mod)
                 except Exception:
                     return
@@ -205,6 +214,35 @@ class MCS(app_manager.RyuApp):
         out_actions = [parser.OFPActionSetQueue(0), parser.OFPActionOutput(out_port)]
         out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id, in_port=in_port, actions=out_actions, data=msg.data)
         datapath.send_msg(out)
+    
+    def request_all_flow_stats(self):
+        """Pide el conteo de reglas a todos los switches conectados."""
+        self.log_with_timestamp("AUDIT: Requesting Rule Counts from all switches...")
+        for datapath in self.datapath.values():
+            parser = datapath.ofproto_parser
+            req = parser.OFPFlowStatsRequest(datapath)
+            datapath.send_msg(req)
+    
+    @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
+    def flow_stats_reply_handler(self, ev):
+        """Recibe la respuesta del switch y cuenta las reglas."""
+        dpid = ev.msg.datapath.id
+        body = ev.msg.body
+        name = self.get_name(dpid)
+        
+        # Filtramos reglas 'default' (prioridad 0) para contar solo las operativas si quieres
+        # O contamos todo:
+        rule_count = len(body)
+        
+        self.log_with_timestamp(f"[METRIC] Switch {name} (ID {dpid}) | Active Rules: {rule_count}")
+
+
+
+    
+
+
+
+
 
     @set_ev_cls(event.EventLinkDelete, MAIN_DISPATCHER)
     def link_delete_handler(self, ev):
@@ -214,6 +252,9 @@ class MCS(app_manager.RyuApp):
         try:
             self.net.remove_edge(src, dst)
             self.sfnet = nx.minimum_spanning_tree(self.net.to_undirected())
+
+            src_name = self.get_name(src)
+            dst_name = self.get_name(dst)
             
             # LOGGING
             self.log_with_timestamp(f"LINK FAILURE: {self.get_name(src)} -> {self.get_name(dst)} detected.")
