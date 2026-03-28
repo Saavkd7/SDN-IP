@@ -3,6 +3,7 @@ import os, json, logging, itertools
 from green_models import NEC_PF5240, ZodiacFX, GreenNormalizer
 from sndlib_loader import SNDLibXMLParser
 import csv
+import pandas as pd
 #==================================================================
 # 1. UTILS & LOADING
 # ==============================================================================
@@ -18,6 +19,24 @@ def get_active_topology():
     filename = config.get('topology', 'abilene.xml')
     xml_filename = filename if filename.startswith('Top/') else f"Top/{filename}"
     return SNDLibXMLParser(xml_filename)
+
+def get_traffic_profile(loader, G, dataset_folder=None, burst_multiplier=1.0,avg_packet=1500,sigma=0.0):
+
+    """
+    Extrae el tráfico base y le inyecta el realismo de las micro-ráfagas (PAR).
+    - burst_multiplier = 1.0 (Tráfico promedio pacífico)
+    - burst_multiplier = 4.0 (Tormenta de tráfico / Realismo Carrier-Grade)
+    """
+    if dataset_folder and os.path.isdir(dataset_folder):
+        print(f"[INFO] Scanning traffic from {os.path.basename(dataset_folder)} | PAR Multiplier: {burst_multiplier}x")
+        raw_traffic = loader.get_peak_traffic_from_folder(G=G,folder_path=dataset_folder,avg_packet_size_bytes=avg_packet,sigma=sigma)    
+    else:
+        print(f"[WARNING] Falling back to default XML load | PAR Multiplier: {burst_multiplier}x")
+        raw_traffic = loader.calculate_full_network_load(G=G)
+        
+    # Aplicar el multiplicador a todos los nodos
+    adjusted_traffic = {node: traffic * burst_multiplier for node, traffic in raw_traffic.items()}
+    return adjusted_traffic
 
 # ==============================================================================
 # 2. CORE LOGIC: HYBRID WEIGHTS & PATHS
@@ -41,7 +60,7 @@ def assign_green_weights(G, alpha, peak_node_traffic_pps):
         lam_peak = peak_node_traffic_pps.get(n, 0.0)
         
         # EL PAPER: Despliegue guiado puramente por el perfil de tráfico
-        if lam_peak < (ZODIAC_CAPACITY * 0.90): # Margen de seguridad del 10%
+        if lam_peak < (ZODIAC_CAPACITY * 0.95): # Margen de seguridad del 10%
             hw = ZodiacFX()
         else:
             hw = NEC_PF5240()
@@ -83,48 +102,6 @@ def assign_green_weights(G, alpha, peak_node_traffic_pps):
         G[u][v]['link_energy_norm'] = edge_norm_energy
         G[u][v]['link_delay_ms'] = total_delay_ms
 
-
-def get_path_score(G, u, v, c, affected):
-    """
-    Ruta guiada por 'score' híbrido (Alpha).
-    DEVUELVE EL SCORE (Para que Alpha decida quién es el mejor Héroe para el failover).
-    """
-    edge_data = G.get_edge_data(u, v)
-    if edge_data is not None:
-        G.remove_edge(u, v)
-
-    tunnel_score = 0.0
-    avg_repair_score = 0.0
-
-    try:
-        # --- PARTE A: EL TÚNEL ---
-        if u != c:
-            try:
-                # 1. Encontrar la ruta óptima según Alpha y obtener su SCORE TOTAL
-                tunnel_score = nx.shortest_path_length(G, source=u, target=c, weight='score')
-            except nx.NetworkXNoPath:
-                return float('inf')
-
-        # --- PARTE B: LA REPARACIÓN ---
-        if affected:
-            total_repair_score = 0.0
-            for dest in affected:
-                try:
-                    # 1. Ruta óptima del héroe al destino según Alpha (SCORE TOTAL)
-                    path_score = nx.shortest_path_length(G, source=c, target=dest, weight='score')
-                    total_repair_score += path_score
-                except nx.NetworkXNoPath:
-                    return float('inf')
-                    
-            avg_repair_score = total_repair_score / len(affected)
-
-        # LA VERDAD MATEMÁTICA: Devolvemos el costo híbrido para que 'recovery_path'
-        # compare peras con peras respetando a Alpha en la elección del Héroe final.
-        return tunnel_score + avg_repair_score
-
-    finally:
-        if edge_data is not None:
-            G.add_edge(u, v, **edge_data)
 
 # ==============================================================================
 # 3. SELECTION & GREEDY LOGIC
@@ -309,7 +286,52 @@ def best_green_placement(G, valid_sets, alpha, node_traffic_pps, h_dict, cand_ta
 # ==============================================================================
 # 5. THE BRIDGE: RECOVERY PATH (Llamada por Ryu Controller)
 # ==============================================================================
-def recovery_path(alpha=None, node_traffic_pps=None):
+
+def get_path_score(G, u, v, c, affected):
+    """
+    Ruta guiada por 'score' híbrido (Alpha).
+    DEVUELVE EL SCORE (Para que Alpha decida quién es el mejor Héroe para el failover).
+    """
+    edge_data = G.get_edge_data(u, v)
+    if edge_data is not None:
+        G.remove_edge(u, v)
+
+    tunnel_score = 0.0
+    avg_repair_score = 0.0
+
+    try:
+        # --- PARTE A: EL TÚNEL ---
+        if u != c:
+            try:
+                # 1. Encontrar la ruta óptima según Alpha y obtener su SCORE TOTAL
+                tunnel_score = nx.shortest_path_length(G, source=u, target=c, weight='score')
+            except nx.NetworkXNoPath:
+                return float('inf')
+
+        # --- PARTE B: LA REPARACIÓN ---
+        if affected:
+            total_repair_score = 0.0
+            for dest in affected:
+                try:
+                    # 1. Ruta óptima del héroe al destino según Alpha (SCORE TOTAL)
+                    path_score = nx.shortest_path_length(G, source=c, target=dest, weight='score')
+                    total_repair_score += path_score
+                except nx.NetworkXNoPath:
+                    return float('inf')
+                    
+            avg_repair_score = total_repair_score / len(affected)
+
+        # LA VERDAD MATEMÁTICA: Devolvemos el costo híbrido para que 'recovery_path'
+        # compare peras con peras respetando a Alpha en la elección del Héroe final.
+        return tunnel_score + avg_repair_score
+
+    finally:
+        if edge_data is not None:
+            G.add_edge(u, v, **edge_data)
+
+
+
+def recovery_path(alpha=None, node_traffic_pps=None, dataset=None):
     """Función de API para Mininet/Ryu: Retorna (heroes, failover_map, grafo)."""
     loader = get_active_topology()
     G = loader.get_graph()
@@ -318,8 +340,7 @@ def recovery_path(alpha=None, node_traffic_pps=None):
         alpha = get_config()['alpha']
         
     if node_traffic_pps is None:
-        #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
-        #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+        dataset_folder =dataset
         if os.path.isdir(dataset_folder):
             node_traffic_pps = loader.get_peak_traffic_from_folder(folder_path=dataset_folder, G=G)
         else:
@@ -353,29 +374,8 @@ def recovery_path(alpha=None, node_traffic_pps=None):
 
     return list(winner_set), failover, G
 
-##GET TRAFFIC PROFILE
-def get_traffic_profile(loader, G, dataset_folder=None, burst_multiplier=1.0,avg_packet=1500,sigma=0.0):
-
-    """
-    Extrae el tráfico base y le inyecta el realismo de las micro-ráfagas (PAR).
-    - burst_multiplier = 1.0 (Tráfico promedio pacífico)
-    - burst_multiplier = 4.0 (Tormenta de tráfico / Realismo Carrier-Grade)
-    """
-    if dataset_folder and os.path.isdir(dataset_folder):
-        print(f"[INFO] Scanning traffic from {os.path.basename(dataset_folder)} | PAR Multiplier: {burst_multiplier}x")
-        raw_traffic = loader.get_peak_traffic_from_folder(G=G,folder_path=dataset_folder,avg_packet_size_bytes=avg_packet,sigma=sigma)    
-    else:
-        print(f"[WARNING] Falling back to default XML load | PAR Multiplier: {burst_multiplier}x")
-        raw_traffic = loader.calculate_full_network_load(G=G)
-        
-    # Aplicar el multiplicador a todos los nodos
-    adjusted_traffic = {node: traffic * burst_multiplier for node, traffic in raw_traffic.items()}
-    return adjusted_traffic
 
 
-
-import csv
-from green_models import NEC_PF5240, ZodiacFX # Asegúrate de que esto esté importado
 
 def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_table, BURST, AVG):
     """
@@ -462,7 +462,6 @@ def run_experiment_sweep(G, valid_sets, loader, dataset_folder, h_dict, cand_tab
 # ==============================================================================
 # MAIN EXECUTION
 # ==============================================================================
-import pandas as pd
 if __name__ == '__main__':
     # Configurar el Logger
     logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -482,9 +481,9 @@ if __name__ == '__main__':
     Z_CAP = ZodiacFX.MU * 0.95
     
     # 2. CAPTURA DE TRÁFICO (Respetando el Dataset seleccionado)
-    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
+    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50"
     #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Nobel-Germany"
-    #dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
+    dataset_folder = "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene"
     
     if os.path.isdir(dataset_folder):
         print(f"\n[INFO] Scanning real traffic patterns from: {os.path.basename(dataset_folder)}")
