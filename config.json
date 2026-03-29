@@ -1,4 +1,4 @@
 {
-    "alpha": 0,
-    "topology": "abilene.xml"
+    "dataset": "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Germany50",
+    "topology": "germany50.xml"
 }

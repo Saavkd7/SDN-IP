@@ -55,6 +55,9 @@ class SNDLibXMLParser:
             # Esto blinda tu código si el XML usa <node id="1"><name>Atlanta</name></node>
             name_elem = node.find('snd:name', self.ns)
             real_name = name_elem.text if name_elem is not None else node_id_str
+
+
+
             # Heurística de Fallback con Telemetría Explícita
             x, y = 0.0, 0.0
             coords = node.find('snd:coordinates', self.ns)
@@ -118,141 +121,113 @@ class SNDLibXMLParser:
         return G
     
 
-    def calculate_full_network_load(self, G, traffic_file_path=None, avg_packet_size_bytes=800, sigma=0.0):
+    def calculate_full_network_load(self,G,traffic_file_path=None, avg_packet_size_bytes=800, sigma=0.0):
         """
-        Calcuate the real load (PPS) simulating SPF using 
-        explicitly the attribute delay of the physical topology.
-        Returns both Node Load and Edge (Link) Load.
+        Calcuate the reald load (PPS ) simulating SPF using 
+        explictly the attribute delay  of the physical 
+        topology
         """
-        target_file = traffic_file_path if traffic_file_path else self.xml_file
+        target_file=traffic_file_path if traffic_file_path else self.xml_file
         if not os.path.exists(target_file):
             logging.error(f"[LOADER] Archivo de tráfico ausente: {target_file}")
-            return {}, {}
+            return {}
         
         logging.info(f"[LOADER] simulating SPF upon: {os.path.basename(target_file)} | Sigma: {sigma}")
 
         try:
-            tree = ET.parse(target_file)
-            root = tree.getroot()
+            tree=ET.parse(target_file)
+            root=tree.getroot()
         except (ET.ParseError, FileNotFoundError) as e:
             logging.error(f"[LOADER] Fail by parsing XML demands: {e}")
-            return {}, {}
-            
-        node_lambda = {n: 0.0 for n in G.nodes()}
-        # NUEVO: Diccionario para capturar la carga de la fibra óptica (bidireccional unificada)
-        edge_lambda = {tuple(sorted((u, v))): 0.0 for u, v in G.edges()}
-        
-        demands = root.findall('.//snd:demand', self.ns)
-        flows_routed = 0
-        
+            return {}
+        node_lambda={n:0.0 for n in G.nodes()}
+        demands=root.findall('.//snd:demand',self.ns)
+        flows_routed=0
         for demand in demands:
-            src_elem = demand.find('snd:source', self.ns)
-            dst_elem = demand.find('snd:target', self.ns)
-            val_elem = demand.find('snd:demandValue', self.ns)
-            
+            src_elem=demand.find('snd:source',self.ns)
+            dst_elem=demand.find('snd:target',self.ns)
+            val_elem=demand.find('snd:demandValue',self.ns)
+            #Survival validation (FAIL-SAfE)
             if src_elem is None or dst_elem is None or val_elem is None:
+                logging.debug("[LOADER-DROP] Ignored Demand: XML labels incompleted.")
                 continue
 
-            src_str, dst_str = src_elem.text, dst_elem.text
-            mbps = float(val_elem.text)
 
-            if mbps <= 0.0:
+            # src_str, dst_str=src_elem, dst_elem
+            src_str, dst_str = src_elem.text, dst_elem.text
+            mbps=float(val_elem.text)
+
+            if mbps <=0.0:
+                logging.debug(f"[LOADER-DROP] Ignoring {src_str}->{dst_str} FLow: Traffic 0 Mbps.")
                 continue
 
             if src_str not in self.str_to_int or dst_str not in self.str_to_int:
+                logging.warning(f"[LOADER-DROP] Flow {src_str}->{dst_str} ignored: UNknown IDs  (Not coincidence found with topology).")
                 continue
-                
-            u = self.str_to_int[src_str]
-            v = self.str_to_int[dst_str]
+            u=self.str_to_int[src_str]
+            v=self.str_to_int[dst_str]
             
             if u not in G or v not in G:
+                logging.debug(f"[LOADER-DROP] Flow {src_str}->{dst_str} ignored: One of the nodes was removed by K-Core.")
                 continue
 
-            # Stochastic Packet Size
-            if sigma > 0:
-                pkt_size = random.gauss(avg_packet_size_bytes, sigma)
-                pkt_size = max(64.0, min(1500.0, pkt_size))
+            # Stocastic Packet SIze
+            if sigma >0:
+                pkt_size=random.gauss(avg_packet_size_bytes,sigma)
+                pkt_size=max(64.0,min(1500.0,pkt_size))
             else:
-                pkt_size = float(avg_packet_size_bytes)
+                pkt_size=float(avg_packet_size_bytes)
             
-            # Conversion a PPS 
-            pps = (mbps * 1_000_000.0) / (pkt_size * 8.0)
-            
-            # SPF ROUTING DIJKSTRA
+            #COnversion a PPS 
+            pps=(mbps*1_000_000.0)/(pkt_size*8.0)
+            #SPF ROUTING DIJKSTRA GUIDED FOR PURE DELAY
             try:
-                path = nx.shortest_path(G, source=u, target=v, weight='delay')
-                
-                # 1. Cargar Nodos
+                path=nx.shortest_path(G,source=u, target=v, weight='delay')
                 for node_in_path in path:
-                    node_lambda[node_in_path] += pps
-                    
-                # 2. Cargar Enlaces (El paso clave para el Q1)
-                for i in range(len(path) - 1):
-                    link = tuple(sorted((path[i], path[i+1])))
-                    if link in edge_lambda:
-                        edge_lambda[link] += pps
-                        
-                flows_routed += 1
-                
+                    node_lambda[node_in_path]+= pps
+                flows_routed+=1
             except nx.NetworkXNoPath:
                 logging.debug(f"NO ROUTE between {src_str} and {dst_str}. Discarding flow")
-                
-        if flows_routed == 0:
-            logging.error("[LOADER] Zero routed flows. Verify the nodes in the XML FILE")
-            return node_lambda, edge_lambda
-            
-        max_load = max(node_lambda.values()) if node_lambda else 0
-        avg_load = sum(node_lambda.values()) / len(node_lambda) if node_lambda else 0
-        logging.info(f" [LOADER] ROUTED {flows_routed} flows. Max Node load: {max_load:.0f} PPS. AVG: {avg_load:.0f} PPS" )
-        
-        return node_lambda, edge_lambda 
+        if flows_routed==0:
+            logging.error("[LOADER] Zero router flows. Verify the nodes in the XML FILE")
+            return node_lambda
+        max_load=max(node_lambda.values())
+        avg_load=sum(node_lambda.values())/len(node_lambda)
+        logging.info(f" [LOADER] ROUTED{flows_routed} flows. Max load: {max_load:.0f}PPS. AVG:{avg_load:.0f}PPS" )
+        return node_lambda 
        
          
     def get_peak_traffic_from_folder(self, G, folder_path, avg_packet_size_bytes=800, sigma=0.0):
-        """
-        Escanea todos los XML y retiene el High Watermark para NODOS y ENLACES de forma independiente.
-        """
+    
         peak_node_lambda = {n: 0.0 for n in G.nodes()}
-        peak_edge_lambda = {tuple(sorted((u, v))): 0.0 for u, v in G.edges()}
 
         search_pattern = os.path.join(folder_path, "*.xml")
         files = glob.glob(search_pattern)
         
+        # EL ESCUDO CONTRA EL COLAPSO (Falla Controlada)
         if not files:
             logging.error(f"EMPTY DIRECTORY TRAFFIC: {folder_path}")
             logging.warning("Running FallBack: Calculating From the Toplogy file.")
+            # Si no hay dataset, usamos el archivo base original para al menos tener una métrica > 0
             return self.calculate_full_network_load(G, self.xml_file, avg_packet_size_bytes, sigma)
 
         logging.info(f"Processing {len(files)} Traffic Matrices (SPF Routing) to extracting historic peak ...")
 
         for i, file_path in enumerate(files):
-            # Desempaquetamos la tupla dual
-            curr_nodes, curr_edges = self.calculate_full_network_load(G, file_path, avg_packet_size_bytes, sigma)
+            current_snapshot = self.calculate_full_network_load(G, file_path, avg_packet_size_bytes, sigma)
 
-            # 1. Actualizar Pico Histórico de Nodos
-            for n, pps in curr_nodes.items():
+            for n, pps in current_snapshot.items():
                 if pps > peak_node_lambda.get(n, 0):
                     peak_node_lambda[n] = pps
-
-            # 2. Actualizar Pico Histórico de Enlaces
-            for edge, pps in curr_edges.items():
-                if pps > peak_edge_lambda.get(edge, 0):
-                    peak_edge_lambda[edge] = pps
 
             if i % 5 == 0 and i > 0: 
                 logging.info(f"   > Procesados {i}/{len(files)} snapshots...")
 
         # LOGGERS
         top_hottest_nodes = sorted(peak_node_lambda.items(), key=lambda x: x[1], reverse=True)[:3]
-        top_hottest_edges = sorted(peak_edge_lambda.items(), key=lambda x: x[1], reverse=True)[:3]
-        
         logging.info("--- EXTRACTION COMPLETED ---")
-        logging.info("Nodes with the highest load historic (High Watermark):")
+        logging.info("Nodes with the highest load historic  (High Watermark):")
         for node, peak_pps in top_hottest_nodes:
             logging.info(f"   -> Node {node}: {peak_pps:.0f} PPS")
-            
-        logging.info("Links with the highest load historic (High Watermark):")
-        for edge, peak_pps in top_hottest_edges:
-            logging.info(f"   -> Link {edge}: {peak_pps:.0f} PPS")
 
-        return peak_node_lambda, peak_edge_lambda
+        return peak_node_lambda
