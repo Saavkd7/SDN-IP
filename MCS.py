@@ -29,24 +29,38 @@ def get_active_topology():
     return SNDLibXMLParser(xml_filename)
 
 def get_active_dataset():
-    config=get_config()
-    dataset_name=config.get('dataset','Abilene')
-    base_dir="Dataset/TestSet"
-    dataset_folder=dataset_name if (dataset_name.startswith('/') or dataset_name.startswith('Dataset')) else f"{base_dir}{dataset_name}"
-    return dataset_folder
-
+    config = get_config()
+    # 1. Obtenemos lo que dice el config
+    dataset_name = config.get('dataset', 'Abilene')
+    
+    # 2. Si el usuario puso una ruta que empieza por / o por ~ (Home)
+    # expandimos el símbolo ~ para que Linux lo entienda
+    if dataset_name.startswith('~'):
+        return os.path.expanduser(dataset_name)
+    
+    # 3. Si ya es una ruta absoluta o ya tiene el prefijo Dataset
+    if dataset_name.startswith('/') or dataset_name.startswith('Dataset'):
+        return dataset_name
+    
+    # 4. Solo si es un nombre seco (ej: "Abilene"), le ponemos el prefijo
+    base_dir = "Dataset/TestSet"
+    return os.path.join(base_dir, dataset_name)
+    
 def get_traffic_profile(loader, G, dataset_folder, burst_multiplier, avg_packet, sigma):
     """
     Extrae el tráfico base (Nodos y Enlaces) y le inyecta el realismo de las micro-ráfagas (PAR).
     """
     if dataset_folder and os.path.isdir(dataset_folder):
-        print(f"[INFO] Scanning traffic from {os.path.basename(dataset_folder)} | PAR Multiplier: {burst_multiplier}x")
-        raw_nodes, raw_edges = loader.get_peak_traffic_from_folder(G=G, folder_path=dataset_folder, avg_packet_size_bytes=avg_packet, sigma=sigma)    
+        # Esta línea te confirmará en consola que entró a la carpeta correcta
+        print(f"[OK] Detected Fp;der: {dataset_folder}. Parsing Starting XML FILES...")
+        raw_nodes, raw_edges = loader.get_peak_traffic_from_folder(
+            G=G, folder_path=dataset_folder, avg_packet_size_bytes=avg_packet, sigma=sigma
+        )    
     else:
-        print(f"[WARNING] Falling back to default XML load | PAR Multiplier: {burst_multiplier}x")
+        print(f"[WARNING] No se encontró la carpeta: {dataset_folder}")
+        print(f"[FALLBACK] Usando carga básica desde el archivo de topología.")
         raw_nodes, raw_edges = loader.calculate_full_network_load(G=G, avg_packet_size_bytes=avg_packet, sigma=sigma)
         
-    # Aplicar el multiplicador a Nodos y a Enlaces
     adjusted_nodes = {n: traffic * burst_multiplier for n, traffic in raw_nodes.items()}
     adjusted_edges = {e: traffic * burst_multiplier for e, traffic in raw_edges.items()}
     
