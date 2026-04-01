@@ -25,7 +25,7 @@ def get_config():
 def get_active_topology():
     config = get_config()
     filename = config.get('topology', 'abilene.xml')
-    xml_filename = filename if filename.startswith('Top/') else f"Top/{filename}"
+    xml_filename = filename if filename.startswith('Top/') else f"Top/{filename}"   
     return SNDLibXMLParser(xml_filename)
 
 def get_active_dataset():
@@ -366,7 +366,7 @@ def recovery_path(alpha=None, node_traffic_pps=None, dataset=None,sigma=None):
 def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma):
     import math
     print("\n[ANALYSIS] Calculating analytical Pareto Knee-Point (Optimal Alpha)...")
-    alphas_to_test = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    alphas_to_test = np.linspace(0, 1, 31)
     raw_results = []
     
     for a in alphas_to_test:
@@ -403,82 +403,124 @@ def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h
     print(f"[WINNER] Optimal Knee-Point Alpha analytically locked at: {best_alpha}")
     return best_alpha
 
+
 def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict, cand_table, avg_packet=800):
+    import math
+    import pandas as pd
+    import numpy as np
+    
     filename = "Network_Optimization_Results.xlsx"
     sigmas_to_test = [0, 100, 250, 500, 700]
-    alphas_to_test = np.linspace(0, 1, 11)
+    alphas_to_test = np.linspace(0, 1, 31)
     
     all_data = []
     summary_data = []
+    pareto_distances_master = [] # Nueva lista para la tabla de distancias detallada
     
-    print(f"\n[EXCEL ENGINE] Starting Massive Sweep. Target: {len(sigmas_to_test) * len(alphas_to_test)} simulations.")
+    print(f"\n[EXCEL ENGINE] Iniciando barrido masivo. Objetivo: {len(sigmas_to_test) * len(alphas_to_test)} simulaciones.")
     
+    for sigma in sigmas_to_test:
+        print(f" > Procesando Sigma: {sigma} ...")
+        
+        # Obtener tráfico para este Sigma
+        node_traffic_pps, edge_traffic_pps = get_traffic_profile(loader, G, dataset_folder, 1.0, avg_packet, sigma)
+        
+        # Pre-cálculo de límites para normalización de Distancia Pareto
+        temp_results = []
+        for a in alphas_to_test:
+            _, w_watts, w_delay, _, _ = best_green_placement(G, valid_sets, a, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma)
+            temp_results.append({'watts': w_watts, 'delay': w_delay})
+        
+        e_vals = [r['watts'] for r in temp_results]
+        d_vals = [r['delay'] for r in temp_results]
+        e_min, e_max = min(e_vals), max(e_vals)
+        d_min, d_max = min(d_vals), max(d_vals)
+        e_range = (e_max - e_min) or 1.0
+        d_range = (d_max - d_min) or 1.0
+
+        # Cálculo del Alpha óptimo (Knee Point) para este Sigma
+        kp_alpha = calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma)
+        
+        for alpha in alphas_to_test:
+            w_set, w_watts, w_delay, b_score, _ = best_green_placement(
+                G, valid_sets, alpha, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma
+            )
+            
+            # Cálculo de distancia al frente de Pareto (Métrica d del gráfico pareto_chord.png)
+            norm_e = (w_watts - e_min) / e_range
+            norm_d = (w_delay - d_min) / d_range
+            # Distancia perpendicular al acorde x + y - 1 = 0
+            pareto_dist = abs(norm_e + norm_d - 1.0) / math.sqrt(2)
+            
+            # Auditoría de Hardware (Capacidades según Table VII)
+            Z_CAP = ZodiacFX.MU * 0.95
+            passive_p = 0.0
+            h_nec, h_zod, p_nec, p_zod = 0, 0, 0, 0
+
+            for n in G.nodes():
+                t = node_traffic_pps.get(n, 0.0)
+                if n in w_set:
+                    possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
+                                        for fail, heroes in cand_table.items() if n in heroes]
+                    worst_rescue = max(possible_rescues) if possible_rescues else 0.0
+                    if (t + worst_rescue) > Z_CAP: h_nec += 1
+                    else: h_zod += 1
+                else:
+                    hw = NEC_PF5240 if t > Z_CAP else ZodiacFX
+                    passive_p += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+                    if t > Z_CAP: p_nec += 1
+                    else: p_zod += 1
+            
+            winner_names = [G.nodes[node_id].get('name', str(node_id)) for node_id in w_set]
+            
+            row = {
+                'Sigma': sigma,
+                'Alpha': round(alpha, 2),
+                'Watts_Total': round(w_watts + passive_p, 2),
+                'Delay_ms': round(w_delay, 2),
+                'Pareto_Distance': round(pareto_dist, 4),
+                'Hybrid_Score': round(b_score, 4),
+                'NEC_Heros_Count': h_nec,
+                'Zodiac_Heros_Count': h_zod,
+                'NEC_Passive_Count': p_nec,
+                'Zodiac_Passive_Count': p_zod,
+                'WinnerSet_Names': winner_names,
+                'Is_Pareto_Knee': "YES" if np.isclose(alpha, kp_alpha, atol=0.02) else "no"
+            }
+            
+            # Datos específicos para la tabla de distancias geométrica
+            dist_row = {
+                'Sigma': sigma,
+                'Alpha': round(alpha, 2),
+                'Norm_Energy': round(norm_e, 4),
+                'Norm_Delay': round(norm_d, 4),
+                'Distance_d': round(pareto_dist, 4),
+                'Is_Optimal': row['Is_Pareto_Knee']
+            }
+            
+            all_data.append(row)
+            pareto_distances_master.append(dist_row)
+            if row['Is_Pareto_Knee'] == "YES":
+                summary_data.append(row)
+
+    # Crear DataFrames
+    df_master = pd.DataFrame(all_data)
+    df_summary = pd.DataFrame(summary_data)
+    df_distances = pd.DataFrame(pareto_distances_master)
+    
+    # Guardar en Excel
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
         for sigma in sigmas_to_test:
-            current_sigma_results = []
-            print(f" > Processing Sigma: {sigma} ...")
-            random.seed(42)
-            
-            node_traffic_pps, edge_traffic_pps = get_traffic_profile(loader, G, dataset_folder, burst_multiplier=1.0, avg_packet=avg_packet, sigma=sigma)
-            kp_alpha = calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma)
-            
-            for alpha in alphas_to_test:
-                w_set, w_watts, w_delay, b_score, _ = best_green_placement(
-                    G, valid_sets, alpha, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma
-                )
-                
-                Z_CAP = ZodiacFX.MU * 0.95
-                passive_p = 0.0
-                h_nec, h_zod = 0, 0
-                p_nec, p_zod = 0, 0  # Contadores pasivos inicializados
-
-                for n in G.nodes():
-                    t = node_traffic_pps.get(n, 0.0)
-                    if n in w_set:
-                        # Los Héroes se calculan contra su peor caso también para el reporte
-                        possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
-                                            for fail, heroes in cand_table.items() if n in heroes]
-                        worst_rescue = max(possible_rescues) if possible_rescues else 0.0
-                        if (t + worst_rescue) > Z_CAP: h_nec += 1
-                        else: h_zod += 1
-                    else:
-                        hw = NEC_PF5240 if t > Z_CAP else ZodiacFX
-                        passive_p += hw.P_BASE + (G.degree(n) * hw.P_PORT)
-                        # Sumar a los contadores pasivos
-                        if t > Z_CAP: p_nec += 1
-                        else: p_zod += 1
-                        
-                total_power = w_watts + passive_p
-                is_knee = "YES" if np.isclose(alpha, kp_alpha, atol=0.03) else "no"
-                
-                row = {
-                    'Sigma_Variance': sigma,
-                    'Alpha_Weight': round(alpha, 2),
-                    'Total_Power_W': round(total_power, 2),
-                    'Avg_Recovery_Delay_ms': round(w_delay, 2),
-                    'Hybrid_Score': round(b_score, 4),
-                    'NEC_Heroes': h_nec,
-                    'Zodiac_Heroes': h_zod,
-                    'NEC_Passive': p_nec,    # Nuevo insight
-                    'Zodiac_Passive': p_zod, # Nuevo insight
-                    'Is_Pareto_Knee': is_knee
-                }        
-                current_sigma_results.append(row)
-                all_data.append(row)
-                
-                if is_knee == "YES":
-                    summary_data.append(row)
-                    
-            df_sigma = pd.DataFrame(current_sigma_results)
-            df_sigma.to_excel(writer, sheet_name=f"Sigma_{sigma}", index=False)
-            
-        df_summary = pd.DataFrame(summary_data)
-        df_summary.to_excel(writer, sheet_name="Knee_Point_Evolution", index=False)  
-        df_master = pd.DataFrame(all_data)
-        df_master.to_excel(writer, sheet_name="Master_Data", index=False)
+            df_master[df_master['Sigma'] == sigma].to_excel(writer, sheet_name=f"Sigma_{sigma}", index=False)
         
-    print(f"\n[SUCCESS] Excel report generated: {filename}")
-    print(f"Total scenarios analyzed: {len(all_data)}")
+        df_summary.to_excel(writer, sheet_name="Knee_Point_Evolution", index=False)
+        df_distances.to_excel(writer, sheet_name="Pareto_Distances_Geometry", index=False) # Nueva Tabla
+        df_master.to_excel(writer, sheet_name="Master_Data", index=False)
+
+    print(f"\n[SUCCESS] Reporte generado con Tabla de Distancias: {filename}")
+    
+    return df_master
+
 
 # ==============================================================================
 # MAIN EXECUTION
