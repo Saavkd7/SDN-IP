@@ -11,7 +11,7 @@ import random
 random.seed(42)
 np.random.seed(42)
 os.environ['PYTHONHASHSEED'] = '42'
-
+np.set_printoptions(precision=10)
 #==================================================================
 # 1. UTILS & LOADING
 # ==============================================================================

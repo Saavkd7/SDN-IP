@@ -40,9 +40,15 @@ class HardwareFactory:
     """
     @classmethod
     def get_device(cls, traffic_load, node_id=None):
-        # Límite operativo seguro: 95% de la capacidad del ZodiacFX
-        threshold = (ZodiacFX.MU * 0.95) - 1e-9
-        if traffic_load < threshold:
+        # 1. Forzamos el tipo a float para evitar bugs de NumPy 2.x
+        load = float(traffic_load) 
+        threshold = (ZodiacFX.MU * 0.95) - 1e-7
+        
+        # 2. Imprimimos para depurar
+        print(f"Load: {load:.10f} | Umbral: {threshold:.10f}")
+        
+        # 3. Evaluamos con la variable correcta
+        if load < threshold:
             return ZodiacFX(node_id)
         return NEC_PF5240(node_id)
 
