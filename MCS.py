@@ -1,6 +1,6 @@
 import networkx as nx
 import os, json, logging, itertools
-from green_models import NEC_PF5240, ZodiacFX, GreenNormalizer
+from green_models import NEC_PF5240, ZodiacFX, GreenNormalizer, HardwareFactory
 from sndlib_loader import SNDLibXMLParser
 import csv
 import pandas as pd
@@ -65,13 +65,11 @@ def assign_green_weights(G, alpha, peak_node_traffic_pps, sigma):
     node_stats = {}
     for n in G.nodes():
         lam_peak = peak_node_traffic_pps.get(n, 0.0)
-        # 1. Selección de HW
-        hw = ZodiacFX() if lam_peak < (ZODIAC_CAPACITY * 0.95) else NEC_PF5240()
+        hw = HardwareFactory.get_device(lam_peak)
         hw_type = hw.__class__.__name__
         G.nodes[n]['hardware'] = hw_type
-        # 2. Potencia
+        
         watts = hw.get_base_power() + (G.degree(n) * hw.get_port_power())
-        # 3. Kingman G/G/1
         mu = hw.get_capacity()
         rho = lam_peak / mu if mu > 0 else 0
         if 0 < rho < 0.99:
@@ -216,7 +214,9 @@ def get_pure_recovery_delay(G, placement_set, h_dict, cand_table, node_traffic_p
                                 for fail, heroes in cand_table.items() if h in heroes]
             worst_rescue = max(possible_rescues) if possible_rescues else 0.0
             
-            hw_type = "NEC_PF5240" if (base_lam + worst_rescue) > Z_CAP else "ZodiacFX"
+            hw = HardwareFactory.get_device(base_lam + worst_rescue)
+            mu = hw.get_capacity()
+            hw_type = hw.__class__.__name__
             mu = NEC_PF5240.MU if hw_type == "NEC_PF5240" else ZodiacFX.MU
             
             # 3. La Falla Real: Tráfico Base + El tráfico de ESTE enlace roto
@@ -258,8 +258,8 @@ def best_green_placement(G, valid_sets, alpha, node_traffic_pps, edge_traffic_pp
             worst_rescue_load = max(possible_rescues) if possible_rescues else 0.0
             lam_max_theoretical = base_traffic + worst_rescue_load
             
-            hw = NEC_PF5240 if lam_max_theoretical > Z_CAP else ZodiacFX
-            watts += hw.P_BASE + (G.degree(node) * hw.P_PORT)
+            hw = HardwareFactory.get_device(lam_max_theoretical)
+            watts += hw.get_base_power() + (G.degree(node) * hw.get_port_power())
             
         # --- ETAPA 2: EL TRIBUNAL (Kingman Delay Evaluation) ---
         pure_delay = get_pure_recovery_delay(G, s, h_dict, cand_table, node_traffic_pps, edge_traffic_pps, sigma)
@@ -454,6 +454,7 @@ def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict,
             
             # Auditoría de Hardware (Capacidades según Table VII)
             Z_CAP = ZodiacFX.MU * 0.95
+            # Auditoría de Hardware (Delegada completamente al Manager)
             passive_p = 0.0
             h_nec, h_zod, p_nec, p_zod = 0, 0, 0, 0
 
@@ -463,12 +464,17 @@ def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict,
                     possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
                                         for fail, heroes in cand_table.items() if n in heroes]
                     worst_rescue = max(possible_rescues) if possible_rescues else 0.0
-                    if (t + worst_rescue) > Z_CAP: h_nec += 1
+                    
+                    # El Manager decide el hardware del Héroe
+                    hw = HardwareFactory.get_device(t + worst_rescue)
+                    if isinstance(hw, NEC_PF5240): h_nec += 1
                     else: h_zod += 1
                 else:
-                    hw = NEC_PF5240 if t > Z_CAP else ZodiacFX
-                    passive_p += hw.P_BASE + (G.degree(n) * hw.P_PORT)
-                    if t > Z_CAP: p_nec += 1
+                    # El Manager decide el hardware del nodo pasivo
+                    hw = HardwareFactory.get_device(t)
+                    passive_p += hw.get_base_power() + (G.degree(n) * hw.get_port_power())
+                    
+                    if isinstance(hw, NEC_PF5240): p_nec += 1
                     else: p_zod += 1
             
             winner_names = [G.nodes[node_id].get('name', str(node_id)) for node_id in w_set]
@@ -555,23 +561,28 @@ if __name__ == '__main__':
     )    
     
     h_nec, h_zodiac, p_nec, p_zodiac, passive_power = 0, 0, 0, 0, 0.0
+    
+    # 1. Contar hardware de los Héroes
     for node in w_set:
         base_t = node_traffic_pps.get(node, 0.0)
         possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
                             for fail, heroes in cand_table.items() if node in heroes]
         worst_rescue = max(possible_rescues) if possible_rescues else 0.0
         
-        if (base_t + worst_rescue) > Z_CAP: h_nec += 1
+        hw = HardwareFactory.get_device(base_t + worst_rescue)
+        if isinstance(hw, NEC_PF5240): h_nec += 1
         else: h_zodiac += 1
         
+    # 2. Contar hardware y energía de los Nodos Pasivos
     for n in G.nodes():
         if n not in w_set:
             traffic = node_traffic_pps.get(n, 0.0)
-            if traffic > Z_CAP: 
-                hw, p_nec = NEC_PF5240, p_nec + 1
-            else: 
-                hw, p_zodiac = ZodiacFX, p_zodiac + 1
-            passive_power += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+            
+            hw = HardwareFactory.get_device(traffic)
+            passive_power += hw.get_base_power() + (G.degree(n) * hw.get_port_power())
+            
+            if isinstance(hw, NEC_PF5240): p_nec += 1
+            else: p_zodiac += 1
             
     total_network_power = w_watts + passive_power
     hero_names = [G.nodes[n].get('name', str(n)) for n in w_set]

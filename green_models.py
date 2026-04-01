@@ -1,67 +1,57 @@
-"""
-green_models.py
-Refined Hardware Profiles based on official datasheets and experimental evidence.
-Integrates Power Consumption (W) and Service Capacity (PPS).
-"""
-
 class SDNDevice:
     def get_base_power(self): raise NotImplementedError
     def get_port_power(self): raise NotImplementedError
-    def get_capacity(self): raise NotImplementedError # (Service Rate in PPS)
+    def get_capacity(self): raise NotImplementedError
+    def get_control_energy(self): raise NotImplementedError
 
 class ZodiacFX(SDNDevice):
-    """
-    Zodiac FX (Low-Power / IoT Grade)
-    Evidence: 120MHz CPU & 100Mbps ports
-    """
-    P_BASE = 15.0            # Nominal Cosumption
-    P_PORT = 0.15            # Estimated for active ports
-    # PHY CAPACITY (MU)
-    # Baed on Realistic CPU 120MHz para OpenFlow
-    MU = 100000.0            # 100 kpps ZODIAC FX
-    #MU = 1000000.0 #1 Mpps  ZODIAC NG for testing other models
-    # CONTROL ENERGY
-    E_FLOW_MOD = 0.001455    # Watts por regla escrita
-    E_PACKET_IN = 0.000775   # Watts por procesamiento de PacketIn
+    P_BASE = 15.0
+    P_PORT = 0.15
+    MU = 100000.0
+    E_FLOW_MOD = 0.001455
+    E_PACKET_IN = 0.000775
+
     def __init__(self, node_id=None): self.node_id = node_id
     def get_base_power(self): return self.P_BASE
     def get_port_power(self): return self.P_PORT
     def get_capacity(self): return self.MU
+    def get_control_energy(self): return (self.E_FLOW_MOD, self.E_PACKET_IN)
 
 class NEC_PF5240(SDNDevice):
-    """
-    NEC PF 5240 (High-Performance / ASIC Grade)
-    Evidence: 131 Mpps Forwarding Rate
-    """
-    P_BASE = 118.33          # Valor exacto medido
-    P_PORT = 0.5295          # Valor exacto medido por puerto
-    
-    # CAPACIDAD FÍSICA (MU)
-    # Wire-speed por Hardware (ASIC Pipeline)
-    MU = 131000000.0         # 131 Mpps
-
-    # ENERGÍA DE CONTROL
-    E_FLOW_MOD = 0.000029    # Muy eficiente por hardware
-    E_PACKET_IN = 0.000711   # Procesamiento de control
+    P_BASE = 118.33
+    P_PORT = 0.5295
+    MU = 131000000.0
+    E_FLOW_MOD = 0.000029
+    E_PACKET_IN = 0.000711
 
     def __init__(self, node_id=None): self.node_id = node_id
     def get_base_power(self): return self.P_BASE
     def get_port_power(self): return self.P_PORT
     def get_capacity(self): return self.MU
+    def get_control_energy(self): return (self.E_FLOW_MOD, self.E_PACKET_IN)
 
 # ==============================================================================
-# HERRAMIENTAS DE NORMALIZACIÓN (SISTEMA DE REFERENCIA)
+# CENTRALIZED HARDWARE FACTORY (The "One Place" to change everything)
 # ==============================================================================
+class HardwareFactory:
+    """
+    Fábrica inteligente: Decide dinámicamente el perfil de hardware 
+    en función de la carga de tráfico ingresada.
+    """
+    @classmethod
+    def get_device(cls, traffic_load, node_id=None):
+        # Límite operativo seguro: 95% de la capacidad del ZodiacFX
+        threshold = (ZodiacFX.MU * 0.95) - 1e-9
+        if traffic_load < threshold:
+            return ZodiacFX(node_id)
+        return NEC_PF5240(node_id)
+
 class GreenNormalizer:
     @staticmethod
     def get_max_power(max_degree):
-        """El peor consumo posible: Un NEC con todos los puertos activos."""
+        """El peor consumo posible para la normalización siempre será el NEC."""
         return NEC_PF5240.P_BASE + (max_degree * NEC_PF5240.P_PORT) 
 
     @staticmethod
     def get_worst_delay_threshold():
-        """
-        Umbral de 'Delay Inaceptable' para normalización.
-        Si un paquete tarda más de 100ms (0.1s) en un switch, se considera saturado.
-        """
         return 0.1
