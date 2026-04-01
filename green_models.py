@@ -45,7 +45,7 @@ class HardwareFactory:
         threshold = (ZodiacFX.MU * 0.95) - 1e-7
         
         # 2. Imprimimos para depurar
-        print(f"Load: {load:.10f} | Umbral: {threshold:.10f}")
+        #print(f"Load: {load:.10f} | Umbral: {threshold:.10f}")
         
         # 3. Evaluamos con la variable correcta
         if load < threshold:

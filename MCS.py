@@ -49,25 +49,7 @@ def get_traffic_profile(loader, G, dataset_folder, burst_multiplier, avg_packet,
     # Aplicar el multiplicador a Nodos y a Enlaces
     adjusted_nodes = {n: traffic * burst_multiplier for n, traffic in raw_nodes.items()}
     adjusted_edges = {e: traffic * burst_multiplier for e, traffic in raw_edges.items()}
-
-    # ------------------------------------------------------------------
-    # SEGURO ANTI-TSUNAMI (Homogeneiza las magnitudes a ~1.5M PPS)
-    # ------------------------------------------------------------------
-    # Verificamos la magnitud del primer elemento. Si está en cientos de millones, 
-    # significa que el loader devolvió Bits/Sec en lugar de Bytes o PPS.
-    test_val = next(iter(raw_nodes.values()), 0)
-    
-    scale_factor = 1.0
-    if test_val > 50000000: # Si es mayor a 50 Millones, algo anda mal con la lectura
-        print("[WARNING] Tráfico masivo detectado. Forzando reducción a PPS (Div / (800 * 8)).")
-        scale_factor = 1.0 / (avg_packet * 8.0) # Convertir Bits a PPS usando paquete de 800 bytes
-
-    adjusted_nodes = {n: (traffic * burst_multiplier * scale_factor) for n, traffic in raw_nodes.items()}
-    adjusted_edges = {e: (traffic * burst_multiplier * scale_factor) for e, traffic in raw_edges.items()}
-    
     return adjusted_nodes, adjusted_edges
-    
-    #return adjusted_nodes, adjusted_edges
 
 # ==============================================================================
 # 2. CORE LOGIC: HYBRID WEIGHTS & PATHS
