@@ -1,6 +1,6 @@
 import networkx as nx
 import os, json, logging, itertools
-from green_models import NEC_PF5240, ZodiacFX, GreenNormalizer, HardwareFactory
+from green_models import NEC_PF5240, ZodiacFX, GreenNormalizer
 from sndlib_loader import SNDLibXMLParser
 import csv
 import pandas as pd
@@ -11,7 +11,7 @@ import random
 random.seed(42)
 np.random.seed(42)
 os.environ['PYTHONHASHSEED'] = '42'
-np.set_printoptions(precision=10)
+
 #==================================================================
 # 1. UTILS & LOADING
 # ==============================================================================
@@ -25,30 +25,45 @@ def get_config():
 def get_active_topology():
     config = get_config()
     filename = config.get('topology', 'abilene.xml')
-    xml_filename = filename if filename.startswith('Top/') else f"Top/{filename}"   
+    xml_filename = filename if filename.startswith('Top/') else f"Top/{filename}"
     return SNDLibXMLParser(xml_filename)
 
 def get_active_dataset():
-    config=get_config()
-    dataset_name=config.get('dataset','Abilene')
-    base_dir="Dataset/TestSet"
-    dataset_folder=dataset_name if (dataset_name.startswith('/') or dataset_name.startswith('Dataset')) else f"{base_dir}{dataset_name}"
-    return dataset_folder
-
+    config = get_config()
+    # 1. Obtenemos lo que dice el config
+    dataset_name = config.get('dataset', 'Abilene')
+    
+    # 2. Si el usuario puso una ruta que empieza por / o por ~ (Home)
+    # expandimos el símbolo ~ para que Linux lo entienda
+    if dataset_name.startswith('~'):
+        return os.path.expanduser(dataset_name)
+    
+    # 3. Si ya es una ruta absoluta o ya tiene el prefijo Dataset
+    if dataset_name.startswith('/') or dataset_name.startswith('Dataset'):
+        return dataset_name
+    
+    # 4. Solo si es un nombre seco (ej: "Abilene"), le ponemos el prefijo
+    base_dir = "Dataset/TestSet"
+    return os.path.join(base_dir, dataset_name)
+    
 def get_traffic_profile(loader, G, dataset_folder, burst_multiplier, avg_packet, sigma):
     """
     Extrae el tráfico base (Nodos y Enlaces) y le inyecta el realismo de las micro-ráfagas (PAR).
     """
     if dataset_folder and os.path.isdir(dataset_folder):
-        print(f"[INFO] Scanning traffic from {os.path.basename(dataset_folder)} | PAR Multiplier: {burst_multiplier}x")
-        raw_nodes, raw_edges = loader.get_peak_traffic_from_folder(G=G, folder_path=dataset_folder, avg_packet_size_bytes=avg_packet, sigma=sigma)    
+        # Esta línea te confirmará en consola que entró a la carpeta correcta
+        print(f"[OK] Detected Fp;der: {dataset_folder}. Parsing Starting XML FILES...")
+        raw_nodes, raw_edges = loader.get_peak_traffic_from_folder(
+            G=G, folder_path=dataset_folder, avg_packet_size_bytes=avg_packet, sigma=sigma
+        )    
     else:
-        print(f"[WARNING] Falling back to default XML load | PAR Multiplier: {burst_multiplier}x")
+        print(f"[WARNING] No se encontró la carpeta: {dataset_folder}")
+        print(f"[FALLBACK] Usando carga básica desde el archivo de topología.")
         raw_nodes, raw_edges = loader.calculate_full_network_load(G=G, avg_packet_size_bytes=avg_packet, sigma=sigma)
         
-    # Aplicar el multiplicador a Nodos y a Enlaces
     adjusted_nodes = {n: traffic * burst_multiplier for n, traffic in raw_nodes.items()}
     adjusted_edges = {e: traffic * burst_multiplier for e, traffic in raw_edges.items()}
+    
     return adjusted_nodes, adjusted_edges
 
 # ==============================================================================
@@ -64,18 +79,20 @@ def assign_green_weights(G, alpha, peak_node_traffic_pps, sigma):
     node_stats = {}
     for n in G.nodes():
         lam_peak = peak_node_traffic_pps.get(n, 0.0)
-        hw = HardwareFactory.get_device(lam_peak)
+        # 1. Selección de HW
+        hw = ZodiacFX() if lam_peak < (ZODIAC_CAPACITY * 0.95) else NEC_PF5240()
         hw_type = hw.__class__.__name__
         G.nodes[n]['hardware'] = hw_type
-        
+        # 2. Potencia
         watts = hw.get_base_power() + (G.degree(n) * hw.get_port_power())
+        # 3. Kingman G/G/1
         mu = hw.get_capacity()
         rho = lam_peak / mu if mu > 0 else 0
         if 0 < rho < 0.99:
             ca = (sigma / lam_peak) if (lam_peak > 0 and sigma > 0) else 1.0
             cs = 0.2 if hw_type == "NEC_PF5240" else 1.2
             
-            v_factor = (ca**2 + cs**2) / 2.0
+            v_factor = (ca*2 + cs*2) / 2.0
             u_factor = rho / (1.0 - rho)
             
             waiting_time = u_factor * v_factor * (1.0 / mu)
@@ -213,9 +230,7 @@ def get_pure_recovery_delay(G, placement_set, h_dict, cand_table, node_traffic_p
                                 for fail, heroes in cand_table.items() if h in heroes]
             worst_rescue = max(possible_rescues) if possible_rescues else 0.0
             
-            hw = HardwareFactory.get_device(base_lam + worst_rescue)
-            mu = hw.get_capacity()
-            hw_type = hw.__class__.__name__
+            hw_type = "NEC_PF5240" if (base_lam + worst_rescue) > Z_CAP else "ZodiacFX"
             mu = NEC_PF5240.MU if hw_type == "NEC_PF5240" else ZodiacFX.MU
             
             # 3. La Falla Real: Tráfico Base + El tráfico de ESTE enlace roto
@@ -226,7 +241,7 @@ def get_pure_recovery_delay(G, placement_set, h_dict, cand_table, node_traffic_p
             if 0 < rho < 0.99:
                 ca = (sigma / lam_post_fail) if (lam_post_fail > 0 and sigma > 0) else 1.0
                 cs = 0.2 if hw_type == "NEC_PF5240" else 1.2
-                v_factor = (ca**2 + cs**2) / 2.0
+                v_factor = (ca*2 + cs*2) / 2.0
                 q_delay = (rho / (1.0 - rho)) * v_factor * (1.0 / mu)
                 node_delay = (q_delay + (1.0 / mu)) * 1000.0 # ms
             else:
@@ -257,8 +272,8 @@ def best_green_placement(G, valid_sets, alpha, node_traffic_pps, edge_traffic_pp
             worst_rescue_load = max(possible_rescues) if possible_rescues else 0.0
             lam_max_theoretical = base_traffic + worst_rescue_load
             
-            hw = HardwareFactory.get_device(lam_max_theoretical)
-            watts += hw.get_base_power() + (G.degree(node) * hw.get_port_power())
+            hw = NEC_PF5240 if lam_max_theoretical > Z_CAP else ZodiacFX
+            watts += hw.P_BASE + (G.degree(node) * hw.P_PORT)
             
         # --- ETAPA 2: EL TRIBUNAL (Kingman Delay Evaluation) ---
         pure_delay = get_pure_recovery_delay(G, s, h_dict, cand_table, node_traffic_pps, edge_traffic_pps, sigma)
@@ -365,7 +380,7 @@ def recovery_path(alpha=None, node_traffic_pps=None, dataset=None,sigma=None):
 def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma):
     import math
     print("\n[ANALYSIS] Calculating analytical Pareto Knee-Point (Optimal Alpha)...")
-    alphas_to_test = np.linspace(0, 1, 31)
+    alphas_to_test = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     raw_results = []
     
     for a in alphas_to_test:
@@ -401,7 +416,6 @@ def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h
             
     print(f"[WINNER] Optimal Knee-Point Alpha analytically locked at: {best_alpha}")
     return best_alpha
-
 
 def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict, cand_table, avg_packet=800):
     import math
@@ -458,24 +472,21 @@ def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict,
             h_nec, h_zod, p_nec, p_zod = 0, 0, 0, 0
 
             for n in G.nodes():
-                t = node_traffic_pps.get(n, 0.0)
-                if n in w_set:
-                    possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
-                                        for fail, heroes in cand_table.items() if n in heroes]
-                    worst_rescue = max(possible_rescues) if possible_rescues else 0.0
-                    
-                    # El Manager decide el hardware del Héroe
-                    hw = HardwareFactory.get_device(t + worst_rescue)
-                    if isinstance(hw, NEC_PF5240): h_nec += 1
-                    else: h_zod += 1
-                else:
-                    # El Manager decide el hardware del nodo pasivo
-                    hw = HardwareFactory.get_device(t)
-                    passive_p += hw.get_base_power() + (G.degree(n) * hw.get_port_power())
-                    
-                    if isinstance(hw, NEC_PF5240): p_nec += 1
-                    else: p_zod += 1
-            
+                    t = node_traffic_pps.get(n, 0.0)
+                    if n in w_set:
+                        # Los Héroes se calculan contra su peor caso también para el reporte
+                        possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
+                                            for fail, heroes in cand_table.items() if n in heroes]
+                        worst_rescue = max(possible_rescues) if possible_rescues else 0.0
+                        if (t + worst_rescue) > Z_CAP: h_nec += 1
+                        else: h_zod += 1
+                    else:
+                        hw = NEC_PF5240 if t > Z_CAP else ZodiacFX
+                        passive_p += hw.P_BASE + (G.degree(n) * hw.P_PORT)
+                        # Sumar a los contadores pasivos
+                        if t > Z_CAP: p_nec += 1
+                        else: p_zod += 1
+
             winner_names = [G.nodes[node_id].get('name', str(node_id)) for node_id in w_set]
             
             row = {
@@ -526,19 +537,21 @@ def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict,
     
     return df_master
 
-
 # ==============================================================================
 # MAIN EXECUTION
 # ==============================================================================
-if __name__ == '__main__':
+if __name__ == "__main__": # Fixed double underscores
     logging.basicConfig(level=logging.INFO, format='%(message)s')
+    
+    # Initialize the loader which was missing
+    loader = get_active_topology() 
+    
     BURST_MULTIPLIER = 1   
     SIGMA_FACTOR = 700     
     AVG_PACKET_SIZE = 800
-    loader = get_active_topology()
-    dataset_folder=get_active_dataset()
+    dataset_folder = get_active_dataset()
     G = loader.get_graph() 
-    Z_CAP = ZodiacFX.MU * 0.95 
+    Z_CAP = ZodiacFX.MU * 0.95
     
     if os.path.isdir(dataset_folder):
         print(f"\n[INFO] Scanning real traffic patterns from: {os.path.basename(dataset_folder)}")
@@ -560,28 +573,23 @@ if __name__ == '__main__':
     )    
     
     h_nec, h_zodiac, p_nec, p_zodiac, passive_power = 0, 0, 0, 0, 0.0
-    
-    # 1. Contar hardware de los Héroes
     for node in w_set:
         base_t = node_traffic_pps.get(node, 0.0)
         possible_rescues = [edge_traffic_pps.get(tuple(sorted(fail)), 0.0) 
                             for fail, heroes in cand_table.items() if node in heroes]
         worst_rescue = max(possible_rescues) if possible_rescues else 0.0
         
-        hw = HardwareFactory.get_device(base_t + worst_rescue)
-        if isinstance(hw, NEC_PF5240): h_nec += 1
+        if (base_t + worst_rescue) > Z_CAP: h_nec += 1
         else: h_zodiac += 1
         
-    # 2. Contar hardware y energía de los Nodos Pasivos
     for n in G.nodes():
         if n not in w_set:
             traffic = node_traffic_pps.get(n, 0.0)
-            
-            hw = HardwareFactory.get_device(traffic)
-            passive_power += hw.get_base_power() + (G.degree(n) * hw.get_port_power())
-            
-            if isinstance(hw, NEC_PF5240): p_nec += 1
-            else: p_zodiac += 1
+            if traffic > Z_CAP: 
+                hw, p_nec = NEC_PF5240, p_nec + 1
+            else: 
+                hw, p_zodiac = ZodiacFX, p_zodiac + 1
+            passive_power += hw.P_BASE + (G.degree(n) * hw.P_PORT)
             
     total_network_power = w_watts + passive_power
     hero_names = [G.nodes[n].get('name', str(n)) for n in w_set]

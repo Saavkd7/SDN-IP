@@ -1,4 +1,4 @@
 {
-    "dataset": "/mnt/mainvolume/Backup/PROJECTS/SDN-IP/Hybrid+Network/Dataset/TestSet/Abilene",
+    "dataset": "Abilene",
     "topology": "abilene.xml"
 }
