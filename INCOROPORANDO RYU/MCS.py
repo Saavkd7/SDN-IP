@@ -67,6 +67,59 @@ def get_traffic_profile(loader, G, dataset_folder, burst_multiplier, avg_packet,
     return adjusted_nodes, adjusted_edges
 
 # ==============================================================================
+# 2. CORE LOGIC: HYBRID WEIGHTS & PATHS
+# ==============================================================================
+def assign_green_weights(G, alpha, peak_node_traffic_pps, sigma):
+    degrees = dict(G.degree()).values()
+    max_degree = max(degrees) if degrees else 48
+    MAX_POWER = GreenNormalizer.get_max_power(max_degree)
+    MAX_DELAY_MS = GreenNormalizer.get_worst_delay_threshold() * 1000.0 
+    ZODIAC_CAPACITY = ZodiacFX.MU 
+    
+    node_stats = {}
+    for n in G.nodes():
+        lam_peak = peak_node_traffic_pps.get(n, 0.0)
+        # 1. Selección de HW
+        hw = ZodiacFX() if lam_peak < (ZODIAC_CAPACITY * 0.95) else NEC_PF5240()
+        hw_type = hw.__class__.__name__
+        G.nodes[n]['hardware'] = hw_type
+        # 2. Potencia
+        watts = hw.get_base_power() + (G.degree(n) * hw.get_port_power())
+        # 3. Kingman G/G/1
+        mu = hw.get_capacity()
+        rho = lam_peak / mu if mu > 0 else 0
+        if 0 < rho < 0.99:
+            ca = (sigma / lam_peak) if (lam_peak > 0 and sigma > 0) else 1.0
+            cs = 0.2 if hw_type == "NEC_PF5240" else 1.2
+            
+            v_factor = (ca**2 + cs**2) / 2.0
+            u_factor = rho / (1.0 - rho)
+            
+            waiting_time = u_factor * v_factor * (1.0 / mu)
+            node_delay = (waiting_time + (1.0 / mu)) * 1000.0
+        else:
+            node_delay = MAX_DELAY_MS
+        
+        node_stats[n] = { 
+            'norm_energy': watts / MAX_POWER,
+            'q_delay': min(node_delay, MAX_DELAY_MS)
+        }
+
+    for u, v in G.edges():
+        d_prop_ms = G[u][v].get('delay', 0.1) 
+        stat_u, stat_v = node_stats[u], node_stats[v]
+        
+        edge_norm_energy = (stat_u['norm_energy'] + stat_v['norm_energy']) / 2.0
+        avg_q_delay_ms = (stat_u['q_delay'] + stat_v['q_delay']) / 2.0
+        total_delay_ms = d_prop_ms + avg_q_delay_ms
+        
+        edge_norm_delay = min(total_delay_ms / MAX_DELAY_MS, 1.0)
+        
+        G[u][v]['score'] = (alpha * edge_norm_energy) + ((1.0 - alpha) * edge_norm_delay)
+        G[u][v]['link_energy_norm'] = edge_norm_energy
+        G[u][v]['link_delay_ms'] = total_delay_ms
+
+# ==============================================================================
 # 3. SELECTION & GREEDY LOGIC
 # ==============================================================================
 def get_affected_destinations(G, u, v, weight_attr='score'):
@@ -244,9 +297,85 @@ def best_green_placement(G, valid_sets, alpha, node_traffic_pps, edge_traffic_pp
             best_score, winner = score, r
         
     return winner['set'], winner['watts'], winner['delay'], best_score, raw_results
-#======================================================================================================================================================================================================
-# Optimal Alpha Computation
-#======================================================================================================================================================================================================
+
+# ==============================================================================
+# 5. THE BRIDGE: RECOVERY PATH (Llamada por Ryu Controller)
+# ==============================================================================
+
+def get_path_score(G, u, v, c, affected):
+    edge_data = G.get_edge_data(u, v)
+    if edge_data is not None:
+        G.remove_edge(u, v)
+
+    tunnel_score = 0.0
+    avg_repair_score = 0.0
+
+    try:
+        if u != c:
+            try:
+                tunnel_score = nx.shortest_path_length(G, source=u, target=c, weight='score')
+            except nx.NetworkXNoPath:
+                return float('inf')
+
+        if affected:
+            total_repair_score = 0.0
+            for dest in affected:
+                try:
+                    path_score = nx.shortest_path_length(G, source=c, target=dest, weight='score')
+                    total_repair_score += path_score
+                except nx.NetworkXNoPath:
+                    return float('inf')
+                    
+            avg_repair_score = total_repair_score / len(affected)
+
+        return tunnel_score + avg_repair_score
+
+    finally:
+        if edge_data is not None:
+            G.add_edge(u, v, **edge_data)
+
+def recovery_path(alpha=None, node_traffic_pps=None, dataset=None,sigma=None):
+    """
+    Función de API para Mininet/Ryu.
+    [NOTA DE INVESTIGACIÓN: Ryu generalmente no calcula el óptimo en tiempo real. 
+    Usa el mapa de failover precalculado. Esta función se mantiene por compatibilidad heredada.]
+    """
+    loader = get_active_topology()
+    G = loader.get_graph()
+    
+    if alpha is None: 
+        alpha = get_config()['alpha']
+        
+    if node_traffic_pps is None:
+        dataset_folder = dataset
+        if os.path.isdir(dataset_folder):
+            node_traffic_pps, edge_traffic_pps = get_traffic_profile(loader, G, dataset_folder, 1.0, 800, sigma)
+        else:
+            node_traffic_pps, edge_traffic_pps = loader.calculate_full_network_load(G=G)
+
+    h_dict = build_failure_dict(G) 
+    cand_table = get_valid_candidates(G, G.nodes(), h_dict) 
+    valid_sets = find_minimum_set(cand_table, G.nodes())
+    
+    winner_set, _, _, _, _ = best_green_placement(G, valid_sets, alpha, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma)
+    
+    assign_green_weights(G, alpha, node_traffic_pps, sigma)
+    failover = {}
+    for (u, v), affected in h_dict.items():
+        if not affected: continue
+        best_hero, min_cost = None, float('inf')
+        
+        potentials = [n for n in winner_set if n in cand_table.get((u, v), [])]
+        
+        for h in potentials:
+            cost = get_path_score(G, u, v, h, affected)
+            if cost < min_cost: 
+                min_cost = cost
+                best_hero = h
+                
+        failover[(u, v)] = best_hero
+
+    return list(winner_set), failover, G
 
 def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h_dict, cand_table, sigma):
     import math
@@ -288,9 +417,6 @@ def calculate_optimal_alpha(G, valid_sets, node_traffic_pps, edge_traffic_pps, h
     print(f"[WINNER] Optimal Knee-Point Alpha analytically locked at: {best_alpha}")
     return best_alpha
 
-#=======================================================================================================================================================================================================
-# Exporting Data
-#=======================================================================================================================================================================================================
 def export_research_data_to_excel(G, valid_sets, loader, dataset_folder, h_dict, cand_table, avg_packet=800):
     import math
     import pandas as pd
